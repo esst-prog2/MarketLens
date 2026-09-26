@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MarketLens · See the bigger picture</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+  <script src="/mvp.js" defer></script>
+  <script src="/journey.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="MarketLens home"><span class="brand-mark">◈</span> MarketLens<span class="beta">EARLY ACCESS</span></a>
+    <span class="local-label"><span class="dot"></span> Learn · Explore · Practise</span>
+  </header>
+  <main>
+    <section id="onboarding" class="onboarding" hidden aria-labelledby="welcome-title">
+      <div class="welcome-copy"><p class="eyebrow">YOUR NEXT CHAPTER STARTS HERE</p><h1 id="welcome-title" tabindex="-1">Make room for<br><span class="accent">a little more understanding.</span></h1><p class="subtitle">A place to learn about markets, discover different approaches and try investing with virtual money.</p><div class="welcome-points"><p><span>01</span> Find your starting point</p><p><span>02</span> Explore ideas that match your interests</p><p><span>03</span> Learn by trying, at your own pace</p></div><p class="small muted">Your learning profile is saved in this browser. No account needed.</p></div>
+      <div class="panel wizard-panel"><div class="wizard-progress" id="wizard-progress" aria-label="Setup progress"></div><form id="journey-form"><div id="wizard-content"></div><p id="wizard-error" role="alert" hidden></p><div class="wizard-actions"><button type="button" id="wizard-back" class="text-button">Back</button><button type="submit" id="wizard-next" class="primary">Continue →</button></div><button id="wizard-cancel" type="button" class="text-button" hidden>Keep my current preferences</button></form></div>
+    </section>
+    <div id="workspace" hidden>
+    <section class="journey-heading"><div><p class="eyebrow">YOUR PERSONAL LEARNING SPACE</p><h1 id="page-title" tabindex="-1">Find your next step.</h1><p id="page-subtitle" class="subtitle">Build understanding before you build a portfolio.</p></div><button id="edit-journey" class="secondary">My preferences ↗</button></section>
+    <section class="panel data-controls"><label for="data-mode">Data mode<select id="data-mode"><option value="current">Current market data</option><option value="replay">Historical replay ? offline</option><option value="legacy">Legacy 2024 replay ? read-only</option></select></label><button id="refresh" class="secondary">Check refresh status</button><p id="provider-status" role="status">Connecting to local server?</p></section>
+    <nav class="tabs journey-tabs" aria-label="Workspace">
+      <button class="tab" data-page="discover">For you</button><button class="tab" data-page="learn">Learning library</button><button class="tab" data-page="strategies">Portfolios & strategies</button><button class="tab" data-page="markets">Explore markets</button><button class="tab" data-page="overview" id="overview-tab">Practice</button><button class="tab" data-page="history" id="history-tab">Model history <span id="history-count">0</span></button>
+    </nav>
+    <section id="discover" class="journey-page" hidden></section>
+    <section id="learn" class="journey-page" hidden aria-label="Learning library"><div class="library-toolbar"><label for="lesson-search">Find something to learn<input type="search" id="lesson-search" placeholder="Search topics, terms or strategies…"></label><label for="lesson-topic">Topic<select id="lesson-topic"><option value="all">All topics</option><option value="foundations">Foundations</option><option value="stocks">Stocks & ETFs</option><option value="bonds">Bonds</option><option value="gold">Gold</option><option value="strategies">Strategies</option></select></label><label class="saved-filter"><input type="checkbox" id="saved-only"> Saved only</label></div><p id="library-count" class="muted" role="status"></p><div id="lesson-grid" class="content-grid"></div></section>
+    <section id="strategies" class="journey-page" hidden></section>
+    <section id="markets" class="journey-page" hidden></section>
+    <div class="replay-bar" id="replay-bar" hidden><div><span class="dot amber"></span><strong id="as-of">Loading market data…</strong><span class="replay-note">Real historical prices · no live quotes</span></div><button id="advance" class="secondary" disabled>Next trading day <span aria-hidden="true">→</span></button></div>
+    <p id="error" role="alert" hidden></p>
+    <section id="overview" hidden aria-labelledby="market-heading">
+      <p id="practice-notice" class="context-note" role="status">Try a fixed allocation, then observe how its value changes. Virtual money only; each data mode has its own portfolio.</p>
+      <div class="section-heading"><h2 id="market-heading">Market outlook</h2><span>5 trading day horizon · trend baseline</span></div>
+      <div id="signals" class="market-grid"></div>
+      <p class="method-note">Direction confidence is a calibrated estimate of a strictly higher or lower close after five trading sessions. Equal closes count as incorrect. Risk reflects recent price volatility. <button class="text-button" id="method-button">How it works ↗</button></p>
+      <div class="workspace-grid">
+        <section class="panel portfolio-panel" aria-labelledby="portfolio-heading"><div class="section-heading"><h2 id="portfolio-heading">Your virtual portfolio</h2><span class="pill">PAPER ONLY</span></div><div id="portfolio"></div></section>
+        <section class="panel setup-panel" aria-labelledby="setup-heading">
+          <p class="eyebrow">MAKE IT YOURS</p><h2 id="setup-heading">Start with a plan.</h2><p class="muted">Choose a profile to explore a simple allocation across three markets.</p>
+          <form id="setup-form">
+            <label for="profile">Investor profile</label><select id="profile"><option>Conservative</option><option selected>Balanced</option><option>Growth</option></select>
+            <label for="balance">Virtual starting balance (USD)</label><input id="balance" type="number" min="100" max="1000000" step="0.01" value="10000" required>
+            <div id="allocation" class="allocation"></div>
+            <button class="primary" id="invest" type="submit" disabled>Apply model allocation <span aria-hidden="true">↗</span></button>
+          </form><p class="small muted">Fixed educational allocations. Fractional shares, no fees or dividends. Model forecasts do not change these weights.</p>
+          <button id="reset" class="text-button" disabled>Reset historical replay</button>
+        </section>
+      </div>
+    </section>
+    <section id="history" hidden aria-labelledby="history-heading">
+      <div class="section-heading"><div><h2 id="history-heading">Every prediction has a record.</h2><p class="muted">Price results appear after one trading session; direction results after five. Incorrect calls stay in the record.</p></div><span class="pill">DAILY TRAINED MODELS</span></div>
+      <div id="metrics" class="metrics"></div>
+      <section id="training" class="panel training-panel"></section>
+      <div class="panel table-panel"><div class="table-scroll"><table><caption class="sr-only">Stored forecasts and their subsequent outcomes</caption><thead><tr><th>Forecast date</th><th>Asset</th><th>Predicted</th><th>Due date</th><th>Actual move</th><th>Result</th></tr></thead><tbody id="history-rows"></tbody></table></div></div>
+      <p class="method-note">Accuracy measures direction, not profitability. The comparison baseline always predicts “Up” on the same observations. Overlapping 5-day forecasts are not independent samples.</p>
+    </section>
+    <details id="methodology" class="panel methodology"><summary>Behind the lens: data &amp; methodology</summary><div class="method-grid"><div><h3>Observed prices, explicit clocks</h3><p>Current mode polls free Yahoo Finance observations every five minutes, with bounded backoff on failure. Quotes may be delayed; during an open session observations older than 30 minutes are stale. Quote time and fetch time are separate. Replay uses a frozen 2022?2024 daily-close sample and a simulated clock, with no network required. SPY, IEF and GLD are exchange-traded proxies.</p></div><div><h3>Probabilities and price estimates</h3><p>A regularized classifier learns direction from trailing returns, volatility and instrument identity. Sigmoid calibration uses a later 40-session window, separated from at least 120 fitting sessions by purged target horizons. A separate ridge model estimates the next-session closing price. Calibration can still be unreliable; inspect Brier error, reliability counts and simple baselines in Model history.</p></div><div><h3>Honest experiments</h3><p>Only completed daily history enters training. Targets follow the exchange calendar. Daily retraining does not rewrite old forecasts or change holdings. Frozen model pairs are compared on shared future observations. No profit guarantee; no fees, dividends, taxes or slippage. Reset clears only the selected experiment. Legacy mode preserves the original heuristic replay.</p></div></div></details>
+    </div>
+    <dialog id="reader" aria-labelledby="reader-title"><button id="close-reader" class="reader-close secondary" aria-label="Close article">✕</button><div id="reader-content"></div></dialog>
+    <p id="storage-message" class="context-note" role="status" hidden></p>
+    <footer><span>MarketLens <span class="muted">/ Learn by observing.</span></span><span>Course prototype · simulated money · stored on this computer</span></footer>
+    <p id="status" class="sr-only" role="status" aria-live="polite"></p>
+  </main>
+</body>
+</html>

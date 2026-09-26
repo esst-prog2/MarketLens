@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101b18">
+<title>Snake — egyél, nőj, ismételd</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#101b18;color:#eef5df;font-family:system-ui,sans-serif;min-height:100vh;padding:32px 20px}main{max-width:960px;margin:auto}header{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #34433b;padding-bottom:20px}.brand{font-weight:800;letter-spacing:3px}.tag{color:#a7b5a9;font-size:12px;letter-spacing:2px}.layout{display:grid;grid-template-columns:1fr 300px;gap:40px;margin-top:36px}h1{font-size:64px;letter-spacing:-4px;margin:0;line-height:1.05}h1 span{color:#c8ef77}p{color:#acbaae;line-height:1.6}.eyebrow{color:#c8ef77;letter-spacing:3px;font-size:11px;font-weight:700;margin-bottom:16px}.board{position:relative;margin-top:24px;border:1px solid #4c604a;border-radius:18px;overflow:hidden;background:#15231c;box-shadow:0 16px 50px #0003}canvas{display:block;width:100%;aspect-ratio:1;touch-action:none}.overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;background:#101b18bb;backdrop-filter:blur(3px)}.overlay[hidden]{display:none}.overlay h2{font-size:32px;margin:0 0 10px}.overlay p{max-width:280px}.button,select{font:inherit;border-radius:10px;border:1px solid #435243;padding:13px 18px}.button{cursor:pointer;font-weight:750;background:#c8ef77;color:#172411}.button:hover{filter:brightness(1.1)}.button:focus-visible,select:focus-visible{outline:3px solid #fff;outline-offset:3px}.secondary{background:transparent;color:#eef5df}.button:disabled{opacity:.4;cursor:default}.scores{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px}.card{background:#1c2a22;border:1px solid #34433b;border-radius:14px;padding:20px}.label{font-size:11px;letter-spacing:2px;color:#acbaae}.number{font-size:38px;font-weight:750;margin-top:6px}.number.green{color:#c8ef77}aside h2{font-size:18px;margin:28px 0 14px}select{width:100%;background:#1c2a22;color:#eef5df;margin:10px 0 14px}.actions{display:flex;gap:10px}.actions button{flex:1}.instructions{font-size:14px;border-top:1px solid #34433b;padding-top:18px;margin-top:28px}kbd{display:inline-block;background:#29382d;border:1px solid #4c604a;border-radius:5px;padding:2px 6px;color:#eef5df;font:12px monospace}.status{font-size:12px;display:flex;justify-content:space-between;color:#a7b5a9;margin-top:12px}.dot{color:#c8ef77}.dpad{display:grid;grid-template-columns:repeat(3,54px);gap:7px;justify-content:center;margin-top:22px}.dpad button{padding:12px;touch-action:manipulation}.up{grid-column:2}.left{grid-column:1}footer{margin-top:32px;color:#788e7d;font-size:12px} @media(max-width:760px){body{padding:20px 16px}.layout{grid-template-columns:1fr;gap:20px;margin-top:26px}h1{font-size:48px}.tag{font-size:10px;letter-spacing:1px}.scores{margin-top:0}.card{padding:14px}.number{font-size:30px}.dpad{margin-top:16px}aside h2{margin-top:20px}}
+</style>
+</head>
+<body>
+<main>
+<header><div class="brand">SNAKE<span style="color:#c8ef77">.</span></div><div class="tag">EGY KLASSZIKUS. MÉG EGY KÖR.</div></header>
+<div class="layout">
+<section aria-label="Játéktér">
+<div class="eyebrow">A KÖVETKEZŐ FALATRA HANGOLVA</div>
+<h1>Kicsiben kezded.<br><span>Nagyra nősz.</span></h1>
+<div class="board">
+<canvas id="board" width="600" height="600" role="img" aria-label="Snake játéktér: zöld kígyó és piros étel"></canvas>
+<div id="overlay" class="overlay"><div><h2 id="message">Jöhet egy kör?</h2><p id="detail">Gyűjtsd a piros falatokat, és kerüld el a falat és a saját farkadat!</p><button id="start" class="button">Játék indítása →</button></div></div>
+</div>
+<div class="status"><span id="state" role="status">● Indításra kész</span><span>20 × 20 mező</span></div>
+<div class="dpad" aria-label="Irányítás"><button class="button secondary up" data-dir="up" aria-label="Fel">↑</button><button class="button secondary left" data-dir="left" aria-label="Balra">←</button><button class="button secondary" data-dir="down" aria-label="Le">↓</button><button class="button secondary" data-dir="right" aria-label="Jobbra">→</button></div>
+</section>
+<aside>
+<div class="scores"><div class="card"><div class="label">PONTSZÁM</div><div id="score" class="number green">0</div></div><div class="card"><div class="label">REKORD</div><div id="best" class="number">0</div></div></div>
+<h2>A te tempód.</h2><label class="label" for="level">NEHÉZSÉG</label><select id="level"><option value="180">Laza · lassú</option><option value="120" selected>Klasszikus · közepes</option><option value="75">Villám · gyors</option></select>
+<div class="actions"><button id="pause" class="button secondary" disabled>Szünet</button><button id="restart" class="button secondary">Új játék</button></div>
+<div class="instructions"><p><kbd>↑</kbd> <kbd>←</kbd> <kbd>↓</kbd> <kbd>→</kbd> vagy <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd><br>Irányítsd a kígyót.</p><p><kbd>Space</kbd> — indítás / szünet<br><kbd>Enter</kbd> — indítás / új játék</p><p>Telefonon használd a nyilakat, vagy húzd az ujjad a játéktéren.</p><p>Minden falat <strong style="color:#c8ef77">+10 pont</strong>.<br>A fal és a saját tested véget vet a körnek. A nehézség azonnal változtatható.</p></div>
+</aside>
+</div>
+<footer>CSAK MÉG EGY FALAT. &nbsp; / &nbsp; SNAKE · 2026</footer>
+</main>
+<script>
+'use strict';
+const canvas=document.getElementById('board'),ctx=canvas.getContext('2d');
+const scoreEl=document.getElementById('score'),bestEl=document.getElementById('best'),overlay=document.getElementById('overlay'),message=document.getElementById('message'),detail=document.getElementById('detail'),startButton=document.getElementById('start'),pauseButton=document.getElementById('pause'),level=document.getElementById('level'),stateEl=document.getElementById('state');
+const size=20,cell=30,vectors={up:{x:0,y:-1},down:{x:0,y:1},left:{x:-1,y:0},right:{x:1,y:0}};
+let snake,direction,queue,food,score=0,best=0,state='ready',last=0;
+try{best=Math.max(0,Number(localStorage.getItem('snake-best'))||0)}catch{}
+bestEl.textContent=best;
+function reset(){snake=[{x:9,y:10},{x:8,y:10},{x:7,y:10}];direction=vectors.right;queue=[];score=0;scoreEl.textContent=0;placeFood();draw()}
+function placeFood(){const free=[];for(let y=0;y<size;y++)for(let x=0;x<size;x++)if(!snake.some(p=>p.x===x&&p.y===y))free.push({x,y});food=free.length?free[Math.floor(Math.random()*free.length)]:null}
+function show(title,text,button){message.textContent=title;detail.textContent=text;startButton.textContent=button;overlay.hidden=false}
+function start(){reset();state='running';last=performance.now();overlay.hidden=true;pauseButton.disabled=false;pauseButton.textContent='Szünet';stateEl.textContent='● Játék folyamatban'}
+function pause(){if(state==='running'){state='paused';pauseButton.textContent='Folytatás';stateEl.textContent='● Szünet';show('Egy kis szusszanás.','A következő falat megvár.','Folytatás →')}else if(state==='paused'){state='running';last=performance.now();overlay.hidden=true;pauseButton.textContent='Szünet';stateEl.textContent='● Játék folyamatban'}}
+function end(won=false){state='over';pauseButton.disabled=true;stateEl.textContent=won?'● Győzelem!':'● Kör vége';show(won?'Tele a pálya!':'Még egy kört?',`${score} pontot gyűjtöttél. ${won?'Minden mezőt elfoglaltál!':'Új kör, új rekordlehetőség.'}`,'Újra játszom →')}
+function turn(name){if(state!=='running'||queue.length>=2)return;const next=vectors[name],prev=queue.length?queue[queue.length-1]:direction;if(next.x===-prev.x&&next.y===-prev.y)return;if(next.x===prev.x&&next.y===prev.y)return;queue.push(next)}
+function tick(){if(queue.length)direction=queue.shift();const head={x:snake[0].x+direction.x,y:snake[0].y+direction.y};const eating=food&&head.x===food.x&&head.y===food.y;const body=eating?snake:snake.slice(0,-1);if(head.x<0||head.x>=size||head.y<0||head.y>=size||body.some(p=>p.x===head.x&&p.y===head.y)){end();return}snake.unshift(head);if(eating){score+=10;scoreEl.textContent=score;if(score>best){best=score;bestEl.textContent=best;try{localStorage.setItem('snake-best',String(best))}catch{}}placeFood();if(!food)end(true)}else snake.pop();draw()}
+function draw(){ctx.fillStyle='#15231c';ctx.fillRect(0,0,600,600);ctx.strokeStyle='#213226';ctx.lineWidth=1;for(let i=1;i<size;i++){ctx.beginPath();ctx.moveTo(i*cell,0);ctx.lineTo(i*cell,600);ctx.moveTo(0,i*cell);ctx.lineTo(600,i*cell);ctx.stroke()}if(food){ctx.fillStyle='#fa8876';ctx.beginPath();ctx.arc(food.x*cell+15,food.y*cell+15,10,0,Math.PI*2);ctx.fill();ctx.fillStyle='#c8ef77';ctx.fillRect(food.x*cell+15,food.y*cell+1,3,6)}snake.forEach((p,i)=>{ctx.fillStyle=i===0?'#dafb93':'#9dc75e';ctx.beginPath();ctx.roundRect(p.x*cell+2,p.y*cell+2,26,26,i===0?8:5);ctx.fill();if(i===0){ctx.fillStyle='#15231c';const side={x:-direction.y,y:direction.x};for(const s of [-1,1]){ctx.beginPath();ctx.arc(p.x*cell+15+direction.x*6+side.x*s*5,p.y*cell+15+direction.y*6+side.y*s*5,2.4,0,Math.PI*2);ctx.fill()}}})}
+function frame(now){if(state==='running'&&now-last>=Number(level.value)){last=now;tick()}requestAnimationFrame(frame)}
+startButton.addEventListener('click',()=>state==='paused'?pause():start());
+document.getElementById('restart').addEventListener('click',start);pauseButton.addEventListener('click',pause);
+const keys={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',w:'up',s:'down',a:'left',d:'right'};
+document.addEventListener('keydown',e=>{if(e.target.tagName==='SELECT'||e.target.tagName==='BUTTON')return;const key=e.key.length===1?e.key.toLowerCase():e.key;if(keys[key]){e.preventDefault();turn(keys[key])}else if(e.code==='Space'||e.key==='Enter'){e.preventDefault();if(e.repeat)return;if(e.key==='Enter'||state==='ready'||state==='over')start();else pause()}});
+document.querySelectorAll('[data-dir]').forEach(button=>button.addEventListener('pointerdown',e=>{e.preventDefault();turn(button.dataset.dir)}));
+// Remove pointer focus so keyboard play works immediately after clicking controls.
+document.querySelectorAll('button').forEach(button=>button.addEventListener('click',e=>{if(e.detail>0)button.blur()}));
+let touch=null;canvas.addEventListener('pointerdown',e=>{touch={x:e.clientX,y:e.clientY};canvas.setPointerCapture(e.pointerId)});canvas.addEventListener('pointerup',e=>{if(!touch)return;const dx=e.clientX-touch.x,dy=e.clientY-touch.y;touch=null;if(Math.max(Math.abs(dx),Math.abs(dy))<15)return;turn(Math.abs(dx)>Math.abs(dy)?(dx>0?'right':'left'):(dy>0?'down':'up'))});canvas.addEventListener('pointercancel',()=>touch=null);
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&state==='running')pause()});window.addEventListener('blur',()=>{if(state==='running')pause()});
+reset();requestAnimationFrame(frame);
+</script>
+</body>
+</html>

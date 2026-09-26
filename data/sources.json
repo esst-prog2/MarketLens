@@ -1,0 +1,13 @@
+{
+  "provider": "Yahoo Finance",
+  "downloaded_at": "2026-09-22T06:21:01.451684+00:00",
+  "start": "2024-01-02",
+  "end": "2024-12-31",
+  "rows": 252,
+  "urls": {
+    "SPY": "https://query1.finance.yahoo.com/v8/finance/chart/SPY?period1=1704067200&period2=1735689600&interval=1d",
+    "IEF": "https://query1.finance.yahoo.com/v8/finance/chart/IEF?period1=1704067200&period2=1735689600&interval=1d",
+    "GLD": "https://query1.finance.yahoo.com/v8/finance/chart/GLD?period1=1704067200&period2=1735689600&interval=1d"
+  },
+  "price_type": "Daily close in USD, not dividend-adjusted. Historical replay only."
+}
