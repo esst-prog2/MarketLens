@@ -38,3 +38,4 @@
 2026-09-26 | Decided by the assistant: Verify the class walkthrough with offline fake-provider browser tests separately from successful real Yahoo intraday retrieval and model training; use 26 replay advances for a complete 20-reference-session comparison.
 2026-09-26 | Decided by the user: Prioritize submission within ten minutes and defer further polish to a later session.
 2026-09-26 | Decided by the assistant: Deliver the verified MVP now after 25 passing backend/API tests, passing legacy and MVP browser workflows, successful live-source/model smoke, CLI startup and strict OpenSpec validation; keep runtime caches and unrelated exercises out of the commit.
+2026-09-26 | Decided by the assistant: Mark MVP delivery complete after successful push and matching local/remote commit 3fca6c3c878bbfb6230ae9fcd0d3088b55b3ee14 on esst-prog2/MarketLens main; submit https://github.com/esst-prog2/MarketLens.
