@@ -39,3 +39,5 @@
 2026-09-26 | Decided by the user: Prioritize submission within ten minutes and defer further polish to a later session.
 2026-09-26 | Decided by the assistant: Deliver the verified MVP now after 25 passing backend/API tests, passing legacy and MVP browser workflows, successful live-source/model smoke, CLI startup and strict OpenSpec validation; keep runtime caches and unrelated exercises out of the commit.
 2026-09-26 | Decided by the assistant: Mark MVP delivery complete after successful push and matching local/remote commit 3fca6c3c878bbfb6230ae9fcd0d3088b55b3ee14 on esst-prog2/MarketLens main; submit https://github.com/esst-prog2/MarketLens.
+2026-10-03 | Decided by the user: Remove the unrelated casino and snake exercises from the MarketLens repository.
+2026-10-03 | Decided by the assistant: Untrack the casino submodule but keep its local folder (ignored via .gitignore) because it contains uncommitted, unpushed work; delete snake fully since it is recoverable from git history.
