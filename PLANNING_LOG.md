@@ -41,3 +41,7 @@
 2026-09-26 | Decided by the assistant: Mark MVP delivery complete after successful push and matching local/remote commit 3fca6c3c878bbfb6230ae9fcd0d3088b55b3ee14 on esst-prog2/MarketLens main; submit https://github.com/esst-prog2/MarketLens.
 2026-10-03 | Decided by the user: Remove the unrelated casino and snake exercises from the MarketLens repository.
 2026-10-03 | Decided by the assistant: Untrack the casino submodule but keep its local folder (ignored via .gitignore) because it contains uncommitted, unpushed work; delete snake fully since it is recoverable from git history.
+2026-10-03 | Decided by the user: Do HW4 spike on branch hw4-spike; spike question (issue #3): how long does one full walk-forward replay of the committed 753-session snapshot take headlessly, and what does it say?
+2026-10-03 | Decided by the user: An answer is a committed runner script plus its committed output giving seconds per run, directional accuracy vs always-up and momentum, next-day MAE vs last-close, Brier score and the five confidence bins; then a decision about the confidence score based on those numbers.
+2026-10-03 | Decided by the user: Replace the headline confidence with the measured hit rate of earlier evaluated five-session calls in the same 0.2-wide confidence bin, keeping the raw model estimate in small print labelled uncalibrated.
+2026-10-03 | Decided by the user: Show the measured hit rate only when at least 30 earlier evaluated calls fall in that bin; otherwise state that there is not enough history yet.

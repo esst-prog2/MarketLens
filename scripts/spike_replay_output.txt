@@ -1,0 +1,10 @@
+steps: 501  seconds: 348.7  seconds/step: 0.696
+evaluated 5-day calls: 1491  next-day prices: 1503  pending: 18
+accuracy 0.5231  always-up 0.5480  momentum 0.5178
+brier 0.2656  (constant 0.5 answer scores 0.2500)
+next-day MAE $1.5860  last-close MAE $1.5838  MAPE 0.5704%
+confidence bins (stated confidence -> delivered accuracy):
+  [0.4,0.6)  n= 755  stated 0.550  delivered 0.522
+  [0.6,0.8)  n= 678  stated 0.666  delivered 0.522
+  [0.8,1.0)  n=  58  stated 0.849  delivered 0.552
+JSON: {"accuracy": 0.5231388329979879, "always_up": 0.5479543930248155, "bins": [{"accuracy": null, "confidence": null, "count": 0, "high": 0.2, "low": 0.0}, {"accuracy": null, "confidence": null, "count": 0, "high": 0.4, "low": 0.2}, {"accuracy": 0.5218543046357615, "confidence": 0.5503826845821597, "count": 755, "high": 0.6, "low": 0.4}, {"accuracy": 0.5221238938053098, "confidence": 0.6663005484408441, "count": 678, "high": 0.8, "low": 0.6}, {"accuracy": 0.5517241379310345, "confidence": 0.8487958798571102, "count": 58, "high": 1.0, "low": 0.8}], "brier": 0.26556793947391294, "evaluated": 1491, "last_close_mae": 1.583826223691939, "mae": 1.5859875630301725, "mape": 0.005703731646825073, "momentum": 0.5177733065057009, "pending": 18, "price_evaluated": 1503, "seconds": 348.7, "steps": 501}
