@@ -133,6 +133,20 @@ def evaluate(record, actual):
     return result
 
 
+def confidence_bin(confidence):
+    return min(4, int(confidence*5))
+
+
+def track_record(record, records, minimum=30):
+    """Hit rate of earlier evaluated five-session calls in the same confidence bin."""
+    i = confidence_bin(record["confidence"])
+    earlier = [r for r in records if r["horizon"] == 5 and r.get("actual_close") is not None
+               and r["due"] <= record["date"] and confidence_bin(r["confidence"]) == i]
+    hits = sum(r["correct"] for r in earlier)
+    return {"low": i/5, "high": (i+1)/5, "count": len(earlier), "minimum": minimum,
+            "hit_rate": hits/len(earlier) if len(earlier) >= minimum else None}
+
+
 def metrics(records):
     directional = [r for r in records if r["horizon"] == 5 and r.get("actual_close") is not None]
     prices = [r for r in records if r["horizon"] == 1 and r.get("actual_close") is not None]
@@ -140,7 +154,7 @@ def metrics(records):
         return sum(values)/len(values) if values else None
     bins = []
     for i in range(5):
-        items = [r for r in directional if min(4, int(r["confidence"]*5)) == i]
+        items = [r for r in directional if confidence_bin(r["confidence"]) == i]
         bins.append({"low": i/5, "high": (i+1)/5, "count": len(items),
                      "confidence": mean([r["confidence"] for r in items]),
                      "accuracy": mean([r["correct"] for r in items])})

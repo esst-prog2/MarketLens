@@ -6,9 +6,14 @@ function metric(label, value, detail="") {
 function quoteDetails(q) {
   return q ? `${escapeHTML(q.status)} · ${escapeHTML(q.source)}<br>Observed: ${escapeHTML(q.observed_at)}<br>Fetched: ${escapeHTML(q.fetched_at || "frozen replay")}` : "Unavailable · awaiting provider data";
 }
+function trackRecord(f) {
+  const t=f.track_record;
+  const measured=t.hit_rate===null ? `Not enough history yet (${t.count} of ${t.minimum} earlier calls)` : `${percent(t.hit_rate)} of ${t.count} earlier calls like this were right`;
+  return `${escapeHTML(f.direction)} · ${measured}<br><small>Model estimate ${percent(f.confidence)} (uncalibrated; band ${percent(t.low)}–${percent(t.high)})</small>`;
+}
 function forecastCard(f, horizon) {
   if (!f) return `<div class="forecast"><h4>${horizon === 5 ? "Five-session direction" : "Next-session close"}</h4><p>No eligible model forecast yet.</p></div>`;
-  return `<div class="forecast"><h4>${horizon === 5 ? "Five-session direction" : "Next-session close"}</h4><strong>${horizon === 5 ? `${escapeHTML(f.direction)} · ${percent(f.confidence)} probability` : money(f.estimate)}</strong><p>Reference ${dateLabel(f.date)} · ${money(f.price)}<br>Target ${dateLabel(f.due)}</p><small>Issued ${escapeHTML(f.issued_at)}<br>${escapeHTML(f.model)}</small></div>`;
+  return `<div class="forecast"><h4>${horizon === 5 ? "Five-session direction" : "Next-session close"}</h4><strong>${horizon === 5 ? trackRecord(f) : money(f.estimate)}</strong><p>Reference ${dateLabel(f.date)} · ${money(f.price)}<br>Target ${dateLabel(f.due)}</p><small>Issued ${escapeHTML(f.issued_at)}<br>${escapeHTML(f.model)}</small></div>`;
 }
 function renderMVP() {
   $("data-mode").value = state.mode;

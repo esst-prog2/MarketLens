@@ -6,7 +6,7 @@ import pickle
 import threading
 
 from .core import ASSETS, PROFILES, allocation, load_prices, portfolio_value, signals
-from .forecasting import data_hash, evaluate, fit_model, metrics, predict
+from .forecasting import data_hash, evaluate, fit_model, metrics, predict, track_record
 from .market_data import (YahooProvider, calendar, close_time, market_state, quote_status,
                           require_contiguous, target_session, timestamp, utcnow, validate_history,
                           validate_quote)
@@ -340,6 +340,8 @@ class MVPService:
         for symbol, asset in ASSETS.items():
             quote = quotes.get(symbol)
             forecast = next((r for r in history if r["symbol"] == symbol and r["horizon"] == 5), None)
+            if forecast:
+                forecast = {**forecast, "track_record": track_record(forecast, history)}
             price_forecast = next((r for r in history if r["symbol"] == symbol and r["horizon"] == 1), None)
             old = recent.get(symbol, {})
             display_signals.append({**asset, "symbol": symbol, "price": quote["price"] if quote else None,

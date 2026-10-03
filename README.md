@@ -43,8 +43,12 @@ Select a data mode above the tabs:
 - **Legacy 2024 replay:** read-only inspection of an existing original experiment.
   Its momentum strength remains a heuristic, never a calibrated probability.
 
-Each instrument shows a **five-trading-session Up/Down probability** and a separate
+Each instrument shows a **five-trading-session Up/Down call** and a separate
 **next-session USD closing-price estimate**, reference/target dates and model version.
+The headline for the Up/Down call is the **measured hit rate** of earlier evaluated
+calls in the same 0.2-wide confidence band, shown once at least 30 such calls exist.
+The model's own estimate appears only in small print, labelled uncalibrated (see
+*Spike: full replay* below for why).
 Intraday quotes do not rewrite these daily forecasts. Exchange sessions account for
 holidays, daylight saving and early closes. The adapter conservatively excludes
 same-exchange-date daily bars, even after close, because they can be provisional.
@@ -137,7 +141,18 @@ any other use. See [data provenance](data/README.md) for exact sources and ident
 The MVP change, specs and task checklist are in
 [openspec/changes/marketlens-course-mvp](openspec/changes/marketlens-course-mvp/).
 Later levels remain only the list in its proposal. Decisions are append-only in
-[PLANNING_LOG.md](PLANNING_LOG.md). `casino/` and `snake/` are unrelated exercises.
+[PLANNING_LOG.md](PLANNING_LOG.md).
+## Spike: full replay
+
+`python scripts/spike_replay.py` runs the whole 753-session snapshot headlessly
+(501 walk-forward steps, retraining at each cutoff, temporary database, no network)
+and prints the metrics. Committed output: [scripts/spike_replay_output.txt](scripts/spike_replay_output.txt).
+Measured on 2026-10-03: 348.7 s (0.696 s/step); 1,491 evaluated five-session calls,
+accuracy 52.3% vs always-Up 54.8% and momentum 51.8%; Brier 0.266, worse than a
+constant 0.5 (0.250); next-session MAE $1.586 vs last-close $1.584. Confidence bands
+promise 55/67/85% and deliver 52/52/55% (n = 755/678/58). The model has no measured
+edge, so its confidence is not presented as a probability.
+
 The original course brief follows.
 
 ## 1. THE DEMO
