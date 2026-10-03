@@ -17,7 +17,7 @@ import numpy as np
 
 from app import make_handler
 from marketlens.core import ASSETS, load_prices
-from marketlens.forecasting import evaluate, features, fit_model, metrics, predict
+from marketlens.forecasting import evaluate, features, fit_model, metrics, predict, track_record
 from marketlens.market_data import (UTC, YahooProvider, close_time, market_state,
     quote_status, require_contiguous, target_session, validate_history, validate_quote)
 from marketlens.mvp import MVPService
@@ -167,6 +167,18 @@ class ForecastTests(unittest.TestCase):
             summary=metrics([evaluate({**base,"confidence":confidence},102)])
             self.assertEqual(summary["bins"][index]["count"],1)
 
+
+    def test_track_record_uses_only_earlier_calls_in_same_bin(self):
+        call={"price":100,"momentum":"Up","direction":"Up","confidence":.62,"horizon":5,"date":"2024-02-01","due":"2024-02-08"}
+        right=evaluate({**call,"date":"2024-01-02","due":"2024-01-09"},101)
+        wrong=evaluate({**call,"date":"2024-01-02","due":"2024-01-09"},99)
+        other_bin=evaluate({**call,"confidence":.9,"date":"2024-01-02","due":"2024-01-09"},101)
+        future=evaluate({**call,"date":"2024-02-01","due":"2024-02-08"},101)
+        history=[right]*20+[wrong]*10+[other_bin]*50+[future]*50+[{**call,"actual_close":None}]
+        t=track_record(call,history)
+        self.assertEqual((t["count"],t["low"],t["high"]),(30,.6,.8))
+        self.assertAlmostEqual(t["hit_rate"],20/30)
+        self.assertIsNone(track_record(call,history[1:])["hit_rate"])
 
 class ServiceTests(unittest.TestCase):
     def setUp(self):

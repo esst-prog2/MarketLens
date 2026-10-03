@@ -45,7 +45,7 @@ def main():
                 page.locator('#refresh').click()
                 page.wait_for_function('state.can_invest && !busy')
                 assert page.locator('#signals .forecast').count()==6
-                assert 'probability' in page.locator('#signals').inner_text()
+                assert 'earlier calls' in page.locator('#signals').inner_text()
                 page.locator('#invest').click()
                 page.wait_for_selector('.portfolio-value')
                 assert s.snapshot()['portfolio']['value']==10000

@@ -5,11 +5,15 @@ Make two distinct forecast targets understandable and measurable, keeping genuin
 ## ADDED Requirements
 
 ### Requirement: Five-session directional probability
-For each supported instrument with sufficient valid history and a usable trained model, the system SHALL issue an Up or Down forecast for the fifth trading-session close relative to the latest completed closing price. It SHALL display the estimated probability of the selected direction being correct as a percentage, the reference close/date, target session and model version. A heuristic trend score SHALL NOT be relabelled as a probability.
+For each supported instrument with sufficient valid history and a usable trained model, the system SHALL issue an Up or Down forecast for the fifth trading-session close relative to the latest completed closing price. As its headline it SHALL display the measured hit rate of earlier evaluated five-session calls whose stated confidence fell in the same 0.2-wide band, with the count, only when at least 30 such calls exist; otherwise it SHALL state that there is not enough history yet. The model's own estimate SHALL appear only as secondary text labelled uncalibrated. It SHALL also display the reference close/date, target session and model version. A heuristic trend score SHALL NOT be relabelled as a probability. (HW4 spike, 2026-10-03: a full replay delivered 52/52/55% in bands that promised 55/67/85%.)
 
-#### Scenario: Probability interpretation
-- **WHEN** the selected direction is Up with an estimated probability of 0.65
-- **THEN** the UI labels it as an estimated 65% probability of an increase at the stated five-session horizon, not a 65% return or a guaranteed result
+#### Scenario: Measured hit rate interpretation
+- **WHEN** the selected direction is Up with a model estimate of 0.65 and 310 earlier evaluated calls in the 0.6-0.8 band were right 52% of the time
+- **THEN** the UI shows Up with 52% of 310 earlier calls right as the headline, and 65% only as an uncalibrated model estimate, not as a probability, return or guarantee
+
+#### Scenario: Not enough evaluated history
+- **WHEN** fewer than 30 earlier evaluated calls fall in the forecast's confidence band
+- **THEN** the UI states that there is not enough history yet instead of showing a hit rate
 
 #### Scenario: Model unavailable
 - **WHEN** training history is insufficient or no usable model exists
