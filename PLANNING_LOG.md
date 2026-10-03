@@ -47,3 +47,4 @@
 2026-10-03 | Decided by the user: Show the measured hit rate only when at least 30 earlier evaluated calls fall in that bin; otherwise state that there is not enough history yet.
 2026-10-03 | Decided by the user: Full headless replay takes 348.7 s (501 steps, 0.696 s/step); accuracy 52.3% vs always-up 54.8% and momentum 51.8%, Brier 0.266 (constant 0.5 scores 0.250), next-day MAE $1.586 vs last-close $1.584; bins promise 55/67/85% but deliver 52/52/55% (n=755/678/58). The confidence is not shown as a probability; the headline becomes the measured hit rate of the same bin after at least 30 earlier calls.
 2026-10-03 | Decided by the assistant: Record that all metrics match the instructor's issue #3 figures exactly, while runtime differs (348.7 s here vs 186 s reported) because of machine speed.
+2026-10-03 | Decided by the user: Permanently delete the local casino folder, including its uncommitted work, instead of saving it to its own repository.
