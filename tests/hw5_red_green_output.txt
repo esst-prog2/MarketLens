@@ -1,0 +1,67 @@
+HW5 red/green runs of tests/test_holiday_scoring.py (2026-10-11)
+
+Broken line (marketlens/market_data.py, target_session) for the RED run:
+    return xcals.get_calendar("24/5", start="2000-01-01", end="2040-12-31").session_offset(day, horizon).date().isoformat()
+Correct line restored for the GREEN run:
+    return calendar().session_offset(day, horizon).date().isoformat()
+
+===== RED =====
+test_forecast_across_mlk_day_is_scored_against_fifth_trading_session (tests.test_holiday_scoring.HolidayScoringTests.test_forecast_across_mlk_day_is_scored_against_fifth_trading_session) ... 
+  test_forecast_across_mlk_day_is_scored_against_fifth_trading_session (tests.test_holiday_scoring.HolidayScoringTests.test_forecast_across_mlk_day_is_scored_against_fifth_trading_session) (symbol='SPY') ... FAIL
+  test_forecast_across_mlk_day_is_scored_against_fifth_trading_session (tests.test_holiday_scoring.HolidayScoringTests.test_forecast_across_mlk_day_is_scored_against_fifth_trading_session) (symbol='IEF') ... FAIL
+  test_forecast_across_mlk_day_is_scored_against_fifth_trading_session (tests.test_holiday_scoring.HolidayScoringTests.test_forecast_across_mlk_day_is_scored_against_fifth_trading_session) (symbol='GLD') ... FAIL
+
+======================================================================
+FAIL: test_forecast_across_mlk_day_is_scored_against_fifth_trading_session (tests.test_holiday_scoring.HolidayScoringTests.test_forecast_across_mlk_day_is_scored_against_fifth_trading_session) (symbol='SPY')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "MarketLens\tests\test_holiday_scoring.py", line 42, in test_forecast_across_mlk_day_is_scored_against_fifth_trading_session
+    self.assertEqual(record["due"], DUE)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+AssertionError: '2023-01-19' != '2023-01-20'
+- 2023-01-19
+?         ^^
++ 2023-01-20
+?         ^^
+
+
+======================================================================
+FAIL: test_forecast_across_mlk_day_is_scored_against_fifth_trading_session (tests.test_holiday_scoring.HolidayScoringTests.test_forecast_across_mlk_day_is_scored_against_fifth_trading_session) (symbol='IEF')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "MarketLens\tests\test_holiday_scoring.py", line 42, in test_forecast_across_mlk_day_is_scored_against_fifth_trading_session
+    self.assertEqual(record["due"], DUE)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+AssertionError: '2023-01-19' != '2023-01-20'
+- 2023-01-19
+?         ^^
++ 2023-01-20
+?         ^^
+
+
+======================================================================
+FAIL: test_forecast_across_mlk_day_is_scored_against_fifth_trading_session (tests.test_holiday_scoring.HolidayScoringTests.test_forecast_across_mlk_day_is_scored_against_fifth_trading_session) (symbol='GLD')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "MarketLens\tests\test_holiday_scoring.py", line 42, in test_forecast_across_mlk_day_is_scored_against_fifth_trading_session
+    self.assertEqual(record["due"], DUE)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+AssertionError: '2023-01-19' != '2023-01-20'
+- 2023-01-19
+?         ^^
++ 2023-01-20
+?         ^^
+
+
+----------------------------------------------------------------------
+Ran 1 test in 5.506s
+
+FAILED (failures=3)
+
+===== GREEN =====
+test_forecast_across_mlk_day_is_scored_against_fifth_trading_session (tests.test_holiday_scoring.HolidayScoringTests.test_forecast_across_mlk_day_is_scored_against_fifth_trading_session) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 4.856s
+
+OK
