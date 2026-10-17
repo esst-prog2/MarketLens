@@ -235,6 +235,13 @@ class ServiceTests(unittest.TestCase):
         self.assertGreater(s.next_attempt,self.now+timedelta(minutes=5))
         self.assertIsNone(s.snapshot("replay")["portfolio"])
 
+    def test_weekend_portfolio_starts_on_its_entry_price_session(self):
+        # Friday's last regular-session quote, used on Sunday while the market is closed.
+        self.provider.observed=datetime(2023,1,6,20,55,tzinfo=UTC)
+        self.now=datetime(2023,1,8,12,tzinfo=UTC)
+        s=self.service;s.refresh();s.create_portfolio("Balanced",10000)
+        self.assertEqual(s.snapshot()["portfolio"]["started"],"2023-01-06")
+
     def test_invalid_ingestion_cannot_replace_cache_and_gaps_block_model(self):
         s=self.service;s.refresh()
         original=s.snapshot()["signals"][0]["quote"]

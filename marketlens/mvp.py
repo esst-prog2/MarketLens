@@ -7,7 +7,7 @@ import threading
 
 from .core import ASSETS, PROFILES, allocation, load_prices, portfolio_value, signals
 from .forecasting import data_hash, evaluate, fit_model, metrics, predict, track_record
-from .market_data import (YahooProvider, calendar, close_time, market_state, quote_status,
+from .market_data import (NY, YahooProvider, calendar, close_time, market_state, quote_status,
                           require_contiguous, target_session, timestamp, utcnow, validate_history,
                           validate_quote)
 from .storage import connect, migrate
@@ -245,7 +245,8 @@ class MVPService:
                 raise ValueError("All three entry quotes must be available and non-stale. Wait for fresh data or select replay.")
             prices = {s: quotes[s]["price"] for s in ASSETS}
             holdings = allocation(profile, balance, prices)
-            started = self.history(mode, db)[-1]["date"] if mode == "replay" else self.clock().date().isoformat()
+            # The exchange session of the entry prices, not the wall-clock date of the click.
+            started = max(timestamp(q["observed_at"]) for q in quotes.values()).astimezone(NY).date().isoformat()
             p = {"profile": profile, "initial": balance, "holdings": holdings, "started": started,
                  "entries": quotes, "created_at": self.clock().isoformat()}
             db.execute("UPDATE m_state SET portfolio=? WHERE mode=?", (dump(p), mode))
