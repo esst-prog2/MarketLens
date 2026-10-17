@@ -54,10 +54,10 @@ function renderAllocation() {
 function render() {
   if (state.training) {renderMVP(); return;}
   if (state.mode === "legacy") {
-    $("training").innerHTML = "Legacy heuristic results ? no trained probability model.";
-    $("provider-status").textContent = "Read-only legacy 2024 replay ? heuristic strength is not probability";
+    $("training").innerHTML = "Legacy heuristic results — no trained probability model.";
+    $("provider-status").textContent = "Read-only legacy 2024 replay — heuristic strength is not probability";
     $("advance").hidden = true;
-    document.querySelector(".replay-note").textContent = "Preserved original experiment ? read-only";
+    document.querySelector(".replay-note").textContent = "Preserved original experiment — read-only";
   }
   $("as-of").textContent = `As of ${dateLabel(state.date)}`;
   $("advance").innerHTML = state.remaining ? 'Next trading day <span aria-hidden="true">→</span>' : "Sample complete";
@@ -69,7 +69,7 @@ function render() {
     $("invest").textContent = "Allocation applied";
     $("portfolio").innerHTML = `<div class="portfolio-meta">${p.profile} profile · started with ${money(p.initial)}</div><div class="portfolio-value">${money(p.value)}</div><div class="${p.profit>=0?'gain':'loss'}">${p.profit>=0?'+':''}${money(p.profit)} <span>(${percent(p.return)})</span> <span class="portfolio-meta">since ${dateLabel(p.started)}</span></div>${chart(p.chart.map(x=>x.value),"portfolio-chart",p.profit>=0?"#75ddba":"#f1a2a9","Portfolio value over the replay period")}<div class="chart-labels"><span>${dateLabel(p.started)}</span><span>${dateLabel(state.date)}</span></div><div class="holdings">${p.holdings.map(h=>`<div class="holding"><span>${h.name}<small>${percent(h.weight)}</small></span><span>${money(h.value)}</span></div>`).join("")}</div>`;
   } else {
-    $("invest").innerHTML = 'Apply model allocation <span aria-hidden="true">↗</span>';
+    $("invest").innerHTML = 'Apply fixed allocation <span aria-hidden="true">↗</span>';
     $("portfolio").innerHTML = '<div class="empty-state"><div class="empty-icon" aria-hidden="true">◈</div><h3>A fresh perspective starts here.</h3><p>Apply an allocation to put your virtual money to work. Then advance the clock to see how it performs.</p></div>';
   }
   renderAllocation();

@@ -144,3 +144,35 @@ plus reading `marketlens/` and `web/` for repeated logic.
   table setup; odd, but it avoids writing to a legacy database while reading it.
 - `NoNetwork` is repeated in `scripts/spike_replay.py` and
   `tests/test_holiday_scoring.py`; five lines each, kept so each file stands alone.
+
+## 5. Documentation and on-screen text versus the code
+
+**Question:** does anything the README or the screen says contradict what the
+code does or what the measurements showed?
+
+**Fixed:**
+
+- The README's first line promised "calibrated forecasts". The HW4 spike measured
+  the opposite (stated 55/67/85%, delivered 52/52/55%), and since 2026-10-11 the
+  project is the tool that measures forecasts against baselines. The line now says that.
+- The button "Apply model allocation" sat right above the page's own note "Model
+  forecasts do not change these weights" (HW5 finding). It applies one of three
+  fixed profiles, so it is now "Apply fixed allocation" (`web/index.html`,
+  `web/app.js`, `web/mvp.js`).
+- Nine dashes had been saved as `?` at some point: on screen in the data-mode menu
+  ("Historical replay ? offline"), the legacy-mode notices, the methodology panel
+  and a learning guide ("2023?2024"), and in `README.md` and the OpenSpec tasks file.
+  A scan of all tracked text files for `?` between words or digits found these
+  nine; the rest were JavaScript `a ? b : c`.
+
+**Checked, no change:**
+
+- `NOTES.md` says "All 11 tests passed" and the README "All 25 ... passed"; both
+  are dated milestone records (NOTES.md says so at the top), not claims about now.
+- The README's description of the hit-rate headline, the 30-call minimum, the
+  purge, the baselines and the replay dates matches `forecasting.py` and `mvp.py`.
+- The project brief at the end of the README is the original HW1 text and is kept
+  as written.
+
+Both browser walkthroughs (`tests/browser_journey.py`, `tests/browser_mvp.py`) pass
+after the text changes, with no JavaScript errors.
