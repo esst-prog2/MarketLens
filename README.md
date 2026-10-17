@@ -1,5 +1,6 @@
 # MarketLens
-A local course MVP for guided market learning, calibrated forecasts and paper portfolios.
+A local course project that stores market forecasts and measures them against simple
+baselines, with guided learning and paper portfolios.
 
 ## Install and run
 
@@ -37,7 +38,7 @@ Select a data mode above the tabs:
   delay is unknown. Polling every five minutes is not guaranteed data latency.
   Quotes older than 30 minutes during an open session are stale. Failures retain
   original cached timestamps with an error; they never switch to replay.
-- **Historical replay:** a sourced 753-session 2022?2024 snapshot; 2022 is warm-up,
+- **Historical replay:** a sourced 753-session 2022–2024 snapshot; 2022 is warm-up,
   practice starts on 2023-01-03. Each Next trading day runs the same actual training,
   issuance and evaluation pipeline against a simulated clock, with no network calls.
 - **Legacy 2024 replay:** read-only inspection of an existing original experiment.
@@ -80,7 +81,7 @@ same observations. Consecutive frozen versions are also compared on their shared
 next 20 reference sessions, with pending/partial/complete status. Newer can be worse;
 overlapping targets are not independent. No accuracy or profit guarantee is made.
 
-Paper portfolios accept $100?$1,000,000 and fixed fractional holdings. Current-mode
+Paper portfolios accept $100–$1,000,000 and fixed fractional holdings. Current-mode
 entry requires all three usable quotes; the most recent completed session is valid
 while the market is closed. Subsequent cached/partial valuations identify each
 component's timestamp. There are no distributions, fees, taxes, slippage, contributions
@@ -110,14 +111,15 @@ or executed rebalancing. Current and replay portfolios and resets are independen
 
 ```powershell
 python -m unittest discover -s tests -p "test*.py" -v
-python -m pip install playwright==1.58.0
+python -m pip install playwright==1.63.0
 python tests/browser_journey.py
 python tests/browser_mvp.py
 python scripts/smoke_market_data.py
 openspec validate marketlens-course-mvp --strict
 ```
 
-Browser checks use installed Microsoft Edge, isolated browser state and temporary
+Browser checks were last run with Playwright 1.63.0 (they also look for it in
+`.runtime/browser-tools`) and use installed Microsoft Edge, isolated browser state and temporary
 databases; they do not modify your portfolio. Screenshots go under `.runtime/`.
 On 2026-09-26, real-source checks retrieved all three intraday observations and 1,255
 common completed sessions through 2026-09-25; current-model training succeeded.

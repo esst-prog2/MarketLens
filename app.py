@@ -6,7 +6,6 @@ from pathlib import Path
 from urllib.parse import urlparse, parse_qs
 import webbrowser
 
-from marketlens.service import Service
 
 ROOT = Path(__file__).resolve().parent
 
@@ -23,7 +22,17 @@ def make_handler(service):
             self.end_headers()
             self.wfile.write(body)
 
+        def foreign_host(self):
+            # Blocks DNS rebinding: another site's name resolved to 127.0.0.1.
+            port = self.server.server_port
+            if self.headers.get("Host") in (f"127.0.0.1:{port}", f"localhost:{port}"):
+                return False
+            self.respond(403, {"error": "Unexpected Host header."})
+            return True
+
         def do_GET(self):
+            if self.foreign_host():
+                return
             path = urlparse(self.path).path
             if path == "/api/state":
                 try:
@@ -41,6 +50,8 @@ def make_handler(service):
             self.respond(200, (ROOT / "web" / filename).read_bytes(), mime + "; charset=utf-8")
 
         def do_POST(self):
+            if self.foreign_host():
+                return
             # The local demo permits writes only from its own browser origin.
             origin = self.headers.get("Origin")
             if origin and origin != f"http://{self.headers.get('Host')}":

@@ -11,7 +11,7 @@ import threading
 import time
 import unittest
 from unittest.mock import patch
-from urllib.request import urlopen, Request
+from urllib.request import urlopen
 
 import numpy as np
 
@@ -167,6 +167,23 @@ class ForecastTests(unittest.TestCase):
             summary=metrics([evaluate({**base,"confidence":confidence},102)])
             self.assertEqual(summary["bins"][index]["count"],1)
 
+    def test_private_sklearn_calibration_api_is_the_pinned_version(self):
+        # CalibratedDirection uses sklearn's internal _SigmoidCalibration; recheck it before changing this pin.
+        import sklearn
+        self.assertEqual(sklearn.__version__,"1.9.1")
+
+    def test_baselines_brier_and_bins_counted_by_hand(self):
+        # The model said Down every time; the baselines must score what happened, not the call.
+        calls=[({"momentum":"Up","direction":"Down","confidence":.70},105),    # actual Up, wrong
+               ({"momentum":"Down","direction":"Down","confidence":.59},95),   # actual Down, right
+               ({"momentum":"Up","direction":"Down","confidence":.55},103)]    # actual Up, wrong
+        m=metrics([evaluate({"price":100,"horizon":5,**call},actual) for call,actual in calls])
+        self.assertAlmostEqual(m["accuracy"],1/3)
+        self.assertAlmostEqual(m["always_up"],2/3)
+        self.assertAlmostEqual(m["momentum"],3/3)
+        self.assertAlmostEqual(m["brier"],(.70**2+.41**2+.55**2)/3)  # 0.3202
+        self.assertEqual([b["count"] for b in m["bins"]],[0,0,2,1,0])  # .55 and .59 floor to [0.4,0.6)
+
 
     def test_track_record_uses_only_earlier_calls_in_same_bin(self):
         call={"price":100,"momentum":"Up","direction":"Up","confidence":.62,"horizon":5,"date":"2024-02-01","due":"2024-02-08"}
@@ -174,7 +191,9 @@ class ForecastTests(unittest.TestCase):
         wrong=evaluate({**call,"date":"2024-01-02","due":"2024-01-09"},99)
         other_bin=evaluate({**call,"confidence":.9,"date":"2024-01-02","due":"2024-01-09"},101)
         future=evaluate({**call,"date":"2024-02-01","due":"2024-02-08"},101)
-        history=[right]*20+[wrong]*10+[other_bin]*50+[future]*50+[{**call,"actual_close":None}]
+        # Issued earlier but due after the new call: its outcome was not yet known then.
+        not_yet_due=evaluate({**call,"date":"2024-01-30","due":"2024-02-06"},101)
+        history=[right]*20+[wrong]*10+[other_bin]*50+[future]*50+[not_yet_due]*40+[{**call,"actual_close":None}]
         t=track_record(call,history)
         self.assertEqual((t["count"],t["low"],t["high"]),(30,.6,.8))
         self.assertAlmostEqual(t["hit_rate"],20/30)
@@ -234,6 +253,21 @@ class ServiceTests(unittest.TestCase):
         self.assertEqual(bad["signals"][0]["quote"]["observed_at"],after["signals"][0]["quote"]["observed_at"])
         self.assertGreater(s.next_attempt,self.now+timedelta(minutes=5))
         self.assertIsNone(s.snapshot("replay")["portfolio"])
+
+    def test_lagging_history_never_backfills_a_known_live_outcome(self):
+        # The provider's daily bars stop at 2022-12-28 while it is already 2023-01-04.
+        self.provider.history=lambda symbol,now: [{"date":r["date"],"price":r[symbol]} for r in ROWS if r["date"]<="2022-12-28"]
+        s=self.service;s.refresh()
+        history=s.snapshot()["history"]
+        self.assertEqual({(r["date"],r["horizon"],r["due"]) for r in history},{("2022-12-28",5,"2023-01-05")})
+        self.assertEqual(len(history),3)  # The 2022-12-29 next-session close is already known: not issued.
+
+    def test_weekend_portfolio_starts_on_its_entry_price_session(self):
+        # Friday's last regular-session quote, used on Sunday while the market is closed.
+        self.provider.observed=datetime(2023,1,6,20,55,tzinfo=UTC)
+        self.now=datetime(2023,1,8,12,tzinfo=UTC)
+        s=self.service;s.refresh();s.create_portfolio("Balanced",10000)
+        self.assertEqual(s.snapshot()["portfolio"]["started"],"2023-01-06")
 
     def test_invalid_ingestion_cannot_replace_cache_and_gaps_block_model(self):
         s=self.service;s.refresh()

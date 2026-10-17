@@ -49,7 +49,7 @@
 - [x] 7.4 Validate the completed change with `openspec validate marketlens-course-mvp --strict`, review code against every scenario and append implementation decisions to the planning log; verify no requirement is marked complete merely because its artifact exists.
 - [x] 7.5 Resolve the assignment repository destination with the user before changing remotes, review the staged file list, commit the scoped MVP/spec/log files and push to the authorized course repository; verify the remote commit hash and report the submission URL. Do not include local databases, installed tools, caches, model binaries or unrelated exercises accidentally.
 
-## Apply verification ? 2026-09-26
+## Apply verification — 2026-09-26
 
 25 deterministic backend/API tests passed. The legacy guided browser regression and the new offline MVP browser walkthrough passed, including 26 replay advances, a complete frozen-model cohort, errors, outage/cache handling, learning-state preservation and 390px layouts. Real Yahoo retrieval succeeded for all three symbols; 1,255 common daily sessions through 2026-09-25 supported successful current-model training. Pinned packages installed in a fresh venv, pip check passed, documented CLI startup served trained replay, and strict OpenSpec validation passed. GitHub API confirms esst-prog2/MarketLens is not a fork.
 
