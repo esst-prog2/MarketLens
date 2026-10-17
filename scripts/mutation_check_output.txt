@@ -1,0 +1,23 @@
+Before the new tests (2026-10-17, all 12 mutations, 28 tests):
+MISSED  always-up baseline scores the model's call  [marketlens/forecasting.py]  OK
+MISSED  momentum baseline scores the model's call  [marketlens/forecasting.py]  OK
+caught  no purge between fitting and calibration  [marketlens/forecasting.py]  FAILED (failures=1)
+MISSED  track record counts calls not yet due  [marketlens/forecasting.py]  OK
+MISSED  confidence bin rounds instead of floors  [marketlens/forecasting.py]  OK
+MISSED  Brier uses absolute instead of squared error  [marketlens/forecasting.py]  OK
+MISSED  live mode backfills already-known outcomes  [marketlens/mvp.py]  OK
+caught  stale threshold 60 instead of 30 minutes  [marketlens/market_data.py]  FAILED (failures=2)
+caught  equal closes count as Up  [marketlens/core.py]  FAILED (failures=2)
+caught  older quote may replace newer cached quote  [marketlens/mvp.py]  FAILED (failures=1)
+caught  ridge fitted on calibration examples too  [marketlens/forecasting.py]  FAILED (failures=1)
+caught  portfolio uses a fixed 50/50 split  [marketlens/core.py]  FAILED (failures=3)
+
+After the new tests (the six missed mutations again, 30 tests):
+caught  always-up baseline scores the model's call  [marketlens/forecasting.py]  FAILED (failures=1)
+caught  momentum baseline scores the model's call  [marketlens/forecasting.py]  FAILED (failures=1)
+caught  track record counts calls not yet due  [marketlens/forecasting.py]  FAILED (failures=1)
+caught  confidence bin rounds instead of floors  [marketlens/forecasting.py]  FAILED (failures=1)
+caught  Brier uses absolute instead of squared error  [marketlens/forecasting.py]  FAILED (failures=1)
+caught  live mode backfills already-known outcomes  [marketlens/mvp.py]  FAILED (failures=1)
+ M tests/test_mvp.py
+?? scripts/mutation_check.py

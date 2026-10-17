@@ -70,3 +70,47 @@ make this local server do?
   code. Only this application writes that file and there is no upload endpoint,
   so whoever can change it can already change the code. Do not open a database
   file from someone else.
+
+## 3. Tests
+
+**Question:** would the tests go red if the code that produces the project's
+headline numbers were wrong?
+
+**Method:** `scripts/mutation_check.py` breaks one important line at a time
+(twelve of them: baselines, Brier, confidence bins, the purge, the track record,
+live backfilling, staleness, Flat outcomes, the quote cache, the ridge fit, the
+allocation), runs the whole unit suite, and restores the file. A break the suite
+does not notice marks a missing test. Output: `scripts/mutation_check_output.txt`.
+
+**Found:** 6 of 12 breaks went unnoticed with all 28 tests green:
+
+- always-up and momentum baselines scoring the model's call instead of the outcome
+  (no test checked their values);
+- the track record counting calls issued earlier but not yet due (no such call
+  in the test data);
+- confidence bins rounding instead of flooring (the test only used exact bin edges,
+  where both give the same bin);
+- Brier using absolute instead of squared error (the test's only error was 1, and 1² = 1);
+- current mode issuing a forecast whose outcome is already known (no test).
+
+These are exactly the functions behind the HW4 result (accuracy against the
+baselines, Brier, bins), so the project's main finding had no protection.
+
+**Fixed:**
+
+- `test_baselines_brier_and_bins_counted_by_hand`: three calls where the model's
+  call and the outcome differ; always-up 2/3, momentum 3/3, Brier 0.3202 and bin
+  counts [0, 0, 2, 1, 0] were counted by hand.
+- `test_track_record_uses_only_earlier_calls_in_same_bin` now also holds 40 calls
+  issued before but due after the new call; the count must stay 30.
+- `test_lagging_history_never_backfills_a_known_live_outcome`: daily bars stop at
+  2022-12-28 on 2023-01-04; only the five-session calls (due 2023-01-05) may be issued.
+
+Rerun: all six are now caught; 30 tests pass.
+
+**Noted, not changed:**
+
+- The two browser walkthroughs (`tests/browser_*.py`) are scripts, not part of
+  `unittest discover`; they need Playwright and Edge and are run by hand.
+- The mutation check takes about 1.5 minutes per mutation, so it is a review tool,
+  not part of the regular test run.
