@@ -167,6 +167,11 @@ class ForecastTests(unittest.TestCase):
             summary=metrics([evaluate({**base,"confidence":confidence},102)])
             self.assertEqual(summary["bins"][index]["count"],1)
 
+    def test_private_sklearn_calibration_api_is_the_pinned_version(self):
+        # CalibratedDirection uses sklearn's internal _SigmoidCalibration; recheck it before changing this pin.
+        import sklearn
+        self.assertEqual(sklearn.__version__,"1.9.1")
+
     def test_baselines_brier_and_bins_counted_by_hand(self):
         # The model said Down every time; the baselines must score what happened, not the call.
         calls=[({"momentum":"Up","direction":"Down","confidence":.70},105),    # actual Up, wrong

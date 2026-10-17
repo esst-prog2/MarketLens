@@ -176,3 +176,39 @@ code does or what the measurements showed?
 
 Both browser walkthroughs (`tests/browser_journey.py`, `tests/browser_mvp.py`) pass
 after the text changes, with no JavaScript errors.
+
+## 6. Dependencies and reproducibility
+
+**Question:** can someone else get the same program and the same numbers from a
+fresh clone?
+
+**Checked:**
+
+- `requirements.txt` pins every package, including transitive ones, and is
+  identical to `pip freeze` of the working environment; `pip check` finds no
+  conflicts. Python 3.13.2.
+- A fresh clone of `hw6-review` from GitHub (at review 3, commit 0152f1d) into a new
+  Python 3.13 virtual environment, installed only from `requirements.txt`, ran
+  all 30 tests of that commit green. (The clone had to sit in a short folder:
+  deep paths hit the Windows 260-character limit, a property of the machine.)
+- Both data snapshots carry their source URLs, download time and SHA-256
+  (`data/*sources.json`); replay never touches the network.
+
+**Fixed:**
+
+- `CalibratedDirection` uses scikit-learn's internal `_SigmoidCalibration`, which
+  can change without notice between versions. The README asked for a recheck
+  before an upgrade, but nothing enforced it. New test
+  `test_private_sklearn_calibration_api_is_the_pinned_version` goes red on any
+  version other than 1.9.1, so an upgrade has to be a deliberate decision.
+  31 tests pass.
+- The README told readers to install Playwright 1.58.0, but the browser
+  walkthroughs were run with 1.63.0 (from the ignored `.runtime/browser-tools`).
+  It now names the version actually used and where the tests look for it.
+
+**Noted, not changed:**
+
+- The Yahoo chart endpoint is unofficial and may change or refuse access; the
+  README already says so, and replay mode does not depend on it.
+- The XNYS calendar is loaded for 2000–2040; forecasts after 2040 would need that
+  range widened.

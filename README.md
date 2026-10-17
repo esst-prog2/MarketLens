@@ -111,14 +111,15 @@ or executed rebalancing. Current and replay portfolios and resets are independen
 
 ```powershell
 python -m unittest discover -s tests -p "test*.py" -v
-python -m pip install playwright==1.58.0
+python -m pip install playwright==1.63.0
 python tests/browser_journey.py
 python tests/browser_mvp.py
 python scripts/smoke_market_data.py
 openspec validate marketlens-course-mvp --strict
 ```
 
-Browser checks use installed Microsoft Edge, isolated browser state and temporary
+Browser checks were last run with Playwright 1.63.0 (they also look for it in
+`.runtime/browser-tools`) and use installed Microsoft Edge, isolated browser state and temporary
 databases; they do not modify your portfolio. Screenshots go under `.runtime/`.
 On 2026-09-26, real-source checks retrieved all three intraday observations and 1,255
 common completed sessions through 2026-09-25; current-model training succeeded.
