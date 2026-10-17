@@ -114,3 +114,33 @@ Rerun: all six are now caught; 30 tests pass.
   `unittest discover`; they need Playwright and Edge and are run by hand.
 - The mutation check takes about 1.5 minutes per mutation, so it is a review tool,
   not part of the regular test run.
+
+## 4. Simplification and dead code
+
+**Question:** what code is never used, repeated, or more complicated than needed?
+
+**Method:** an AST scan of every tracked Python file for imports and top-level
+functions or methods whose name appears nowhere else (Python and JavaScript),
+plus reading `marketlens/` and `web/` for repeated logic.
+
+**Removed or simplified:**
+
+- Unused imports: `Service` in `app.py`, `calendar` in `marketlens/mvp.py`,
+  `Request` in `tests/test_mvp.py`.
+- `MVPService.refresh(force=False)`: `force` was never read or passed.
+- The rule "a quote is usable if it is current, closed or replay" was written out
+  three times in `marketlens/mvp.py`, twice as the identical all-three-symbols
+  check (portfolio entry and `can_invest`). It is now `USABLE` and `usable(quotes)`,
+  so entry and the button can no longer disagree.
+
+30 tests pass; no behaviour changed.
+
+**Checked and kept:**
+
+- `marketlens/service.py`, `data/prices.csv`, `web/app.js`'s legacy branch and
+  `scripts/download_sample.py` look old but still serve the read-only "Legacy 2024
+  replay" mode and the migration test.
+- `legacy_snapshot` builds the old `Service` with `object.__new__` to skip its
+  table setup; odd, but it avoids writing to a legacy database while reading it.
+- `NoNetwork` is repeated in `scripts/spike_replay.py` and
+  `tests/test_holiday_scoring.py`; five lines each, kept so each file stands alone.

@@ -6,7 +6,6 @@ from pathlib import Path
 from urllib.parse import urlparse, parse_qs
 import webbrowser
 
-from marketlens.service import Service
 
 ROOT = Path(__file__).resolve().parent
 

@@ -11,7 +11,7 @@ import threading
 import time
 import unittest
 from unittest.mock import patch
-from urllib.request import urlopen, Request
+from urllib.request import urlopen
 
 import numpy as np
 

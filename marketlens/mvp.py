@@ -7,14 +7,21 @@ import threading
 
 from .core import ASSETS, PROFILES, allocation, load_prices, portfolio_value, signals
 from .forecasting import data_hash, evaluate, fit_model, metrics, predict, track_record
-from .market_data import (NY, YahooProvider, calendar, close_time, market_state, quote_status,
+from .market_data import (NY, YahooProvider, close_time, market_state, quote_status,
                           require_contiguous, target_session, timestamp, utcnow, validate_history,
                           validate_quote)
 from .storage import connect, migrate
 
 
+USABLE = ("current", "closed", "replay")  # Quote states a valuation or entry may rely on.
+
+
 def dump(value):
     return json.dumps(value, allow_nan=False, sort_keys=True)
+
+
+def usable(quotes):
+    return all(s in quotes and quotes[s]["status"] in USABLE for s in ASSETS)
 
 
 class MVPService:
@@ -93,7 +100,7 @@ class MVPService:
         with connect(self.db_path) as db:
             db.execute("INSERT OR REPLACE INTO m_meta VALUES ('provider',?)", (dump(payload),))
 
-    def refresh(self, force=False):
+    def refresh(self):
         now = self.clock()
         if self.next_attempt and now < self.next_attempt:
             return False
@@ -241,7 +248,7 @@ class MVPService:
             if old:
                 raise ValueError("A portfolio already exists. Reset this mode to start again.")
             quotes = self.quotes(mode, db, self.clock())
-            if any(s not in quotes or quotes[s]["status"] not in ("current", "closed", "replay") for s in ASSETS):
+            if not usable(quotes):
                 raise ValueError("All three entry quotes must be available and non-stale. Wait for fresh data or select replay.")
             prices = {s: quotes[s]["price"] for s in ASSETS}
             holdings = allocation(profile, balance, prices)
@@ -322,7 +329,7 @@ class MVPService:
                     item["weight"] = item["value"]/value if value is not None else None
                 portfolio = {**p, "holdings": items, "value": value, "profit": value-p["initial"] if value is not None else None,
                              "return": value/p["initial"]-1 if value is not None else None,
-                             "fresh": all(h["status"] in ("current", "closed", "replay") for h in items),
+                             "fresh": all(h["status"] in USABLE for h in items),
                              "chart": [{"date": r["observed"][:10], "value": r["value"]} for r in db.execute("SELECT * FROM m_values WHERE mode=? ORDER BY observed", (mode,))]}
             comparisons = []
             for cohort in db.execute("SELECT * FROM m_cohorts WHERE mode=? ORDER BY start DESC", (mode,)):
@@ -357,7 +364,7 @@ class MVPService:
                 "training": {"active": metadata, "runs": runs, "comparisons": comparisons},
                 "versions": {v: metrics([r for r in history if r["model"] == v]) for v in sorted({r["model"] for r in history})},
                 "provider": json.loads(provider[0]) if provider else {"status": "not fetched", "errors": []},
-                "market": market_state(now), "can_invest": all(s in quotes and quotes[s]["status"] in ("current", "closed", "replay") for s in ASSETS)}
+                "market": market_state(now), "can_invest": usable(quotes)}
 
     def legacy_snapshot(self):
         with connect(self.db_path) as db:
