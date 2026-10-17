@@ -153,6 +153,14 @@ class MarketLensTests(unittest.TestCase):
             with self.assertRaises(urllib.error.HTTPError) as error:
                 opener.open(req)
             self.assertEqual(error.exception.code, 400)
+            # DNS rebinding: another site's name pointed at 127.0.0.1, so Origin matches Host.
+            rebound = f"evil.example:{server.server_port}"
+            for req in (urllib.request.Request(base + "/api/state", headers={"Host": rebound}),
+                        urllib.request.Request(base + "/api/reset", data=b'{}', headers={
+                            "Content-Type": "application/json", "Host": rebound, "Origin": "http://" + rebound})):
+                with self.subTest(path=req.full_url), self.assertRaises(urllib.error.HTTPError) as error:
+                    opener.open(req)
+                self.assertEqual(error.exception.code, 403)
         finally:
             server.shutdown()
             server.server_close()

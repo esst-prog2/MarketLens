@@ -36,3 +36,37 @@ had at that time, or score something against the wrong day?
 - Yahoo stamps a five-minute bar with its start time, so a quote can be up to five
   minutes newer than its `observed_at`. This only makes quotes look older, which
   errs towards "stale", so it is left as is.
+
+## 2. Security
+
+**Question:** what can another web page, a bad provider response or a bad input
+make this local server do?
+
+**Checked, no defect found:**
+
+- The server binds only to `127.0.0.1`; static files come from a fixed list, so
+  no path can reach outside `web/`.
+- POST needs `application/json`, at most 4 KiB, and a matching `Origin` when one
+  is sent; a plain cross-site form cannot meet that.
+- Every server- or provider-supplied text in the UI (provider errors, training
+  errors, model names, timestamps) goes through `escapeHTML`; stored browser
+  preferences are validated against fixed lists before use.
+- Yahoo responses are capped at 5 MB and checked for symbol, currency, sorted
+  unique timestamps and finite positive prices.
+- The only SQL built with an f-string (`reset`) uses a fixed list of table names.
+
+**Defect found and fixed:**
+
+- The `Host` header was never checked. With DNS rebinding another site can point
+  its own name at 127.0.0.1; its `Origin` then matches `Host`, so it could read
+  `/api/state` and call reset. Both GET and POST now answer 403 unless `Host` is
+  `127.0.0.1:<port>` or `localhost:<port>`. The new part of `test_api_and_static_files`
+  was red first (`HTTPError not raised`) and is green after the fix; 28 tests and
+  the `tests/browser_mvp.py` Edge walkthrough pass.
+
+**Noted, not changed:**
+
+- Model artifacts are stored with `pickle` in the SQLite file, and unpickling runs
+  code. Only this application writes that file and there is no upload endpoint,
+  so whoever can change it can already change the code. Do not open a database
+  file from someone else.
