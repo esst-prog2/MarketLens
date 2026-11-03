@@ -261,6 +261,11 @@ class ServiceTests(unittest.TestCase):
         history=s.snapshot()["history"]
         self.assertEqual({(r["date"],r["horizon"],r["due"]) for r in history},{("2022-12-28",5,"2023-01-05")})
         self.assertEqual(len(history),3)  # The 2022-12-29 next-session close is already known: not issued.
+        with connect(self.db) as db:
+            baselines=db.execute("SELECT series,reference,horizon FROM m_forecasts WHERE mode='current' AND series!='main'").fetchall()
+        # Baselines follow the same rule: always-up and momentum call 5 sessions; last-close is skipped.
+        self.assertEqual(sorted(tuple(r) for r in baselines),
+                         sorted((n,"2022-12-28",5) for n in ("always-up","momentum-20") for _ in range(3)))
 
     def test_weekend_portfolio_starts_on_its_entry_price_session(self):
         # Friday's last regular-session quote, used on Sunday while the market is closed.
