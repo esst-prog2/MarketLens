@@ -1,0 +1,8 @@
+sessions 2023-01-03..2024-12-31  references: 502  seconds: 94.6
+contender                        5-day calls  accuracy   brier 1-day est.    MAE $     MAPE
+always-up                               1491    54.80%       —          0        —        —
+momentum-20                             1491    51.78%       —          0        —        —
+last-close                                 0         —       —       1503   1.5838  0.5693%
+logistic (calibrated-linear-v2)         1491    52.31%  0.2656       1503   1.5860  0.5704%
+Same observations for every contender; equal closes count as incorrect for Up and Down.
+JSON: {"board": [{"accuracy": 0.5479543930248155, "brier": null, "calls": 1491, "estimates": 0, "mae": null, "mape": null, "name": "always-up"}, {"accuracy": 0.5177733065057009, "brier": null, "calls": 1491, "estimates": 0, "mae": null, "mape": null, "name": "momentum-20"}, {"accuracy": null, "brier": null, "calls": 0, "estimates": 1503, "mae": 1.583826223691939, "mape": 0.005693437457500384, "name": "last-close"}, {"accuracy": 0.5231388329979879, "brier": 0.26556793947391294, "calls": 1491, "estimates": 1503, "mae": 1.5859875630301725, "mape": 0.005703731646825073, "name": "logistic (calibrated-linear-v2)"}], "seconds": 94.6}

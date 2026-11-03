@@ -155,6 +155,27 @@ constant 0.5 (0.250); next-session MAE $1.586 vs last-close $1.584. Confidence b
 promise 55/67/85% and deliver 52/52/55% (n = 755/678/58). The model has no measured
 edge, so its confidence is not presented as a probability.
 
+## Contenders side by side
+
+MarketLens measures models; the trained model is one replaceable contender. Each
+contender in [marketlens/contenders.py](marketlens/contenders.py) has `fit(rows)` and
+`predict(rows)` and is only ever given the sessions up to its reference session.
+`python scripts/contenders.py` walks the same 2023–2024 replay with always-up,
+20-session momentum, last-close and the logistic model, and scores every contender on
+the same observations. Committed output: [scripts/contenders_output.txt](scripts/contenders_output.txt).
+Measured on 2026-11-03 in 94.6 s:
+
+| Contender | 5-day calls | Accuracy | Brier | 1-day estimates | MAE |
+|---|---:|---:|---:|---:|---:|
+| always-up | 1,491 | 54.80% | — | — | — |
+| momentum-20 | 1,491 | 51.78% | — | — | — |
+| last-close | — | — | — | 1,503 | $1.5838 |
+| logistic (calibrated-linear-v2) | 1,491 | 52.31% | 0.2656 | 1,503 | $1.5860 |
+
+The logistic numbers equal the app's own replay (the spike above), which
+`tests/test_contenders.py` also checks call by call. No contender beats always-up on
+direction or last-close on price. A new model is added as one more `Contender` class.
+
 The original course brief follows.
 
 ## 1. THE DEMO
