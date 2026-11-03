@@ -1,10 +1,10 @@
-sessions 2023-01-03..2024-12-31  references: 502  seconds: 97.8
+instruments SPY, IEF, GLD  sessions 2023-01-03..2026-11-02  references: 962  seconds: 114.9
 contender                        5-day calls  accuracy   brier 1-day est.    MAE $     MAPE
-always-up                               1491    54.80%       —          0        —        —
-momentum-20                             1491    51.78%       —          0        —        —
-last-close                                 0         —       —       1503   1.5838  0.5693%
-logistic (calibrated-linear-v2)         1491    52.31%  0.2656       1503   1.5860  0.5704%
-edge, direction accuracy: logistic - always-up = -2.48% (approx. 95% range -8.91% to +3.94%) over 497 sessions: no measurable difference
-edge, next-close MAE $: logistic - last-close = +0.0022 (approx. 95% range -0.0064 to +0.0107) over 501 sessions: no measurable difference
+always-up                               2871    55.28%       —          0        —        —
+momentum-20                             2871    50.99%       —          0        —        —
+last-close                                 0         —       —       2883   2.2714  0.6347%
+logistic (calibrated-linear-v2)         2871    52.35%  0.2629       2883   2.2692  0.6345%
+edge, direction accuracy: logistic - always-up = -2.93% (approx. 95% range -6.92% to +1.07%) over 957 sessions: no measurable difference
+edge, next-close MAE $: logistic - last-close = -0.0022 (approx. 95% range -0.0118 to +0.0074) over 961 sessions: no measurable difference
 Same observations for every contender; equal closes count as incorrect for Up and Down.
-JSON: {"board": [{"accuracy": 0.5479543930248155, "brier": null, "calls": 1491, "estimates": 0, "mae": null, "mape": null, "name": "always-up"}, {"accuracy": 0.5177733065057009, "brier": null, "calls": 1491, "estimates": 0, "mae": null, "mape": null, "name": "momentum-20"}, {"accuracy": null, "brier": null, "calls": 0, "estimates": 1503, "mae": 1.583826223691939, "mape": 0.005693437457500384, "name": "last-close"}, {"accuracy": 0.5231388329979879, "brier": 0.26556793947391294, "calls": 1491, "estimates": 1503, "mae": 1.5859875630301725, "mape": 0.005703731646825073, "name": "logistic (calibrated-linear-v2)"}], "edge": {"1": {"against": "last-close", "high": 0.010744620391813791, "low": -0.006421941715346628, "minimum": 30, "sessions": 501, "value": 0.0021613393382335813, "verdict": "no measurable difference"}, "5": {"against": "always-up", "high": 0.0394268020989426, "low": -0.08905792215259788, "minimum": 30, "sessions": 497, "value": -0.024815560026827638, "verdict": "no measurable difference"}}, "seconds": 97.8}
+JSON: {"board": [{"accuracy": 0.5527690700104493, "brier": null, "calls": 2871, "estimates": 0, "mae": null, "mape": null, "name": "always-up"}, {"accuracy": 0.509926854754441, "brier": null, "calls": 2871, "estimates": 0, "mae": null, "mape": null, "name": "momentum-20"}, {"accuracy": null, "brier": null, "calls": 0, "estimates": 2883, "mae": 2.2713634426131497, "mape": 0.006347088201198251, "name": "last-close"}, {"accuracy": 0.5235109717868338, "brier": 0.26285617497933256, "calls": 2871, "estimates": 2883, "mae": 2.2691744091530315, "mape": 0.006344929265252586, "name": "logistic (calibrated-linear-v2)"}], "edge": {"1": {"against": "last-close", "high": 0.007417542758699512, "low": -0.011795609678935608, "minimum": 30, "sessions": 961, "value": -0.0021890334601180478, "verdict": "no measurable difference"}, "5": {"against": "always-up", "high": 0.010650682970667152, "low": -0.06916687941789809, "minimum": 30, "sessions": 957, "value": -0.02925809822361547, "verdict": "no measurable difference"}}, "seconds": 114.9, "symbols": ["SPY", "IEF", "GLD"]}

@@ -38,7 +38,7 @@ Select a data mode above the tabs:
   delay is unknown. Polling every five minutes is not guaranteed data latency.
   Quotes older than 30 minutes during an open session are stale. Failures retain
   original cached timestamps with an error; they never switch to replay.
-- **Historical replay:** a sourced 753-session 2022–2024 snapshot; 2022 is warm-up,
+- **Historical replay:** a sourced 1,213-session snapshot, 2022-01-03 to 2026-11-02; 2022 is warm-up,
   practice starts on 2023-01-03. Each Next trading day runs the same actual training,
   issuance and evaluation pipeline against a simulated clock, with no network calls.
 - **Legacy 2024 replay:** read-only inspection of an existing original experiment.
@@ -146,7 +146,8 @@ Later levels remain only the list in its proposal. Decisions are append-only in
 [PLANNING_LOG.md](PLANNING_LOG.md).
 ## Spike: full replay
 
-`python scripts/spike_replay.py` runs the whole 753-session snapshot headlessly
+`python scripts/spike_replay.py` runs the whole snapshot headlessly. The figures below are the
+dated record of the original 753-session 2022–2024 snapshot
 (501 walk-forward steps, retraining at each cutoff, temporary database, no network)
 and prints the metrics. Committed output: [scripts/spike_replay_output.txt](scripts/spike_replay_output.txt).
 Measured on 2026-10-03: 348.7 s (0.696 s/step); 1,491 evaluated five-session calls,
@@ -160,29 +161,37 @@ edge, so its confidence is not presented as a probability.
 MarketLens measures models; the trained model is one replaceable contender. Each
 contender in [marketlens/contenders.py](marketlens/contenders.py) has `fit(rows)` and
 `predict(rows)` and is only ever given the sessions up to its reference session.
-`python scripts/contenders.py` walks the same 2023–2024 replay with always-up,
-20-session momentum, last-close and the logistic model, and scores every contender on
-the same observations. Committed output: [scripts/contenders_output.txt](scripts/contenders_output.txt).
-Measured on 2026-11-03 in 94.6 s:
+`python scripts/contenders.py` walks the replay from 2023-01-03 to 2026-11-02 with
+always-up, 20-session momentum, last-close and the logistic model, and scores every
+contender on the same observations. `--universe` adds QQQ (Nasdaq-100) and IWM (US small
+caps) from [data/universe_prices.csv](data/universe_prices.csv); the app itself still shows
+SPY, IEF and GLD. Committed outputs: [scripts/contenders_output.txt](scripts/contenders_output.txt)
+and [scripts/contenders_universe_output.txt](scripts/contenders_universe_output.txt).
+Measured on 2026-11-03:
 
-| Contender | 5-day calls | Accuracy | Brier | 1-day estimates | MAE |
-|---|---:|---:|---:|---:|---:|
-| always-up | 1,491 | 54.80% | — | — | — |
-| momentum-20 | 1,491 | 51.78% | — | — | — |
-| last-close | — | — | — | 1,503 | $1.5838 |
-| logistic (calibrated-linear-v2) | 1,491 | 52.31% | 0.2656 | 1,503 | $1.5860 |
+| Contender | SPY, IEF, GLD: 5-day accuracy | next-close MAE | + QQQ, IWM: 5-day accuracy | next-close MAE |
+|---|---:|---:|---:|---:|
+| always-up | 55.28% | — | 55.84% | — |
+| momentum-20 | 50.99% | — | 51.52% | — |
+| last-close | — | $2.2714 | — | $2.7176 |
+| logistic (calibrated-linear-v2) | 52.35% (Brier 0.2629) | $2.2692 | 53.90% (Brier 0.2604) | $2.7190 |
+| calls / estimates | 2,871 / 2,883 | | 4,785 / 4,805 | |
 
-The logistic numbers equal the app's own replay (the spike above), which
-`tests/test_contenders.py` also checks call by call. A new model is added as one more
+The logistic contender issues exactly the app's own replay forecasts, which
+`tests/test_contenders.py` checks call by call. A new model is added as one more
 `Contender` class.
 
 The script also prints the model's **edge** over the best other contender with an
 approximate 95% range. Differences are averaged per reference session and then over
 blocks of five consecutive sessions, because overlapping five-session targets are not
-independent. Over the full replay, the logistic model's accuracy minus always-up is
-−2.5 points (range −8.9 to +3.9), and its next-close MAE minus last-close is +$0.0022
-(range −$0.0064 to +$0.0107). Both verdicts are **no measurable difference**: the model
-neither beats nor clearly loses to the simplest baselines.
+independent. Accuracy minus always-up is −2.9 points (range −6.9 to +1.1) on three
+instruments and −1.9 points (range −5.6 to +1.7) on five; next-close MAE minus last-close
+is −$0.0022 (range −$0.0118 to +$0.0074) and +$0.0014 (range −$0.0107 to +$0.0136).
+All four verdicts are **no measurable difference**: almost four years and five instruments
+later, the model still neither beats nor clearly loses to the simplest baselines. QQQ and
+IWM move closely with SPY, so they widen style coverage rather than add independent evidence.
+On the original 2023–2024 replay (2026-11-03, before the extension) the same script gave
+52.31% against always-up 54.80% on 1,491 calls, matching the spike above.
 
 **On screen.** Model history shows the same comparison as *Contenders side by side*.
 When the model issues forecasts, the app also issues always-up, momentum and last-close

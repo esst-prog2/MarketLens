@@ -1,0 +1,11 @@
+instruments SPY, IEF, GLD, QQQ, IWM  sessions 2023-01-03..2026-11-02  references: 962  seconds: 157.8
+contender                        5-day calls  accuracy   brier 1-day est.    MAE $     MAPE
+always-up                               4785    55.84%       —          0        —        —
+momentum-20                             4785    51.52%       —          0        —        —
+last-close                                 0         —       —       4805   2.7176  0.7625%
+logistic (calibrated-linear-v2)         4785    53.90%  0.2604       4805   2.7190  0.7637%
+edge, direction accuracy: logistic - always-up = -1.94% (approx. 95% range -5.58% to +1.69%) over 957 sessions: no measurable difference
+edge, next-close MAE $: logistic - last-close = +0.0014 (approx. 95% range -0.0107 to +0.0136) over 961 sessions: no measurable difference
+Same observations for every contender; equal closes count as incorrect for Up and Down.
+QQQ and IWM move closely with SPY: wider style coverage, not independent evidence.
+JSON: {"board": [{"accuracy": 0.5584117032392895, "brier": null, "calls": 4785, "estimates": 0, "mae": null, "mape": null, "name": "always-up"}, {"accuracy": 0.5151515151515151, "brier": null, "calls": 4785, "estimates": 0, "mae": null, "mape": null, "name": "momentum-20"}, {"accuracy": null, "brier": null, "calls": 0, "estimates": 4805, "mae": 2.717579855705523, "mape": 0.007625072292451205, "name": "last-close"}, {"accuracy": 0.5389759665621735, "brier": 0.2604245309321158, "calls": 4785, "estimates": 4805, "mae": 2.719029676206661, "mape": 0.007636673042904811, "name": "logistic (calibrated-linear-v2)"}], "edge": {"1": {"against": "last-close", "high": 0.013636610442525749, "low": -0.010736969440250582, "minimum": 30, "sessions": 961, "value": 0.0014498205011375847, "verdict": "no measurable difference"}, "5": {"against": "always-up", "high": 0.016948047920061212, "low": -0.05581952127429318, "minimum": 30, "sessions": 957, "value": -0.019435736677115987, "verdict": "no measurable difference"}}, "seconds": 157.8, "symbols": ["SPY", "IEF", "GLD", "QQQ", "IWM"]}

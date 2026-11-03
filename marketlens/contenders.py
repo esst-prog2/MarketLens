@@ -21,6 +21,9 @@ def call(rows, symbol, horizon, direction=None, confidence=None, estimate=None):
 class Contender:
     name = "contender"
 
+    def __init__(self, symbols=ASSETS):
+        self.symbols = tuple(symbols)
+
     def fit(self, rows):
         """Baselines learn nothing; a model refits on the sessions it is given."""
 
@@ -32,33 +35,34 @@ class AlwaysUp(Contender):
     name = "always-up"
 
     def predict(self, rows):
-        return [call(rows, s, 5, direction="Up") for s in ASSETS]
+        return [call(rows, s, 5, direction="Up") for s in self.symbols]
 
 
 class Momentum(Contender):
     name = "momentum-20"
 
     def predict(self, rows):
-        return [call(rows, s, 5, direction=direction(rows[-1][s]-rows[-21][s])) for s in ASSETS]
+        return [call(rows, s, 5, direction=direction(rows[-1][s]-rows[-21][s])) for s in self.symbols]
 
 
 class LastClose(Contender):
     name = "last-close"
 
     def predict(self, rows):
-        return [call(rows, s, 1, estimate=rows[-1][s]) for s in ASSETS]
+        return [call(rows, s, 1, estimate=rows[-1][s]) for s in self.symbols]
 
 
 class Logistic(Contender):
     """The app's model: retrained at every cutoff, keeping the last usable one."""
     name = "logistic (calibrated-linear-v2)"
 
-    def __init__(self, trainer=fit_model):
+    def __init__(self, symbols=ASSETS, trainer=fit_model):
+        super().__init__(symbols)
         self.trainer, self.model = trainer, None
 
     def fit(self, rows):
         try:
-            self.model = self.trainer(rows)
+            self.model = self.trainer(rows, None if self.symbols == tuple(ASSETS) else self.symbols)
         except ValueError:
             pass  # Not enough history yet; like the app, keep the previous model.
 
@@ -69,9 +73,9 @@ class Logistic(Contender):
 CONTENDERS = (AlwaysUp, Momentum, LastClose, Logistic)
 
 
-def replay(contenders, rows, start):
+def replay(contenders, rows, start, symbols=ASSETS):
     """Walk forward from rows[start]; return each contender's evaluated calls."""
-    require_contiguous(rows)
+    require_contiguous(rows, symbols)
     calls = {c.name: [] for c in contenders}
     for i in range(start, len(rows)):
         past = rows[:i+1]
