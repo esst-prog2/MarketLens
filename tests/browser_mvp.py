@@ -73,6 +73,13 @@ def main():
                 page.locator('[data-page="history"]').click()
                 assert page.locator('.comparison[data-status="complete"]').count()>0
                 assert 'Incorrect' in page.locator('#history-rows').inner_text()
+                board=page.locator('#contenders').inner_text()
+                for name in ('always-up','momentum-20','last-close','logistic (calibrated-linear-v2)'):
+                    assert name in board,name
+                assert page.locator('#contenders tbody tr').count()==4
+                assert 'Not enough history yet' in board or 'measurable' in board or 'better' in board or 'worse' in board
+                assert page.locator('#contenders .rolling-chart polyline').count()==3  # Direction contenders only.
+                page.locator('#contenders').screenshot(path=str(ROOT/'.runtime/mvp-contenders.png'))
                 page.locator('.comparison[data-status="complete"] summary').first.click()
                 page.screenshot(path=str(ROOT/'.runtime/mvp-history.png'),full_page=True)
                 page.locator('#metric-version').select_option(index=1)

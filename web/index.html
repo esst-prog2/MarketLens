@@ -53,6 +53,7 @@
     <section id="history" hidden aria-labelledby="history-heading">
       <div class="section-heading"><div><h2 id="history-heading">Every prediction has a record.</h2><p class="muted">Price results appear after one trading session; direction results after five. Incorrect calls stay in the record.</p></div><span class="pill">DAILY TRAINED MODELS</span></div>
       <div id="metrics" class="metrics"></div>
+      <section id="contenders" class="panel contenders-panel" aria-labelledby="contenders-heading"></section>
       <section id="training" class="panel training-panel"></section>
       <div class="panel table-panel"><div class="table-scroll"><table><caption class="sr-only">Stored forecasts and their subsequent outcomes</caption><thead><tr><th>Forecast date</th><th>Asset</th><th>Predicted</th><th>Due date</th><th>Actual move</th><th>Result</th></tr></thead><tbody id="history-rows"></tbody></table></div></div>
       <p class="method-note">Accuracy measures direction, not profitability. The comparison baseline always predicts “Up” on the same observations. Overlapping 5-day forecasts are not independent samples.</p>

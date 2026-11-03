@@ -173,8 +173,24 @@ Measured on 2026-11-03 in 94.6 s:
 | logistic (calibrated-linear-v2) | 1,491 | 52.31% | 0.2656 | 1,503 | $1.5860 |
 
 The logistic numbers equal the app's own replay (the spike above), which
-`tests/test_contenders.py` also checks call by call. No contender beats always-up on
-direction or last-close on price. A new model is added as one more `Contender` class.
+`tests/test_contenders.py` also checks call by call. A new model is added as one more
+`Contender` class.
+
+The script also prints the model's **edge** over the best other contender with an
+approximate 95% range. Differences are averaged per reference session and then over
+blocks of five consecutive sessions, because overlapping five-session targets are not
+independent. Over the full replay, the logistic model's accuracy minus always-up is
+−2.5 points (range −8.9 to +3.9), and its next-close MAE minus last-close is +$0.0022
+(range −$0.0064 to +$0.0107). Both verdicts are **no measurable difference**: the model
+neither beats nor clearly loses to the simplest baselines.
+
+**On screen.** Model history shows the same comparison as *Contenders side by side*.
+When the model issues forecasts, the app also issues always-up, momentum and last-close
+forecasts and stores them as immutable records, under the same no-backfill rule in current
+mode. The table, the edge lines and a fixed-scale chart of each direction contender's
+accuracy over the latest 20 shared sessions update after every session. The edge needs
+30 shared sessions and the chart 20; until then the screen says how many there are. A
+database created before this feature gets baseline records only from its next session.
 
 The original course brief follows.
 

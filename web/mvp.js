@@ -35,8 +35,29 @@ function renderMVP() {
   const m=state.performance;
   $("metrics").innerHTML=metric("Five-session accuracy",percent(m.accuracy),`${m.evaluated} evaluated directions`)+metric("Always-Up / momentum",`${percent(m.always_up)} / ${percent(m.momentum)}`,"Same direction observations")+metric("Next-close MAE",money(m.mae),`${m.price_evaluated} evaluated prices · MAPE ${percent(m.mape)}`)+metric("Last-close baseline MAE",money(m.last_close_mae),"Lower MAE is better; the baseline may win")+metric("Selected-direction Brier",m.brier===null?"—":m.brier.toFixed(4),"Lower is better · (probability − correctness)²")+metric("Pending",m.pending,"Outcomes appear only after their target session");
   $("history-rows").innerHTML=state.history.map(h=>`<tr><td>${dateLabel(h.date)}<small>${escapeHTML(h.model)}<br>Issued ${escapeHTML(h.issued_at)}</small></td><td>${h.symbol}</td><td>${h.horizon===5?`${h.direction} · ${percent(h.confidence)}<small>5 sessions</small>`:`${money(h.estimate)}<small>Next close</small>`}</td><td>${dateLabel(h.due)}</td><td>${h.actual_close===null?'Pending':money(h.actual_close)+(h.horizon===5?` · ${h.actual} (${percent(h.return)})`:'')}</td><td class="${h.correct===false?'loss':h.correct===true?'gain':'muted'}">${h.actual_close===null?'Pending':h.horizon===5?(h.correct?'Correct':'Incorrect'):`Error ${money(h.error)} (${percent(h.ape)})`}</td></tr>`).join("");
+  renderContenders();
   renderTraining();
   if(typeof renderJourney === "function") renderJourney();
+}
+const CONTENDER_COLORS={"always-up":"#efc77a","momentum-20":"#b5a0ff","last-close":"#9aa7be"};
+function contenderColor(name, model) { return name===model ? "#75ddba" : CONTENDER_COLORS[name] || "#9aa7be"; }
+function edgeLine(e, label, unit) {
+  if(!e) return "";
+  const show=unit==="points" ? v=>`${v>=0?"+":""}${(v*100).toFixed(1)} points` : v=>`${v>=0?"+":"−"}${money(Math.abs(v))}`;
+  const range=e.low===null ? `Not enough history yet (${e.sessions} of ${e.minimum} shared sessions)` : `${show(e.value)} (approx. 95% range ${show(e.low)} to ${show(e.high)}) over ${e.sessions} sessions: <strong>${escapeHTML(e.verdict)}</strong>`;
+  return `<p class="edge">${label} against ${escapeHTML(e.against)}: ${range}</p>`;
+}
+function rollingChart(lines, model) {
+  const names=Object.keys(lines).filter(n=>lines[n].length);
+  if(!names.length) return '<p class="muted">The 20-session accuracy chart appears after 20 shared sessions have matured.</p>';
+  const dates=lines[names[0]].map(p=>p.date), x=i=>(i/Math.max(1,dates.length-1)*500).toFixed(2), y=v=>(95-v*90).toFixed(2);
+  // The model is drawn first and thicker, so a baseline with identical accuracy stays visible on top.
+  const paths=[...names].sort((a,b)=>(b===model)-(a===model)).map(n=>`<polyline points="${lines[n].map((p,i)=>`${x(i)},${y(p.accuracy)}`).join(" ")}" fill="none" stroke="${contenderColor(n,model)}" stroke-width="${n===model?3:2}" vector-effect="non-scaling-stroke"/>`).join("");
+  return `<svg class="rolling-chart" viewBox="0 0 500 100" preserveAspectRatio="none" role="img" aria-label="Accuracy over the latest 20 sessions, per contender, ${escapeHTML(dates[0])} to ${escapeHTML(dates[dates.length-1])}"><path d="M0 50 H500" stroke="#2b3445" stroke-dasharray="3 5" vector-effect="non-scaling-stroke"/>${paths}</svg><div class="legend">${names.map(n=>`<span><i style="background:${contenderColor(n,model)}"></i>${escapeHTML(n)}</span>`).join("")}<span>dashed line: 50% · ${dateLabel(dates[0])} – ${dateLabel(dates[dates.length-1])}</span></div>`;
+}
+function renderContenders() {
+  const c=state.contenders, cell=(n,v)=>n?v:"—";
+  $("contenders").innerHTML=`<h3>Contenders side by side</h3><p class="muted">Every contender's forecasts are stored when issued and scored only on the observations all of them answered. A baseline that has no answer for a horizon shows a dash.</p><div class="table-scroll"><table><thead><tr><th>Contender</th><th>5-session calls</th><th>Accuracy</th><th>Brier</th><th>Next-close estimates</th><th>MAE</th></tr></thead><tbody>${c.board.map(b=>`<tr class="${b.name===c.model?"model-row":""}"><td>${escapeHTML(b.name)}</td><td>${b.calls}</td><td>${cell(b.calls,percent(b.accuracy))}</td><td>${b.brier===null?"—":b.brier.toFixed(4)}</td><td>${b.estimates}</td><td>${cell(b.estimates,money(b.mae))}</td></tr>`).join("")}</tbody></table></div>${edgeLine(c.edge["5"],"Direction accuracy of the model","points")}${edgeLine(c.edge["1"],"Next-close error of the model","money")}<p class="muted">The range is approximate: sessions are grouped in blocks of five because overlapping five-session targets are not independent. A verdict other than “no measurable difference” needs the whole range on one side of zero.</p><h3>Accuracy over the latest 20 sessions</h3>${rollingChart(c.rolling,c.model)}`;
 }
 function renderTraining() {
   const t=state.training, a=t.active;
