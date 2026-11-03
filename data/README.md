@@ -25,8 +25,11 @@ only trading dates available for all three instruments.
 
 ## Trained MVP replay
 
-`training_prices.csv` is a separate 753-session snapshot, 2022-01-03 through
-2024-12-31. `training_sources.json` records the Yahoo URLs, download timestamp,
+`training_prices.csv` is a separate 1,213-session snapshot, 2022-01-03 through
+2026-11-02. It was first 753 sessions to 2024-12-31 and was extended on 2026-11-03;
+the first 753 rows are byte-identical to the original, and the downloader refuses to
+write if the provider ever revises one of them. A replay database created on the
+shorter snapshot is accepted because its records used only those rows. `training_sources.json` records the Yahoo URLs, download timestamp,
 price convention and SHA-256. `python scripts/download_training_sample.py`
 re-downloads this file after dependency installation; history revisions require a
 new experiment database. Exchange-calendar validation rejects gaps, never fills
@@ -36,3 +39,11 @@ Current mode retrieves observations independently; it never treats bundled repla
 prices as current. Both snapshots use USD closes, excluding distributions and costs.
 The unofficial source has no availability guarantee or granted redistribution
 license. This repository records a course experiment, not a commercial feed.
+
+## Wider measuring universe
+
+`universe_prices.csv` adds QQQ (Nasdaq-100) and IWM (US small caps) to SPY, IEF and GLD
+over the same 1,213 sessions; its SPY, IEF and GLD columns equal `training_prices.csv`.
+Only `scripts/contenders.py --universe` reads it; the app still shows three instruments.
+`python scripts/download_training_sample.py --universe` re-downloads it, with sources in
+`universe_sources.json`.

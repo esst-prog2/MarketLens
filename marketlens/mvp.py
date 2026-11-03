@@ -49,8 +49,12 @@ class MVPService:
                 db.execute("INSERT OR IGNORE INTO m_state(mode,cursor,dataset) VALUES (?,?,?)",
                            (mode, self.replay_start if mode == "replay" else None,
                             data_hash(self.prices) if mode == "replay" else None))
-            if db.execute("SELECT dataset FROM m_state WHERE mode='replay'").fetchone()[0] != data_hash(self.prices):
-                raise ValueError("Replay dataset changed. Start with a new --database path.")
+            stored = db.execute("SELECT dataset,cursor FROM m_state WHERE mode='replay'").fetchone()
+            if stored["dataset"] != data_hash(self.prices):
+                # A pure extension keeps every stored record valid: they only used rows up to the cursor.
+                if not any(data_hash(self.prices[:n]) == stored["dataset"] for n in range(stored["cursor"]+1, len(self.prices))):
+                    raise ValueError("Replay dataset changed. Start with a new --database path.")
+                db.execute("UPDATE m_state SET dataset=? WHERE mode='replay'", (data_hash(self.prices),))
             db.execute("UPDATE m_runs SET status='failed',error='Interrupted before completion',finished=? WHERE status='running'", (self.clock().isoformat(),))
         self.process("replay")
 

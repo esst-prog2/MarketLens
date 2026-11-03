@@ -1,14 +1,14 @@
 {
   "provider": "Yahoo Finance",
-  "retrieved_at": "2026-09-26T12:55:02.659733+00:00",
+  "retrieved_at": "2026-11-03T22:27:01.941023+00:00",
   "start": "2022-01-03",
-  "end": "2024-12-31",
-  "rows": 753,
+  "end": "2026-11-02",
+  "rows": 1213,
   "urls": {
-    "SPY": "https://query1.finance.yahoo.com/v8/finance/chart/SPY?period1=1640995200&period2=1735689600&interval=1d",
-    "IEF": "https://query1.finance.yahoo.com/v8/finance/chart/IEF?period1=1640995200&period2=1735689600&interval=1d",
-    "GLD": "https://query1.finance.yahoo.com/v8/finance/chart/GLD?period1=1640995200&period2=1735689600&interval=1d"
+    "SPY": "https://query1.finance.yahoo.com/v8/finance/chart/SPY?period1=1640995200&period2=1793664000&interval=1d",
+    "IEF": "https://query1.finance.yahoo.com/v8/finance/chart/IEF?period1=1640995200&period2=1793664000&interval=1d",
+    "GLD": "https://query1.finance.yahoo.com/v8/finance/chart/GLD?period1=1640995200&period2=1793664000&interval=1d"
   },
-  "sha256": "3b9d0eab58ba52dbf4f08ae2084a6db9b78d3add147de62eedd995d589b8be1f",
+  "sha256": "6b8abe63353676dc06663c382f6ca43acc2c13f29cec74633d7735c11478390f",
   "convention": "USD daily close, not dividend-adjusted; frozen educational historical snapshot."
 }
