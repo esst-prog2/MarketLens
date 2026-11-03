@@ -16,7 +16,7 @@ README section 1 SHALL describe the final demonstration in three to six present-
 - **THEN** every step works and shows the same values as the description
 
 ### Requirement: Demo numbers are reproduced by a test
-Every number in section 1 that the program computes SHALL be checked by an automated offline test that follows the same path: a Balanced $10,000 replay portfolio entered on 2023-01-03, then 26 trading sessions advanced. The test SHALL fail if the portfolio value, the count of scored and wrong five-session calls, the model and always-Up accuracy, either next-close error, or the number of complete version comparisons differs from the text, as formatted on screen.
+Every number in section 1 that the program computes SHALL be checked by an automated offline test that follows the same path: a Balanced $10,000 replay portfolio entered on 2023-01-03, then 26 trading sessions advanced. The test SHALL fail if the portfolio value, the count of scored and wrong five-session calls, the model and always-Up accuracy, either next-close error, or the shared-session count on the edge line differs from the text, as formatted on screen.
 
 #### Scenario: Program changes, text does not
 - **WHEN** a code or data change alters any of those values
