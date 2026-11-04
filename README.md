@@ -2,6 +2,21 @@
 A local course project that stores market forecasts and measures them against simple
 baselines, with guided learning and paper portfolios.
 
+**At a glance.** MarketLens is a measuring tool, not a model: every contender's forecast
+is stored before its outcome exists, nothing is ever rewritten, and every contender is
+scored on the same observations. Its own trained model is just one contender. On
+2,871 five-session calls from 2023-01-03 to 2026-11-02 it is right 52.35% of the time;
+always guessing Up gets 55.28%. With overlapping calls taken into account, the difference
+is −2.9 points (approximate 95% range −6.9 to +1.1), so the honest verdict on screen is
+*no measurable difference*. Five instruments instead of three give the same verdict.
+
+![Model history: contenders side by side after 26 replay sessions](docs/model-history-contenders.png)
+
+- Offline replay of 1,213 real sessions and free current quotes for SPY, IEF and GLD
+- Always-up, momentum, last-close and a calibrated logistic model as contenders
+- Automatic retraining after every session, with frozen versions compared on the same 20 sessions
+- 47 automated tests, 2 browser walkthroughs and 18 deliberate-bug checks that the tests all catch
+
 ## Install and run
 
 Tested on Windows with **Python 3.13.2**. Use Python 3.13 and the pinned packages:
@@ -76,8 +91,8 @@ Model history keeps mistakes, pending outcomes, model IDs and actual issuance ti
 Equal five-session closes count as incorrect for either strict direction. A $100
 price estimate versus an actual $102 close has $2 error and 1.9608% percentage error.
 It reports accuracy, MAE, MAPE, selected-direction Brier error and five reliability
-bins with counts. Always-Up, 20-session momentum and last-close baselines use the
-same observations. Consecutive frozen versions are also compared on their shared
+bins with counts. Always-Up, 20-session momentum and last-close baselines are stored
+as contenders and use the same observations (see *Contenders side by side*). Consecutive frozen versions are also compared on their shared
 next 20 reference sessions, with pending/partial/complete status. Newer can be worse;
 overlapping targets are not independent. No accuracy or profit guarantee is made.
 
@@ -114,8 +129,11 @@ python -m unittest discover -s tests -p "test*.py" -v
 python -m pip install playwright==1.63.0
 python tests/browser_journey.py
 python tests/browser_mvp.py
+python scripts/mutation_check.py
+python scripts/contenders.py
+python scripts/contenders.py --universe
 python scripts/smoke_market_data.py
-openspec validate marketlens-course-mvp --strict
+openspec validate --all --strict
 ```
 
 Browser checks were last run with Playwright 1.63.0 (they also look for it in
@@ -123,7 +141,10 @@ Browser checks were last run with Playwright 1.63.0 (they also look for it in
 databases; they do not modify your portfolio. Screenshots go under `.runtime/`.
 On 2026-09-26, real-source checks retrieved all three intraday observations and 1,255
 common completed sessions through 2026-09-25; current-model training succeeded.
-All 25 deterministic backend/API tests and both browser workflows passed.
+All 25 deterministic backend/API tests and both browser workflows passed then. On
+2026-11-04 a fresh clone with a new Python 3.13.2 environment from `requirements.txt`
+passed all 47 tests and both browser workflows, and `scripts/mutation_check.py` reported
+all 18 deliberate one-line bugs caught.
 The deterministic tests separately cover calendars, chronology, calibration,
 migration rollback, worker responsiveness, cache failures, metrics and mode isolation.
 
@@ -140,16 +161,16 @@ success does not grant redistribution or commercial-use rights; review the
 [provider's terms](https://legal.yahoo.com/us/en/yahoo/terms/otos/index.html) before
 any other use. See [data provenance](data/README.md) for exact sources and identities.
 
-The MVP change, specs and task checklist are in
-[openspec/changes/marketlens-course-mvp](openspec/changes/marketlens-course-mvp/).
-Later levels remain only the list in its proposal. Decisions are append-only in
-[PLANNING_LOG.md](PLANNING_LOG.md).
+Every change since the MVP went through OpenSpec, in [openspec/changes](openspec/changes/):
+`marketlens-course-mvp`, `contender-leaderboard`, `revise-demo-description` and
+`fresher-wider-data`. Decisions are append-only in [PLANNING_LOG.md](PLANNING_LOG.md).
+
 ## Spike: full replay
 
-`python scripts/spike_replay.py` runs the whole snapshot headlessly. The figures below are the
-dated record of the original 753-session 2022–2024 snapshot
-(501 walk-forward steps, retraining at each cutoff, temporary database, no network)
-and prints the metrics. Committed output: [scripts/spike_replay_output.txt](scripts/spike_replay_output.txt).
+`python scripts/spike_replay.py` runs the whole snapshot headlessly (one walk-forward
+step per session, retraining at each cutoff, temporary database, no network) and prints
+the metrics. The figures below are the dated record of the original 753-session
+2022–2024 snapshot (501 steps). Committed output: [scripts/spike_replay_output.txt](scripts/spike_replay_output.txt).
 Measured on 2026-10-03: 348.7 s (0.696 s/step); 1,491 evaluated five-session calls,
 accuracy 52.3% vs always-Up 54.8% and momentum 51.8%; Brier 0.266, worse than a
 constant 0.5 (0.250); next-session MAE $1.586 vs last-close $1.584. Confidence bands
@@ -201,7 +222,8 @@ accuracy over the latest 20 shared sessions update after every session. The edge
 30 shared sessions and the chart 20; until then the screen says how many there are. A
 database created before this feature gets baseline records only from its next session.
 
-The original course brief follows.
+The course brief follows. Section 1 was revised for the final demo on 2026-11-03
+(`openspec/changes/revise-demo-description`); sections 2–5 are the first-week text.
 
 ## 1. THE DEMO
 I open MarketLens at http://127.0.0.1:8080 as a beginner investor, set Data mode to **Historical replay — offline**, and on the **Practice** screen choose the Balanced profile with a virtual starting balance of $10,000. Market outlook shows SPY (US equities), IEF (US Treasury bonds) and GLD (Gold), each with a five-trading-session Up/Down call headed by the measured hit rate of earlier calls, a next-session closing-price estimate and a risk level. I press **Apply fixed allocation**, which buys $5,000.00 of SPY, $3,500.00 of IEF and $1,500.00 of GLD at the 2023-01-03 closes, and after 26 presses of **Next trading day** the portfolio is worth $10,394.82. On **Model history** every call stays on record, and the **Contenders side by side** table scores the model against always-Up, momentum and last-close on the same observations: 27 of its 66 five-session calls are wrong, its 59.1% accuracy is exactly what always guessing Up gets, and its $1.89 next-close error is worse than the $1.85 of simply repeating the last close. The model retrains after every session, yet the edge line under the table reads “Not enough history yet (22 of 30 shared sessions)”: 26 sessions are too few to tell whether any contender is better.

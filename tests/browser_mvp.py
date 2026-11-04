@@ -72,6 +72,7 @@ def main():
                 assert provider.calls==calls
                 page.locator('[data-page="history"]').click()
                 assert page.locator('.comparison[data-status="complete"]').count()>0
+                assert page.locator('.more-comparisons').count()==1  # Pending/partial ones fold away.
                 assert 'Incorrect' in page.locator('#history-rows').inner_text()
                 board=page.locator('#contenders').inner_text()
                 for name in ('always-up','momentum-20','last-close','logistic (calibrated-linear-v2)'):
