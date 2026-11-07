@@ -5,6 +5,7 @@ from pathlib import Path
 import pickle
 import threading
 
+from .contenders import AlwaysUp, LastClose, Logistic, Momentum, edge, leaderboard, rolling
 from .core import ASSETS, PROFILES, allocation, load_prices, portfolio_value, signals
 from .forecasting import data_hash, evaluate, fit_model, metrics, predict, track_record
 from .market_data import (NY, YahooProvider, close_time, market_state, quote_status,
@@ -14,6 +15,7 @@ from .storage import connect, migrate
 
 
 USABLE = ("current", "closed", "replay")  # Quote states a valuation or entry may rely on.
+BASELINES = (AlwaysUp(), Momentum(), LastClose())  # Stateless: fit learns nothing.
 
 
 def dump(value):
@@ -47,8 +49,12 @@ class MVPService:
                 db.execute("INSERT OR IGNORE INTO m_state(mode,cursor,dataset) VALUES (?,?,?)",
                            (mode, self.replay_start if mode == "replay" else None,
                             data_hash(self.prices) if mode == "replay" else None))
-            if db.execute("SELECT dataset FROM m_state WHERE mode='replay'").fetchone()[0] != data_hash(self.prices):
-                raise ValueError("Replay dataset changed. Start with a new --database path.")
+            stored = db.execute("SELECT dataset,cursor FROM m_state WHERE mode='replay'").fetchone()
+            if stored["dataset"] != data_hash(self.prices):
+                # A pure extension keeps every stored record valid: they only used rows up to the cursor.
+                if not any(data_hash(self.prices[:n]) == stored["dataset"] for n in range(stored["cursor"]+1, len(self.prices))):
+                    raise ValueError("Replay dataset changed. Start with a new --database path.")
+                db.execute("UPDATE m_state SET dataset=? WHERE mode='replay'", (data_hash(self.prices),))
             db.execute("UPDATE m_runs SET status='failed',error='Interrupted before completion',finished=? WHERE status='running'", (self.clock().isoformat(),))
         self.process("replay")
 
@@ -217,10 +223,17 @@ class MVPService:
             forecasts = predict(self._load_model(model_row), rows)
         except ValueError:
             return  # Incomplete feature windows cannot issue a new forecast.
+        self._store(db, mode, series, model_row["id"], forecasts, rows, now)
+        if series == "main":
+            # Baselines are issued and stored alongside the model, as their own contenders.
+            for contender in BASELINES:
+                self._store(db, mode, contender.name, contender.name, contender.predict(rows), rows, now)
+
+    def _store(self, db, mode, series, model, forecasts, rows, now):
         for record in forecasts:
             if mode == "current" and close_time(record["due"]) <= now:
                 continue  # Never backfill live predictions for outcomes already observable.
-            record.update({"model": model_row["id"], "issued_at": now.isoformat(), "mode": mode,
+            record.update({"model": model, "issued_at": now.isoformat(), "mode": mode,
                            "input_hash": data_hash(rows), "actual_close": None, "correct": None,
                            "actual": None, "return": None, "error": None, "ape": None})
             db.execute("INSERT OR IGNORE INTO m_forecasts(mode,series,model,symbol,reference,horizon,due,payload) VALUES (?,?,?,?,?,?,?,?)",
@@ -343,6 +356,8 @@ class MVPService:
                 status = "complete" if new_metrics["evaluated"] == 60 and new_metrics["price_evaluated"] == 60 else "partial" if new_metrics["evaluated"] else "pending"
                 comparisons.append({**dict(cohort), "status": status, "older_metrics": old_metrics, "newer_metrics": new_metrics})
             metadata = json.loads(model["metadata"]) if model else None
+            calls = {c.name: self._records(db, mode, c.name) for c in BASELINES}
+            calls[Logistic.name] = history
         display_signals = []
         recent = {s["symbol"]: s for s in signals(rows)} if len(rows) >= 21 else {}
         for symbol, asset in ASSETS.items():
@@ -362,6 +377,8 @@ class MVPService:
                 "profiles": PROFILES, "signals": display_signals, "portfolio": portfolio,
                 "history": history, "performance": metrics(history), "model": model["id"] if model else None,
                 "training": {"active": metadata, "runs": runs, "comparisons": comparisons},
+                "contenders": {"board": leaderboard(calls), "edge": edge(calls, Logistic.name),
+                               "rolling": rolling(calls), "model": Logistic.name},
                 "versions": {v: metrics([r for r in history if r["model"] == v]) for v in sorted({r["model"] for r in history})},
                 "provider": json.loads(provider[0]) if provider else {"status": "not fetched", "errors": []},
                 "market": market_state(now), "can_invest": usable(quotes)}

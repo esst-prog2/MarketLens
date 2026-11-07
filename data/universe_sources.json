@@ -1,0 +1,16 @@
+{
+  "provider": "Yahoo Finance",
+  "retrieved_at": "2026-11-03T22:27:05.141711+00:00",
+  "start": "2022-01-03",
+  "end": "2026-11-02",
+  "rows": 1213,
+  "urls": {
+    "SPY": "https://query1.finance.yahoo.com/v8/finance/chart/SPY?period1=1640995200&period2=1793664000&interval=1d",
+    "IEF": "https://query1.finance.yahoo.com/v8/finance/chart/IEF?period1=1640995200&period2=1793664000&interval=1d",
+    "GLD": "https://query1.finance.yahoo.com/v8/finance/chart/GLD?period1=1640995200&period2=1793664000&interval=1d",
+    "QQQ": "https://query1.finance.yahoo.com/v8/finance/chart/QQQ?period1=1640995200&period2=1793664000&interval=1d",
+    "IWM": "https://query1.finance.yahoo.com/v8/finance/chart/IWM?period1=1640995200&period2=1793664000&interval=1d"
+  },
+  "sha256": "6f3de8978dafda437cbd1b23e882150479786ba30054efff60237d915c0f3586",
+  "convention": "USD daily close, not dividend-adjusted; frozen educational historical snapshot."
+}

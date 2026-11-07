@@ -47,15 +47,17 @@ def data_hash(rows):
     return hashlib.sha256(json.dumps(rows, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()).hexdigest()
 
 
-def features(rows, index, symbol):
+def features(rows, index, symbol, symbols=ASSETS):
     values = np.array([r[symbol] for r in rows[index-20:index+1]], dtype=float)
     if len(values) != 21:
         raise ValueError("At least 21 complete prices are required for features.")
-    return [values[-1]/values[-1-lag]-1 for lag in (1, 5, 20)] + [float(np.std(np.diff(values)/values[:-1], ddof=1))] + [float(symbol == s) for s in ASSETS]
+    return [values[-1]/values[-1-lag]-1 for lag in (1, 5, 20)] + [float(np.std(np.diff(values)/values[:-1], ddof=1))] + [float(symbol == s) for s in symbols]
 
 
-def fit_model(rows):
-    require_contiguous(rows)
+def fit_model(rows, symbols=None):
+    """symbols: instruments to pool (default the app's three, which leaves versions unchanged)."""
+    names = tuple(symbols or ASSETS)
+    require_contiguous(rows, names)
     last_labelled = len(rows)-6
     cal_start = last_labelled - CONFIG["calibration"] + 1
     fit_end = cal_start - CONFIG["purge"] - 1
@@ -67,8 +69,8 @@ def fit_model(rows):
     def examples(indices):
         x, labels, returns = [], [], []
         for i in indices:
-            for s in ASSETS:
-                x.append(features(rows, i, s))
+            for s in names:
+                x.append(features(rows, i, s, names))
                 labels.append(direction(rows[i+5][s]-rows[i][s]))
                 returns.append(rows[i+1][s]/rows[i][s]-1)
         return np.array(x), np.array(labels), np.array(returns)
@@ -89,6 +91,8 @@ def fit_model(rows):
                 "cal_end": rows[last_labelled]["date"], "fit_sessions": len(fit_indices),
                 "cal_sessions": len(cal_indices), "classes": dict(Counter(y.tolist())),
                 "cal_classes": dict(Counter(cy.tolist())), "data_hash": data_hash(rows), "config": CONFIG}
+    if names != tuple(ASSETS):
+        metadata["symbols"] = list(names)
     metadata["version"] = CONFIG["version"] + "-" + data_hash(metadata)[:12]
     model = {"classifier": calibrated, "regressor": regressor, "metadata": metadata}
     predict(model, rows)  # Do not publish a model that cannot issue usable forecasts.
@@ -96,15 +100,16 @@ def fit_model(rows):
 
 
 def predict(model, rows):
-    require_contiguous(rows[-21:])
+    names = tuple(model["metadata"].get("symbols", ASSETS))
+    require_contiguous(rows[-21:], names)
     current = rows[-1]
     if current["date"] < model["metadata"]["cutoff"]:
         raise ValueError("Cannot use a future model for an earlier forecast.")
-    x = np.array([features(rows, len(rows)-1, s) for s in ASSETS])
+    x = np.array([features(rows, len(rows)-1, s, names) for s in names])
     probabilities = model["classifier"].predict_proba(x)
     price_returns = model["regressor"].predict(x)
     results = []
-    for i, symbol in enumerate(ASSETS):
+    for i, symbol in enumerate(names):
         probs = dict(zip(model["classifier"].classes_, probabilities[i]))
         predicted = "Up" if probs.get("Up", 0) >= probs.get("Down", 0) else "Down"
         confidence = float(probs[predicted])

@@ -20,10 +20,10 @@ HORIZON = 5
 MODEL = "momentum-20-v1"
 
 
-def load_prices(path: Path):
+def load_prices(path: Path, symbols=ASSETS):
     with path.open(newline="", encoding="utf-8-sig") as handle:
         reader = csv.DictReader(handle)
-        missing = {"date", *ASSETS} - set(reader.fieldnames or [])
+        missing = {"date", *symbols} - set(reader.fieldnames or [])
         if missing:
             raise ValueError(f"Missing required columns: {', '.join(sorted(missing))}")
         rows = []
@@ -35,7 +35,7 @@ def load_prices(path: Path):
             if rows and day <= rows[-1]["date"]:
                 raise ValueError(f"Row {number}: dates must be unique and increasing.")
             row = {"date": day}
-            for symbol in ASSETS:
+            for symbol in symbols:
                 try:
                     price = float(raw[symbol])
                 except (ValueError, TypeError):

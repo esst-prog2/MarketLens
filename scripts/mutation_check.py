@@ -32,6 +32,19 @@ MUTATIONS = [
      'regressor.fit(x, r)', 'regressor.fit(np.vstack((x, cx)), np.concatenate((r, examples(cal_indices)[2])))'),
     ("portfolio uses a fixed 50/50 split", "marketlens/core.py",
      'balance * weight / prices[symbol]', 'balance * 0.5 / prices[symbol]'),
+    # Added 2026-11-04 for the contender, leaderboard and snapshot work.
+    ("leaderboard scores all calls, not shared ones", "marketlens/contenders.py",
+     'set.intersection(*sets)', 'set.union(*sets)'),
+    ("contender is shown the next session", "marketlens/contenders.py",
+     'past = rows[:i+1]', 'past = rows[:i+2]'),
+    ("edge range treats overlapping sessions as independent", "marketlens/contenders.py",
+     'half = 1.96*spread/len(blocks)**0.5', 'half = 1.96*spread/len(daily)**0.5'),
+    ("edge verdict ignores the range", "marketlens/contenders.py",
+     'better = item["low"] > 0 if sign > 0 else item["high"] < 0', 'better = item["value"] > 0 if sign > 0 else item["value"] < 0'),
+    ("baseline forecasts are not stored", "marketlens/mvp.py",
+     'for contender in BASELINES:', 'for contender in ():'),
+    ("any changed replay dataset is accepted", "marketlens/mvp.py",
+     'if not any(data_hash(self.prices[:n]) == stored["dataset"]', 'if False and not any(data_hash(self.prices[:n]) == stored["dataset"]'),
 ]
 
 ONLY = set(sys.argv[1:])

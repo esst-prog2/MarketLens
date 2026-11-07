@@ -96,7 +96,7 @@ def quote_status(quote, now):
     return "closed" if observed_day == status["latest_completed"] else "stale"
 
 
-def validate_history(rows, now=None):
+def validate_history(rows, now=None, symbols=ASSETS):
     previous = None
     for row in rows:
         day = row["date"]
@@ -106,14 +106,14 @@ def validate_history(rows, now=None):
             raise ValueError(f"Not an exchange session: {day}.")
         if now is not None and close_time(day) > timestamp(now):
             raise ValueError(f"Incomplete daily session: {day}.")
-        for symbol in ASSETS:
+        for symbol in symbols:
             positive(row.get(symbol), symbol)
         previous = day
     return rows
 
 
-def require_contiguous(rows):
-    validate_history(rows)
+def require_contiguous(rows, symbols=ASSETS):
+    validate_history(rows, symbols=symbols)
     if rows and sessions(rows[0]["date"], rows[-1]["date"]) != [r["date"] for r in rows]:
         raise ValueError("Missing expected trading session in daily history.")
 
