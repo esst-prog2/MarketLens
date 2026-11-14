@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MarketLens promóoldal · válassz változatot</title>
+<style>
+  :root { --bg: #f4f4f2; --card: #fff; --ink: #1c1c1f; --soft: #55565c; --line: #dcdcd8; color-scheme: light; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 400 16px/1.6 system-ui, "Segoe UI", sans-serif; }
+  main { width: min(1240px, 100% - 32px); margin: 0 auto; padding: 40px 0 60px; }
+  h1 { font-size: 30px; line-height: 1.2; margin: 0; letter-spacing: -0.02em; }
+  .intro { margin-top: 12px; color: var(--soft); max-width: 78ch; }
+  .grid { margin-top: 30px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  article { background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; }
+  .shots { position: relative; background: #e9e9e6; padding: 14px; }
+  .shots img.d { display: block; width: 100%; height: auto; border-radius: 6px; box-shadow: 0 8px 20px -12px rgba(0,0,0,.5); }
+  .shots img.m { position: absolute; right: 18px; bottom: -26px; width: 22%; border-radius: 6px; box-shadow: 0 10px 24px -10px rgba(0,0,0,.6); border: 3px solid #fff; }
+  .body { padding: 38px 20px 20px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+  .body h2 { margin: 0; font-size: 21px; line-height: 1.25; }
+  .tag { font-size: 13.5px; color: var(--soft); }
+  dl { margin: 4px 0 0; font-size: 14.5px; }
+  dt { font-weight: 700; margin-top: 8px; }
+  dd { margin: 2px 0 0; color: var(--soft); }
+  .open { margin-top: auto; padding-top: 12px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .open a { display: inline-block; padding: 10px 16px; border-radius: 8px; background: var(--ink); color: #fff; text-decoration: none; font-weight: 600; }
+  .open a.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+  a:focus-visible { outline: 3px solid #3a6df0; outline-offset: 3px; }
+  .notes { margin-top: 34px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; }
+  .notes h2 { margin: 0 0 8px; font-size: 19px; }
+  .notes ul { margin: 0; padding-left: 20px; color: var(--soft); }
+  .notes li + li { margin-top: 6px; }
+  @media (max-width: 980px) { .grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>MarketLens promóoldal: három kész változat</h1>
+  <p class="intro">Mindhárom ugyanazt a jóváhagyott tartalmat mutatja (<code>designs/promo-page.md</code>), ugyanazokkal a valódi számokkal (<code>docs/promo-data.js</code>, a tesztek ellenőrzik). A különbség a megjelenés és az, hogyan mutatják meg az eredményt. Nyisd meg mindegyiket, görgess végig, próbáld ki mobilon is (böngészőben Ctrl+Shift+M vagy F12 → eszköznézet), aztán válassz.</p>
+
+  <div class="grid">
+    <article>
+      <div class="shots"><img class="d" src="shots/a-desktop.png" alt="A változat asztali nézet, első képernyő"><img class="m" src="shots/a-mobile.png" alt="A változat mobil nézet"></div>
+      <div class="body">
+        <h2>A · Lila eredménytábla</h2>
+        <p class="tag">A te referenciád stílusa: világos lila-fehér, kártyák, nagy számok, kis grafikonok.</p>
+        <dl>
+          <dt>Erőssége</dt><dd>Ismerős, barátságos, azonnal olvasható. Az edge-sáv megmutatja, hogy a 0 a tartományon belül van. A grafikon fölött az egérrel napra pontos értékek.</dd>
+          <dt>Kockázat</dt><dd>Ez áll legközelebb egy átlagos fintech-oldalhoz, kevésbé emlékezetes. A hero illusztráció helyett az app valódi képernyője van.</dd>
+        </dl>
+        <div class="open"><a href="a/index.html">Megnyitás</a></div>
+      </div>
+    </article>
+
+    <article>
+      <div class="shots"><img class="d" src="shots/b-desktop.png" alt="B változat asztali nézet, első képernyő"><img class="m" src="shots/b-mobile.png" alt="B változat mobil nézet"></div>
+      <div class="body">
+        <h2>B · Lepecsételt boríték</h2>
+        <p class="tag">Az Impeccable sorsolása: a jóslatot lepecsételik, és csak később bontják fel. Lila pecséttinta, a banki biztonsági boríték mintája.</p>
+        <dl>
+          <dt>Erőssége</dt><dd>A metafora maga a mérés szabálya, ezt nem tudja egy másik oldal lemásolni. A „regiszter” mind a 2,871 jóslatot jelként mutatja.</dd>
+          <dt>Kockázat</dt><dd>Kevésbé „pénzügyi”, és a hivatalos-papír hangulat nem mindenkinek szól.</dd>
+        </dl>
+        <div class="open"><a href="b/index.html">Megnyitás</a></div>
+      </div>
+    </article>
+
+    <article>
+      <div class="shots"><img class="d" src="shots/c-desktop.png" alt="C változat asztali nézet, első képernyő"><img class="m" src="shots/c-mobile.png" alt="C változat mobil nézet"></div>
+      <div class="body">
+        <h2>C · Adatmező (fekete-fehér)</h2>
+        <p class="tag">Kihívó világ (Ryoji Ikeda adatművészete): mind a 2,871 jóslat egy-egy fehér vagy fekete cella, csak fekete és fehér.</p>
+        <dl>
+          <dt>Erőssége</dt><dd>A legmeggyőzőbb bizonyíték: a három mező szemre ugyanolyan. Egérrel bármelyik nap kiolvasható. Az ítéletnél az egész oldal egyszer negatívba vált.</dd>
+          <dt>Kockázat</dt><dd>Merész és technikai, egy kezdő befektetőnek idegenebb lehet.</dd>
+        </dl>
+        <div class="open"><a href="c/index.html">Megnyitás</a></div>
+      </div>
+    </article>
+  </div>
+
+  <section class="notes" aria-labelledby="nh">
+    <h2 id="nh">Tudnivalók a választáshoz</h2>
+    <ul>
+      <li>Mindegyik változat működik JavaScript nélkül is (a számok szövegként benne vannak), mobilon nincs vízszintes görgetés, és nincs konzolhiba.</li>
+      <li>Kérésre készül egy negyedik is: „termékteszt-magazin” (Impeccable saját első helyezettje, ismerős stílus), vagy a teljesen szokványos fintech-oldal.</li>
+      <li>Választás után: a kiválasztott a <code>docs/index.html</code>-be kerül, utána jön az Impeccable <code>critique</code> (osztálytárs, tanár, idegen szemmel), majd a GitHub Pages bekapcsolása és a beadás.</li>
+      <li>A változatok a <code>promo-variants/</code> mappában vannak, a publikus <code>docs/</code>-on kívül, így a végleges oldalon csak a választott jelenik meg.</li>
+    </ul>
+  </section>
+</main>
+</body>
+</html>
