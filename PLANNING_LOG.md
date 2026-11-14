@@ -98,3 +98,6 @@
 2026-11-14 | Decided by the assistant: Put the PROCESS.md rule into AGENTS.md as well, because installing gstack and Impeccable needs a Claude Code restart and a new session would not otherwise know it.
 2026-11-14 | Decided by the user: Install Bun, gstack and Impeccable globally for HW9.
 2026-11-14 | Decided by the assistant: Run gstack setup with all Claude Code hooks off (--no-skill-routing --no-skill-contracts --no-ceo-review-gate --no-autoplan-gate --no-plan-tune-hooks --no-timeline-stop-hook) and skip its CLAUDE.md section, because CLAUDE.md must stay "@AGENTS.md" and /office-hours needs no hooks; install Impeccable with npx skills add -g -a claude-code --copy.
+2026-11-14 | Decided by the user: HW9 promo page content is Approach A (content only, no game) from the /office-hours design doc designs/promo-page.md; the "can you beat it?" game with the visitor as contender #5 stays a candidate before the 1 December demo.
+2026-11-14 | Decided by the user: Visual direction for Impeccable: a light lavender and white card-based dashboard look with large numbers (from a reference image), style only and not the template's assets, compared against generated alternatives.
+2026-11-14 | Decided by the assistant: Keep the design doc and wireframe in designs/, not docs/, because GitHub Pages publishes everything in docs/.
