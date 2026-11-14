@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MarketLens promóoldal · válassz változatot</title>
+<style>
+  :root { --bg: #f4f4f2; --card: #fff; --ink: #1c1c1f; --soft: #55565c; --line: #dcdcd8; color-scheme: light; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 400 16px/1.6 system-ui, "Segoe UI", sans-serif; }
+  main { width: min(1240px, 100% - 32px); margin: 0 auto; padding: 40px 0 60px; }
+  h1 { font-size: 30px; line-height: 1.2; margin: 0; letter-spacing: -0.02em; }
+  .intro { margin-top: 12px; color: var(--soft); max-width: 78ch; }
+  .grid { margin-top: 30px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  article { background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; }
+  .shots { position: relative; background: #e9e9e6; padding: 14px; }
+  .shots img.d { display: block; width: 100%; height: auto; border-radius: 6px; box-shadow: 0 8px 20px -12px rgba(0,0,0,.5); }
+  .shots img.m { position: absolute; right: 18px; bottom: -26px; width: 22%; border-radius: 6px; box-shadow: 0 10px 24px -10px rgba(0,0,0,.6); border: 3px solid #fff; }
+  .body { padding: 38px 20px 20px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+  .body h2 { margin: 0; font-size: 21px; line-height: 1.25; }
+  .tag { font-size: 13.5px; color: var(--soft); }
+  dl { margin: 4px 0 0; font-size: 14.5px; }
+  dt { font-weight: 700; margin-top: 8px; }
+  dd { margin: 2px 0 0; color: var(--soft); }
+  .open { margin-top: auto; padding-top: 12px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .open a { display: inline-block; padding: 10px 16px; border-radius: 8px; background: var(--ink); color: #fff; text-decoration: none; font-weight: 600; }
+  .open a.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+  a:focus-visible { outline: 3px solid #3a6df0; outline-offset: 3px; }
+  .notes { margin-top: 34px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; }
+  .notes h2 { margin: 0 0 8px; font-size: 19px; }
+  .notes ul { margin: 0; padding-left: 20px; color: var(--soft); }
+  .notes li + li { margin-top: 6px; }
+  @media (max-width: 980px) { .grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>MarketLens promóoldal: második kör, termékoldalként</h1>
+  <p class="intro">Ez az oldal csak neked szól a választáshoz, a látogatók nem látják. Az új változatok azt mutatják be, mit tud az app (tanulás, gyakorlás virtuális pénzzel, ellenőrizhető jóslatok), az app valódi képernyőképeivel. A mérési eredmény csak egy rövid, számok nélküli szakasz lejjebb. Nyisd meg mindegyiket, görgess végig, nézd meg mobilon is (F12, majd Ctrl+Shift+M).</p>
+
+  <div class="grid">
+    <article>
+      <div class="shots"><img class="d" src="shots/d-desktop.png" alt="D változat asztali nézet"><img class="m" src="shots/d-mobile.png" alt="D változat mobil nézet"></div>
+      <div class="body">
+        <h2>D · Lila-fehér termékoldal</h2>
+        <p class="tag">A te referenciád stílusa: világos lila háttér, fehér kártyák, barátságos betűk.</p>
+        <dl>
+          <dt>Erőssége</dt><dd>Barátságos, rendezett, a funkciók egymás után, mindegyik mellett egy valódi képernyőkép.</dd>
+          <dt>Kockázat</dt><dd>A legmegszokottabb a három közül.</dd>
+        </dl>
+        <div class="open"><a href="d/index.html">Megnyitás</a></div>
+      </div>
+    </article>
+    <article>
+      <div class="shots"><img class="d" src="shots/e-desktop.png" alt="E változat asztali nézet"><img class="m" src="shots/e-mobile.png" alt="E változat mobil nézet"></div>
+      <div class="body">
+        <h2>E · Az app saját sötét világa</h2>
+        <p class="tag">Ugyanaz a sötét, lila-zöld stílus, mint maga az app. Nagy termékkép, alatta különböző méretű panelek.</p>
+        <dl>
+          <dt>Erőssége</dt><dd>Az oldal és az app egy egységet alkot: aki az oldal után megnyitja az appot, ugyanazt látja.</dd>
+          <dt>Kockázat</dt><dd>Sötét kivetítőn kevésbé olvasható, mint a világos változatok.</dd>
+        </dl>
+        <div class="open"><a href="e/index.html">Megnyitás</a></div>
+      </div>
+    </article>
+    <article>
+      <div class="shots"><img class="d" src="shots/f-desktop.png" alt="F változat asztali nézet"><img class="m" src="shots/f-mobile.png" alt="F változat mobil nézet"></div>
+      <div class="body">
+        <h2>F · Merész kobalt és lime</h2>
+        <p class="tag">Erős színblokkok, széles játékos betűk, egymásra csúsztatott képernyők.</p>
+        <dl>
+          <dt>Erőssége</dt><dd>A legemlékezetesebb, plakátszerű első benyomás, egy teremben is kitűnik.</dd>
+          <dt>Kockázat</dt><dd>Harsányabb, kevésbé „pénzügyi” hangulat.</dd>
+        </dl>
+        <div class="open"><a href="f/index.html">Megnyitás</a></div>
+      </div>
+    </article>
+  </div>
+
+  <section class="notes" aria-labelledby="nh">
+    <h2 id="nh">Tudnivalók a választáshoz</h2>
+    <ul>
+      <li>Minden változat ugyanazt a szöveget és ugyanazokat a valódi képernyőképeket használja (<code>docs/img/</code>); mobilon nincs vízszintes görgetés, és nincs konzolhiba.</li>
+      <li>Bármelyikben átírhatok bármit (főcím, színek, sorrend), vagy keverhetünk is: például az E szerkezete a D színeivel.</li>
+      <li>Választás után: a kiválasztott a <code>docs/index.html</code>-be kerül, utána jön az Impeccable <code>critique</code>, majd a GitHub Pages és a beadás.</li>
+      <li>Az első kör (eredmény-központú) változatai továbbra is megvannak: <a href="a/index.html">A</a> · <a href="b/index.html">B</a> · <a href="c/index.html">C</a>.</li>
+    </ul>
+  </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MarketLens · practise investing, learn which forecasts to trust</title>
+<meta name="description" content="A free learning space for beginner investors: short guides, a virtual portfolio on real market prices, and forecasts that keep score.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ground: #f3f0ff; --ground-deep: #e7e1ff; --card: #fff; --ink: #1d1838; --ink-soft: #524c70; --line: #e3def7;
+    --violet: #5b3df5; --violet-deep: #3f25c9; --violet-wash: #ede8ff; --mint: #1f8f6a; --gold: #b7790a;
+    --shadow: 0 22px 44px -26px rgba(22,20,38,.4), 0 2px 6px -2px rgba(22,20,38,.08);
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--ground); color: var(--ink); font: 400 17px/1.6 "Figtree", system-ui, sans-serif; }
+  ::selection { background: var(--violet); color: #fff; }
+  a { color: var(--violet-deep); text-underline-offset: 3px; }
+  a:focus-visible { outline: 3px solid var(--violet); outline-offset: 3px; border-radius: 10px; }
+  h1, h2, h3 { font-family: "Bricolage Grotesque", "Figtree", sans-serif; letter-spacing: -0.025em; line-height: 1.08; margin: 0; text-wrap: balance; }
+  p { margin: 0; }
+  img { display: block; max-width: 100%; height: auto; }
+  .wrap { width: min(1180px, 100% - 40px); margin: 0 auto; }
+
+  .bar { position: sticky; top: 0; z-index: 5; background: color-mix(in srgb, var(--ground) 90%, transparent); backdrop-filter: blur(10px) saturate(1.3); }
+  .bar .wrap { display: flex; align-items: center; gap: 28px; height: 68px; }
+  .brand { display: flex; align-items: center; gap: 10px; font: 700 19px/1 "Bricolage Grotesque", sans-serif; color: var(--ink); text-decoration: none; }
+  .brand svg { width: 30px; height: 30px; }
+  .bar nav { display: flex; gap: 24px; margin-left: auto; font-weight: 600; font-size: 15px; }
+  .bar nav a { color: var(--ink-soft); text-decoration: none; }
+  .bar nav a:hover { color: var(--ink); }
+  .btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 12px; font: 600 16px/1 "Figtree", sans-serif; text-decoration: none; transition: transform .25s cubic-bezier(.2,.8,.2,1), background .2s; }
+  .btn svg { width: 18px; height: 18px; }
+  .btn-primary { background: var(--violet); color: #fff; box-shadow: 0 12px 24px -14px rgba(22,20,38,.45); }
+  .btn-primary:hover { background: var(--violet-deep); transform: translateY(-1px); }
+  .btn-quiet { background: var(--card); color: var(--ink); box-shadow: var(--shadow); }
+  .btn-quiet:hover { transform: translateY(-1px); }
+  .bar .btn { padding: 10px 16px; font-size: 15px; }
+
+  .hero { padding: 56px 0 72px; }
+  .hero .wrap { display: grid; grid-template-columns: 1fr 1.05fr; gap: 56px; align-items: center; }
+  .hero h1 { font-size: clamp(42px, 5.3vw, 72px); font-weight: 800; }
+  .hero h1 span { color: var(--violet); }
+  .lede { margin-top: 22px; font-size: 20px; color: var(--ink-soft); max-width: 40ch; }
+  .actions { margin-top: 30px; display: flex; flex-wrap: wrap; gap: 12px; }
+  .facts { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 14.5px; font-weight: 600; color: var(--ink-soft); }
+  .facts span { display: inline-flex; align-items: center; gap: 8px; }
+  .facts svg { width: 18px; height: 18px; color: var(--mint); }
+  .stage { position: relative; }
+  .stage .main { border-radius: 18px; box-shadow: var(--shadow); background: var(--card); padding: 10px; }
+  .stage .main img { border-radius: 10px; }
+  .stage .float { position: absolute; left: -54px; bottom: -64px; width: 36%; border-radius: 14px; background: var(--card); padding: 8px; box-shadow: 0 30px 50px -24px rgba(22,20,38,.55); }
+  .stage .float img { border-radius: 8px; }
+
+  section { padding: 64px 0; }
+  .center-head { text-align: center; max-width: 720px; margin: 0 auto 40px; }
+  .center-head h2 { font-size: clamp(32px, 3.8vw, 50px); font-weight: 700; }
+  .center-head p { margin-top: 14px; color: var(--ink-soft); font-size: 18px; }
+
+  .feature { display: grid; grid-template-columns: 1fr 1.2fr; gap: 56px; align-items: center; }
+  .feature + .feature { margin-top: 72px; }
+  .feature.flip { grid-template-columns: 1.2fr 1fr; }
+  .feature.flip .copy { order: 2; }
+  .feature .chip { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; background: var(--violet-wash); color: var(--violet-deep); font-weight: 700; font-size: 14px; }
+  .feature .chip svg { width: 16px; height: 16px; }
+  .feature h3 { margin-top: 16px; font-size: clamp(28px, 3vw, 40px); }
+  .feature p { margin-top: 14px; color: var(--ink-soft); font-size: 18px; max-width: 46ch; }
+  .feature ul { margin: 18px 0 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+  .feature li { display: flex; gap: 10px; align-items: flex-start; }
+  .feature li svg { flex: none; width: 20px; height: 20px; margin-top: 3px; color: var(--mint); }
+  .shot { background: var(--card); border-radius: 18px; padding: 10px; box-shadow: var(--shadow); }
+  .shot img { border-radius: 10px; }
+  .shot.narrow { max-width: 380px; margin-left: auto; margin-right: auto; }
+  .crop { max-height: 540px; overflow: hidden; }
+  .stage .float.crop { max-height: 360px; }
+  .feature.wide { grid-template-columns: 1fr; gap: 28px; }
+  .feature.wide .copy { max-width: 760px; }
+
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; counter-reset: s; }
+  .steps li { list-style: none; background: var(--card); border-radius: 16px; padding: 26px; box-shadow: var(--shadow); }
+  .steps ol { margin: 0; padding: 0; }
+  .steps .n { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: var(--violet); color: #fff; font: 800 18px/1 "Bricolage Grotesque", sans-serif; }
+  .steps h3 { margin-top: 16px; font-size: 23px; }
+  .steps p { margin-top: 8px; color: var(--ink-soft); }
+
+  .honest { background: var(--card); border-radius: 26px; box-shadow: var(--shadow); padding: 44px; display: grid; grid-template-columns: 1fr 1.1fr; gap: 44px; align-items: center; }
+  .honest h2 { font-size: clamp(30px, 3.4vw, 44px); }
+  .honest p { margin-top: 14px; color: var(--ink-soft); font-size: 18px; }
+  .honest p strong { color: var(--ink); }
+  .honest .shot { box-shadow: none; padding: 0; background: none; }
+  .honest .shot img { border-radius: 12px; border: 1px solid var(--line); }
+
+  .try { background: var(--violet-deep); color: #fff; border-radius: 26px; padding: 48px; display: grid; grid-template-columns: 1fr 1.1fr; gap: 40px; align-items: center; }
+  .try h2 { font-size: clamp(32px, 3.6vw, 48px); }
+  .try p { margin-top: 12px; color: #dcd4ff; font-size: 18px; }
+  .try pre { margin: 0; background: #1d1650; color: #f1edff; border-radius: 16px; padding: 22px 24px; font: 500 14.5px/1.75 ui-monospace, "Cascadia Code", Consolas, monospace; overflow-x: auto; }
+  .try pre b { color: #b9a8ff; font-weight: 500; }
+  .try .btn-quiet { margin-top: 24px; background: #fff; color: var(--violet-deep); box-shadow: none; }
+
+  footer { padding: 40px 0 52px; font-size: 14.5px; color: var(--ink-soft); }
+  footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 28px; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .js .hero .copy > * { animation: rise .9s cubic-bezier(.16,1,.3,1) both; }
+    .js .hero .copy > :nth-child(2) { animation-delay: .07s; } .js .hero .copy > :nth-child(3) { animation-delay: .14s; } .js .hero .copy > :nth-child(4) { animation-delay: .2s; }
+    .js .stage .main { animation: rise 1s .1s cubic-bezier(.16,1,.3,1) both; }
+    .js .stage .float { animation: rise 1s .35s cubic-bezier(.16,1,.3,1) both; }
+    @keyframes rise { from { opacity: 0; transform: translateY(16px); } }
+  }
+  @media (max-width: 980px) {
+    .hero .wrap, .feature, .feature.flip, .honest, .try { grid-template-columns: 1fr; }
+    .feature.flip .copy { order: 0; }
+    .steps { grid-template-columns: 1fr; }
+    .bar nav { display: none; } .bar .btn { margin-left: auto; }
+    .stage .float { left: auto; right: 10px; bottom: -30px; width: 42%; }
+  }
+  @media (max-width: 520px) {
+    body { font-size: 16px; } .wrap { width: calc(100% - 32px); }
+    .hero { padding-top: 32px; } .lede, .feature p, .honest p, .try p { font-size: 17px; }
+    .honest, .try { padding: 26px 20px; border-radius: 20px; }
+    .bar .btn span { display: none; }
+  }
+</style>
+</head>
+<body>
+<header class="bar" id="top">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="MarketLens home"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="14" cy="14" r="9.5" fill="none" stroke="#5b3df5" stroke-width="3"/><path d="M21 21l7 7" stroke="#1d1838" stroke-width="3.4" stroke-linecap="round"/><path d="M9.5 16.5l3-3.5 2.5 2 3.5-4.5" fill="none" stroke="#1d1838" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>MarketLens</a>
+    <nav aria-label="Sections"><a href="#features">Features</a><a href="#how">How it works</a><a href="#honest">The honest part</a></nav>
+    <a class="btn btn-quiet" href="#try" aria-label="Try MarketLens"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Try it free</span></a>
+  </div>
+</header>
+
+<main>
+  <section class="hero" aria-labelledby="h1">
+    <div class="wrap">
+      <div class="copy">
+        <h1 id="h1">Practise investing without the risk. <span>Learn which forecasts to trust.</span></h1>
+        <p class="lede">MarketLens is a free learning space for beginners: short guides, a virtual portfolio on real market prices, and forecasts that are checked against what actually happened.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#try">Try it in five minutes</a>
+          <a class="btn btn-quiet" href="#how">See how it works</a>
+        </div>
+        <p class="facts">
+          <span><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Free, no account</span>
+          <span><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Virtual money only</span>
+          <span><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Works offline</span>
+        </p>
+      </div>
+      <div class="stage">
+        <figure class="main" style="margin:0"><img src="../../docs/img/portfolio.png" width="700" height="692" alt="MarketLens virtual portfolio: a Balanced mix that started with $10,000, its value line, and the holdings in gold, Treasury bonds and US equities."></figure>
+        <figure class="float crop" style="margin:0"><img src="../../docs/img/market-card.png" width="371" height="856" alt="A MarketLens market card for US equities with price, recent trend, a five-session Up call and a next-session price estimate."></figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="features" aria-labelledby="fh">
+    <div class="wrap">
+      <div class="center-head"><h2 id="fh">Everything a beginner needs, in one place</h2><p>Learn the idea, try it with virtual money, and see honestly how forecasts work out.</p></div>
+
+      <div class="feature">
+        <div class="copy">
+          <span class="chip"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg>Start where you are</span>
+          <h3>Three questions, a path that fits you</h3>
+          <p>Tell MarketLens what you want, how much you know and how much risk you are comfortable with. Your starting page then puts the right guides and examples first.</p>
+        </div>
+        <figure class="shot narrow" style="margin:0"><img src="../../docs/img/onboarding.png" width="551" height="684" alt="MarketLens onboarding: step 1 of 3, What brings you here, with options to learn, explore or practise investing."></figure>
+      </div>
+
+      <div class="feature wide">
+        <div class="copy">
+          <span class="chip"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3h4a2 2 0 0 1 1 .3A2 2 0 0 1 9 3h4v10H9a1 1 0 0 0-1 1 1 1 0 0 0-1-1H3z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>Learn in three minutes</span>
+          <h3>Nine short guides, no jargon</h3>
+          <p>From risk and diversification to bonds, gold and buy-and-hold. Search them, save them for later and mark them as done.</p>
+          <ul>
+            <li><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Every guide links its public source</li>
+            <li><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Your progress stays in your browser</li>
+          </ul>
+        </div>
+        <figure class="shot" style="margin:0"><img src="../../docs/img/library.png" width="1148" height="266" alt="Three MarketLens guides: What kind of risk can you live with, One portfolio, different moving parts, and Stocks and ETFs without the jargon."></figure>
+      </div>
+
+      <div class="feature flip">
+        <div class="copy">
+          <span class="chip"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 12l4-4 3 2 5-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Practise with virtual money</span>
+          <h3>A portfolio on real prices, no real risk</h3>
+          <p>Pick a Conservative, Balanced or Growth mix of US stocks, Treasury bonds and gold and choose any amount from $100 to $1,000,000. Follow it on today's free quotes, or step through years of real trading days, one day at a time.</p>
+        </div>
+        <figure class="shot narrow" style="margin:0"><img src="../../docs/img/portfolio.png" width="700" height="692" alt="MarketLens virtual portfolio with its value over time and holdings."></figure>
+      </div>
+
+      <div class="feature">
+        <div class="copy">
+          <span class="chip"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Forecasts that keep score</span>
+          <h3>See how often a forecast was right before you believe it</h3>
+          <p>Each market gets a five-day Up or Down call and a next-day price estimate. Next to the call you see how often earlier calls like it were right, and every call stays on record, the wrong ones too.</p>
+        </div>
+        <figure class="shot narrow crop" style="margin:0"><img src="../../docs/img/market-card.png" width="371" height="856" alt="A MarketLens market card showing a five-session direction call with the share of earlier similar calls that were right."></figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="how" aria-labelledby="hh">
+    <div class="wrap">
+      <div class="center-head"><h2 id="hh">How it works</h2><p>Three steps, about five minutes, entirely on your own computer.</p></div>
+      <div class="steps"><ol style="display:contents">
+        <li><span class="n">1</span><h3>Choose your goal</h3><p>Learn, explore or practise. MarketLens shapes the starting page around your answers.</p></li>
+        <li><span class="n">2</span><h3>Apply a mix</h3><p>Pick a profile and a virtual amount. The app buys the holdings at real prices.</p></li>
+        <li><span class="n">3</span><h3>Watch and compare</h3><p>Move through real market days, see your portfolio change and check every forecast against the outcome.</p></li>
+      </ol></div>
+    </div>
+  </section>
+
+  <section id="honest" aria-labelledby="oh">
+    <div class="wrap">
+      <div class="honest">
+        <div>
+          <h2 id="oh">The honest part</h2>
+          <p>MarketLens checks its own forecasting model too, against the simplest guess there is: <strong>“the market goes up.”</strong> Over almost four years of real prices, the model was no better at it.</p>
+          <p>The app shows you that openly, because a forecast is worth nothing until it has a record against the simplest guess.</p>
+        </div>
+        <figure class="shot" style="margin:0"><img src="../../docs/img/contenders.png" width="1144" height="764" alt="MarketLens Model history: contenders side by side, the trained model compared with always up, momentum and last-close."></figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="try" aria-labelledby="th">
+    <div class="wrap">
+      <div class="try">
+        <div>
+          <h2 id="th">Try it in five minutes</h2>
+          <p>You need Python 3.13. Copy these lines into a terminal, then open <strong>http://127.0.0.1:8080</strong>.</p>
+          <a class="btn btn-quiet" href="https://github.com/esst-prog2/MarketLens">View the code on GitHub</a>
+        </div>
+<pre><code><b># get it</b>
+git clone https://github.com/esst-prog2/MarketLens.git
+cd MarketLens
+<b># install once</b>
+python -m venv .venv
+.venv\Scripts\python -m pip install -r requirements.txt
+<b># run</b>
+.venv\Scripts\python app.py
+<b># macOS or Linux: .venv/bin/python instead of .venv\Scripts\python</b></code></pre>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>MarketLens · Advanced Programming course project, Corvinus University of Budapest</p>
+    <p>Free Yahoo Finance daily prices · educational, not investment advice · virtual money only</p>
+  </div>
+</footer>
+<script>document.documentElement.classList.add("js");</script>
+</body>
+</html>

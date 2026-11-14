@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MarketLens · sealed first, opened later</title>
+<meta name="description" content="MarketLens seals every forecast before its outcome exists and scores it against the simplest guess. 2,871 forecasts, no measurable edge.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f6f7fb;
+    --sheet: #ffffff;
+    --ink: #17203d;
+    --ink-soft: #4a5170;
+    --tint: #24336b;
+    --tint-deep: #1a2552;
+    --stamp: #5b2fae;
+    --rule: #d9dceb;
+    --perf: #b9bfd6;
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 400 17px/1.6 "Archivo", system-ui, sans-serif; font-stretch: 100%; font-variant-numeric: tabular-nums; }
+  ::selection { background: var(--stamp); color: #fff; }
+  a { color: var(--stamp); text-underline-offset: 3px; text-decoration-thickness: 1.5px; }
+  a:focus-visible { outline: 3px solid var(--stamp); outline-offset: 3px; }
+  h1, h2, h3 { margin: 0; font-stretch: 72%; font-weight: 800; letter-spacing: -0.01em; line-height: 1.06; text-wrap: balance; }
+  p { margin: 0; }
+  .wrap { width: min(1160px, 100% - 40px); margin: 0 auto; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* The security tint: the lattice printed inside a bank envelope so nobody can read through it. */
+  .tint { background-color: var(--tint);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpath d='M0 7 Q7 0 14 7 T28 7 M0 21 Q7 14 14 21 T28 21' fill='none' stroke='%23384a8f' stroke-width='1.6'/%3E%3Cpath d='M7 0 Q0 7 7 14 T7 28 M21 0 Q14 7 21 14 T21 28' fill='none' stroke='%231c2a5d' stroke-width='1.4'/%3E%3C/svg%3E"); }
+
+  .stamp { display: inline-block; color: var(--stamp); border: 3px double var(--stamp); border-radius: 6px; padding: 6px 12px 5px; font-stretch: 75%; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; line-height: 1.15; mix-blend-mode: multiply; }
+  .stamp small { display: block; font-weight: 600; letter-spacing: 0.04em; font-size: 0.72em; }
+
+  header.top { border-bottom: 1px solid var(--rule); background: var(--sheet); }
+  header.top .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 20px; }
+  .brand { display: flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; font-stretch: 80%; font-weight: 800; font-size: 20px; letter-spacing: 0.01em; }
+  .brand svg { width: 28px; height: 28px; }
+  header.top nav { display: flex; gap: 22px; font-weight: 600; font-size: 15px; }
+  header.top nav a { color: var(--ink-soft); text-decoration: none; }
+  header.top nav a:hover { color: var(--ink); }
+  .sign { color: var(--ink); font-weight: 700; text-decoration: none; border-bottom: 2px solid var(--ink); padding-bottom: 2px; font-size: 15px; }
+
+  /* Hero: the opened envelope */
+  .hero { padding: 56px 0 30px; }
+  .hero .wrap { display: grid; grid-template-columns: 0.95fr 1.05fr; gap: 56px; align-items: start; }
+  .hero h1 { font-size: clamp(48px, 6.4vw, 92px); }
+  .hero h1 em { font-style: normal; color: var(--stamp); }
+  .lede { margin-top: 22px; font-size: 20px; color: var(--ink-soft); max-width: 36ch; }
+  .lede strong { color: var(--ink); }
+  .scope { margin-top: 14px; font-size: 14.5px; color: var(--ink-soft); }
+  .cta { margin-top: 28px; display: flex; flex-wrap: wrap; align-items: center; gap: 18px; }
+  .btn { display: inline-flex; align-items: center; gap: 10px; background: var(--ink); color: #fff; text-decoration: none; font-weight: 700; padding: 14px 20px; border-radius: 6px; transition: background .2s, transform .2s cubic-bezier(.2,.8,.2,1); }
+  .btn:hover { background: var(--stamp); transform: translateY(-1px); }
+  .btn svg { width: 18px; height: 18px; }
+
+  .envelope { position: relative; margin-top: 140px; padding: 0 22px; }
+  .envelope .back { position: absolute; inset: 0; border-radius: 8px; box-shadow: 0 34px 60px -34px rgba(23,32,61,.65); }
+  .envelope .flap { position: absolute; left: 0; right: 0; bottom: calc(100% - 2px); height: 128px; }
+  .envelope .flap svg { display: block; width: 100%; height: 100%; }
+  .slip { position: relative; z-index: 1; background: var(--sheet); border-radius: 3px; padding: 24px 24px 120px; margin-top: 34px; box-shadow: 0 12px 30px -18px rgba(0,0,0,.65); }
+  .slip::before { content: ""; position: absolute; left: 0; right: 0; top: -4px; height: 8px; background: radial-gradient(circle at 6px 4px, var(--paper) 2.6px, transparent 3px) 0 0 / 14px 8px repeat-x; }
+  .slip h2 { font-size: 14px; font-stretch: 85%; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); font-weight: 700; }
+  .slip table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 16px; }
+  .slip th { text-align: left; font-weight: 600; font-size: 13px; color: var(--ink-soft); padding: 0 0 8px; border-bottom: 2px solid var(--ink); }
+  .slip th.n, .slip td.n { text-align: right; }
+  .slip td { padding: 11px 0; border-bottom: 1px dashed var(--perf); }
+  .slip td.big { font-stretch: 75%; font-weight: 800; font-size: 32px; line-height: 1; }
+  .slip tr.model td { color: var(--stamp); }
+  .slip .edge { margin-top: 14px; font-size: 15.5px; }
+  .pocket { position: relative; z-index: 2; height: 150px; margin: -104px -22px 0; background: #fbfbfe; border-radius: 0 0 8px 8px; box-shadow: 0 -10px 24px -18px rgba(0,0,0,.45); }
+  .pocket svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .pocket .verdict { position: absolute; left: 50%; top: 52%; translate: -50% -50%; rotate: -5deg; font-size: 24px; text-align: center; background: rgba(255,255,255,.6); }
+  .dates { position: absolute; top: -118px; right: -6px; display: grid; gap: 8px; justify-items: end; z-index: 3; }
+  .dates .stamp { font-size: 13px; background: rgba(255,255,255,.88); }
+  .dates .stamp:first-child { transform: rotate(4deg); }
+  .dates .stamp:last-child { transform: rotate(-3deg); }
+
+  section { padding: 56px 0; }
+  .head { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: end; margin-bottom: 26px; }
+  .head h2 { font-size: clamp(36px, 4vw, 56px); }
+  .head p { color: var(--ink-soft); max-width: 50ch; }
+
+  /* One forecast, start to finish */
+  .journey { display: grid; grid-template-columns: repeat(3, 1fr); background: var(--sheet); border: 1px solid var(--rule); border-radius: 8px; }
+  .journey > div { padding: 26px; position: relative; }
+  .journey > div + div { border-left: 2px dashed var(--perf); }
+  .journey h3 { font-size: 28px; }
+  .journey p { margin-top: 10px; color: var(--ink-soft); }
+  .journey .stamp { margin-top: 16px; font-size: 13px; transform: rotate(-2deg); }
+  .journey svg { width: 46px; height: 46px; }
+
+  /* The register: every call, a mark */
+  .register { background: var(--sheet); border: 1px solid var(--rule); border-radius: 8px; padding: 22px; }
+  .register .row { display: grid; grid-template-columns: 200px 1fr 90px; gap: 18px; align-items: center; padding: 12px 0; }
+  .register .row + .row { border-top: 1px dashed var(--perf); }
+  .register .name { font-weight: 700; }
+  .register .name small { display: block; font-weight: 400; color: var(--ink-soft); font-size: 13.5px; }
+  .register canvas { width: 100%; height: 46px; display: block; image-rendering: pixelated; }
+  .register .pct { text-align: right; font-stretch: 75%; font-weight: 800; font-size: 30px; }
+  .register .row.model .pct { color: var(--stamp); }
+  .key { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 14px; font-size: 14px; color: var(--ink-soft); }
+  .key i { display: inline-block; width: 10px; height: 14px; vertical-align: -2px; margin-right: 6px; }
+
+  .rules { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border-top: 2px solid var(--ink); }
+  .rules > div { padding: 24px 24px 0 0; }
+  .rules > div + div { padding-left: 24px; border-left: 1px solid var(--rule); }
+  .rules h3 { font-size: 26px; }
+  .rules p { margin-top: 8px; color: var(--ink-soft); }
+  .rules-foot { margin-top: 22px; font-size: 14.5px; color: var(--ink-soft); max-width: 95ch; }
+
+  .filed { display: grid; grid-template-columns: 1.3fr 1fr; gap: 40px; align-items: center; }
+  .filed figure { margin: 0; position: relative; background: var(--sheet); border: 1px solid var(--rule); padding: 12px; border-radius: 6px; transform: rotate(-1deg); box-shadow: 0 20px 40px -28px rgba(23,32,61,.6); }
+  .filed img { display: block; width: 100%; height: auto; }
+  .filed figure .stamp { position: absolute; right: -10px; top: -18px; transform: rotate(6deg); background: rgba(255,255,255,.9); font-size: 14px; }
+  .filed h2 { font-size: clamp(32px, 3.4vw, 48px); }
+  .filed p { margin-top: 14px; color: var(--ink-soft); }
+  .filed p strong { color: var(--ink); }
+
+  .lesson { padding: 84px 0; color: #fff; }
+  .lesson .card { background: var(--sheet); color: var(--ink); max-width: 820px; padding: 40px 44px; border-radius: 6px; box-shadow: 0 30px 60px -30px rgba(0,0,0,.6); }
+  .lesson .big { font-stretch: 72%; font-weight: 800; font-size: clamp(34px, 4.2vw, 58px); line-height: 1.06; letter-spacing: -0.01em; text-wrap: balance; }
+  .lesson .small { margin-top: 18px; font-size: 18px; color: var(--ink-soft); max-width: 56ch; }
+  .lesson .cta { margin-top: 26px; }
+
+  footer { padding: 30px 0 46px; font-size: 14.5px; color: var(--ink-soft); }
+  footer .wrap { display: grid; gap: 8px; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .js .slip { animation: draw 1.1s .15s cubic-bezier(.16,1,.3,1) both; }
+    .js .pocket .verdict { animation: thump .45s 1.15s cubic-bezier(.3,1.6,.5,1) both; }
+    .js .dates .stamp { animation: thump .4s cubic-bezier(.3,1.6,.5,1) both; }
+    .js .dates .stamp:first-child { animation-delay: .9s; } .js .dates .stamp:last-child { animation-delay: 1s; }
+    @keyframes draw { from { transform: translateY(90px); } }
+    @keyframes thump { from { opacity: 0; scale: 1.35; } }
+  }
+
+  @media (max-width: 980px) {
+    .hero .wrap, .head, .filed { grid-template-columns: 1fr; }
+    .envelope { margin-top: 140px; }
+    .journey, .rules { grid-template-columns: 1fr; }
+    .journey > div + div { border-left: 0; border-top: 2px dashed var(--perf); }
+    .rules > div + div { padding-left: 0; border-left: 0; border-top: 1px solid var(--rule); }
+    .rules > div { padding-bottom: 18px; }
+    header.top nav { display: none; }
+  }
+  @media (max-width: 560px) {
+    body { font-size: 16px; }
+    .wrap { width: calc(100% - 32px); }
+    .hero { padding-top: 34px; }
+    .lede { font-size: 18px; }
+    .envelope { padding: 0 12px; } .pocket { margin-left: -12px; margin-right: -12px; }
+    .slip { padding: 20px 16px 116px; }
+    .slip td.big { font-size: 24px; }
+    .pocket .verdict { font-size: 18px; }
+    .register .row { grid-template-columns: 1fr 70px; }
+    .register canvas { grid-column: 1 / -1; grid-row: 2; }
+    .lesson .card { padding: 28px 22px; }
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#" aria-label="MarketLens">
+      <svg viewBox="0 0 28 28" aria-hidden="true"><rect x="2" y="6" width="24" height="17" rx="2" fill="none" stroke="#17203d" stroke-width="2.4"/><path d="M2.8 7.5L14 16l11.2-8.5" fill="none" stroke="#17203d" stroke-width="2.4" stroke-linejoin="round"/><circle cx="14" cy="16" r="3.4" fill="#5b2fae"/></svg>
+      MarketLens
+    </a>
+    <nav aria-label="Sections"><a href="#journey">How a forecast is sealed</a><a href="#register">The register</a><a href="#filed">The app</a></nav>
+    <a class="sign" href="https://github.com/esst-prog2/MarketLens">Code on GitHub</a>
+  </div>
+</header>
+
+<main>
+  <section class="hero" aria-labelledby="h1">
+    <div class="wrap">
+      <div>
+        <h1 id="h1">Sealed first. Opened later. <em>No measurable edge.</em></h1>
+        <p class="lede">MarketLens seals every forecast before its outcome exists, then scores it against the simplest guess, <strong>“the market goes up.”</strong> Across 2,871 forecasts, its own trained model showed no measurable difference from it.</p>
+        <p class="scope">SPY, IEF and GLD · five trading sessions ahead · 3 January 2023 to 2 November 2026 · counts correct calls, not profit.</p>
+        <div class="cta">
+          <a class="btn" href="https://github.com/esst-prog2/MarketLens"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 1.5a10.5 10.5 0 0 0-3.3 20.47c.52.1.71-.23.71-.5v-1.77c-2.92.64-3.53-1.4-3.53-1.4-.48-1.22-1.17-1.54-1.17-1.54-.95-.65.07-.64.07-.64 1.05.08 1.6 1.08 1.6 1.08.94 1.6 2.46 1.14 3.06.87.1-.68.37-1.14.66-1.4-2.33-.27-4.78-1.17-4.78-5.18 0-1.14.41-2.08 1.08-2.81-.11-.27-.47-1.33.1-2.78 0 0 .88-.28 2.88 1.07a10 10 0 0 1 5.24 0c2-1.35 2.88-1.07 2.88-1.07.57 1.45.21 2.51.1 2.78.67.73 1.08 1.67 1.08 2.81 0 4.02-2.46 4.9-4.8 5.16.38.33.72.97.72 1.96v2.9c0 .28.19.61.72.5A10.5 10.5 0 0 0 12 1.5z"/></svg>Open the envelope yourself</a>
+          <a href="#journey">How a forecast is sealed</a>
+        </div>
+      </div>
+
+      <div class="envelope">
+        <div class="dates" aria-hidden="true">
+          <span class="stamp">Sealed<small>3 Jan 2023</small></span>
+          <span class="stamp">Last opened<small>2 Nov 2026</small></span>
+        </div>
+        <div class="back tint" aria-hidden="true"></div>
+        <div class="flap" aria-hidden="true"><svg viewBox="0 0 600 128" preserveAspectRatio="none"><path d="M0 128 L292 8 Q300 3 308 8 L600 128 Z" fill="#1a2552"/><path d="M0 128 L292 8 Q300 3 308 8 L600 128" fill="none" stroke="#384a8f" stroke-width="2"/></svg></div>
+        <article class="slip" aria-labelledby="slip-h">
+          <h2 id="slip-h">Register slip · 2,871 five-session calls each</h2>
+          <table>
+            <thead><tr><th scope="col">Contender</th><th scope="col" class="n">Right</th></tr></thead>
+            <tbody>
+              <tr><td>Always up · the simplest guess</td><td class="n big">55.3%</td></tr>
+              <tr class="model"><td>My trained model · calibrated logistic</td><td class="n big">52.4%</td></tr>
+              <tr><td>20-session momentum</td><td class="n big">51.0%</td></tr>
+            </tbody>
+          </table>
+          <p class="edge">Edge of my model over always up: <strong>−2.9 points</strong> (approximate 95% range −6.9 to +1.1).</p>
+        </article>
+        <div class="pocket">
+          <svg viewBox="0 0 600 150" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0 L300 96 L600 0" fill="none" stroke="#d9dceb" stroke-width="2"/><path d="M0 150 L230 70 M600 150 L370 70" stroke="#e6e8f2" stroke-width="2"/></svg>
+          <span class="stamp verdict">Verdict<br>no measurable difference</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="journey" aria-labelledby="jh">
+    <div class="wrap">
+      <div class="head"><h2 id="jh">One forecast, start to finish</h2><p>The same three steps for every contender, every trading day, from 3 January 2023.</p></div>
+      <div class="journey">
+        <div>
+          <svg viewBox="0 0 46 46" aria-hidden="true"><rect x="4" y="11" width="38" height="26" rx="3" fill="none" stroke="#17203d" stroke-width="2.6"/><path d="M5 13l18 13 18-13" fill="none" stroke="#17203d" stroke-width="2.6" stroke-linejoin="round"/><circle cx="23" cy="26" r="5" fill="#5b2fae"/></svg>
+          <h3>Sealed</h3><p>On the reference day each contender writes its call, Up or Down five trading sessions ahead, using only the days up to then.</p>
+          <span class="stamp">Sealed 3 Jan 2023</span>
+        </div>
+        <div>
+          <svg viewBox="0 0 46 46" aria-hidden="true"><path d="M6 23h34" stroke="#b9bfd6" stroke-width="2.6" stroke-dasharray="3 5"/><circle cx="8" cy="23" r="3.5" fill="#17203d"/><circle cx="15.5" cy="23" r="3.5" fill="#17203d"/><circle cx="23" cy="23" r="3.5" fill="#17203d"/><circle cx="30.5" cy="23" r="3.5" fill="#17203d"/><circle cx="38" cy="23" r="3.5" fill="#17203d"/></svg>
+          <h3>Five sessions pass</h3><p>Nothing in the envelope can change. Retraining the model touches the next forecast, never this one.</p>
+          <span class="stamp">Pending</span>
+        </div>
+        <div>
+          <svg viewBox="0 0 46 46" aria-hidden="true"><path d="M4 15l19 13 19-13" fill="none" stroke="#17203d" stroke-width="2.6" stroke-linejoin="round"/><path d="M4 15v22h38V15" fill="none" stroke="#17203d" stroke-width="2.6"/><path d="M15 6l5 5 10-9" fill="none" stroke="#5b2fae" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <h3>Opened and scored</h3><p>The close five sessions later decides it. Right or wrong, it stays in the register. An unchanged close counts as wrong.</p>
+          <span class="stamp">Opened 10 Jan 2023</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="register" aria-labelledby="rgh">
+    <div class="wrap">
+      <div class="head"><h2 id="rgh">The register: every call, one mark</h2><p>Each mark is one real five-session call, from left (January 2023) to right (October 2026). Violet means right, the faint tick means wrong.</p></div>
+      <div class="register">
+        <div class="row"><p class="name">Always up<small>1,587 of 2,871 right</small></p><canvas data-hits="always-up" role="img" aria-label="Always up: 1,587 of 2,871 calls right"></canvas><p class="pct">55.3%</p></div>
+        <div class="row model"><p class="name">My trained model<small>1,503 of 2,871 right</small></p><canvas data-hits="logistic (calibrated-linear-v2)" role="img" aria-label="Trained model: 1,503 of 2,871 calls right"></canvas><p class="pct">52.4%</p></div>
+        <div class="row"><p class="name">20-session momentum<small>1,464 of 2,871 right</small></p><canvas data-hits="momentum-20" role="img" aria-label="Momentum: 1,464 of 2,871 calls right"></canvas><p class="pct">51.0%</p></div>
+        <div class="key"><span><i style="background:#5b2fae"></i>right</span><span><i style="background:#d9dceb"></i>wrong</span><span>Next-session price, 2,883 estimates: my model off by $2.27 on average, repeating the last close $2.27. No measurable difference either.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="rlh">
+    <div class="wrap">
+      <div class="head"><h2 id="rlh">The rules of the register</h2><p>What the measurement itself guarantees.</p></div>
+      <div class="rules">
+        <div><h3>Only the past</h3><p>Every contender sees the trading days up to its call, never one after.</p></div>
+        <div><h3>Every call counts</h3><p>Every call whose outcome is known is scored, right or wrong. None are filtered out.</p></div>
+        <div><h3>Same test for all</h3><p>Every contender is scored on exactly the same days and assets.</p></div>
+      </div>
+      <p class="rules-foot">In the app, every forecast is stored before its outcome exists and is never rewritten. The model scored here makes exactly the app's forecasts.<sup><a href="#fn1" id="fr1">1</a></sup></p>
+    </div>
+  </section>
+
+  <section id="filed" aria-labelledby="fh">
+    <div class="wrap filed">
+      <figure><img src="../../docs/model-history-contenders.png" width="1144" height="771" alt="MarketLens Model history: a table of always up, momentum, last-close and the trained model, an edge line reading Not enough history yet, and a 20-session accuracy chart."><span class="stamp" aria-hidden="true">Filed copy</span></figure>
+      <div>
+        <h2 id="fh">The app will not open early</h2>
+        <p>This is Model history after <strong>26 replay sessions</strong> (66 calls, January to February 2023). Here the model happens to tie always up at 59.1%, and MarketLens says <strong>“Not enough history yet (22 of 30 shared sessions)”</strong>.</p>
+        <p>A thin register proves nothing. The verdict comes from all 2,871 calls.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="lesson tint" aria-labelledby="lh">
+    <div class="wrap">
+      <div class="card">
+        <h2 id="lh" class="sr">What it means for a beginner</h2>
+        <p class="big">A forecast is worth nothing until it has a record against the simplest guess.</p>
+        <p class="small">Before you trust one, from an app, a newsletter or a confident friend, ask to see the envelope: when was it sealed, and did it beat “always up” on the same days?</p>
+        <div class="cta"><a class="btn" href="https://github.com/esst-prog2/MarketLens">See the code and the tests</a></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>MarketLens · Advanced Programming course project · runs offline on 1,213 real sessions · Python 3.13</p>
+    <p id="fn1"><a href="#fr1">1</a> Checked call by call on a short replay (tests/test_contenders.py); on 2023–2024 both give 52.31% on 1,491 calls. The full 2023–2026 run has not been compared with the app.</p>
+    <p>Free Yahoo Finance daily closes · educational, not investment advice · paper money only.</p>
+  </div>
+</footer>
+
+<script src="../../docs/promo-data.js"></script>
+<script>
+document.documentElement.classList.add("js");
+const D = window.MARKETLENS;
+function draw() {
+  if (!D || !D.calls) return;
+  document.querySelectorAll("canvas[data-hits]").forEach(c => {
+    const hits = D.calls.hits[c.dataset.hits]; if (!hits) return;
+    const dpr = devicePixelRatio || 1, w = c.clientWidth, h = c.clientHeight;
+    c.width = Math.round(w * dpr); c.height = Math.round(h * dpr);
+    const g = c.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, w, h);
+    const n = hits.length, step = w / n;
+    for (let i = 0; i < n; i++) {
+      const right = hits.charCodeAt(i) === 49;
+      g.fillStyle = right ? "#5b2fae" : "#d9dceb";
+      const x = i * step;
+      g.fillRect(x, right ? 0 : h * 0.62, Math.max(step, 0.6), right ? h : h * 0.38);
+    }
+  });
+}
+draw();
+let t; addEventListener("resize", () => { clearTimeout(t); t = setTimeout(draw, 120); });
+</script>
+</body>
+</html>

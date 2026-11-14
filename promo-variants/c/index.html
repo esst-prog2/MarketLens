@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MarketLens · every call, no measurable edge</title>
+<meta name="description" content="All 2,871 five-session calls of MarketLens, one bar each. Its own trained model showed no measurable difference from always guessing up.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root { --bk: #000; --wh: #fff; color-scheme: dark; }
+  * { box-sizing: border-box; }
+  html { background: var(--bk); }
+  body { margin: 0; background: var(--bk); color: var(--wh); font: 400 15.5px/1.65 "JetBrains Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; transition: background .12s, color .12s; }
+  body.inverted { background: var(--wh); color: var(--bk); }
+  ::selection { background: var(--wh); color: var(--bk); }
+  a { color: inherit; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+  a:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+  h1, h2, h3, p { margin: 0; }
+  .frame { width: min(1320px, 100% - 48px); margin: 0 auto; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .rule { height: 1px; background: currentColor; opacity: 1; }
+
+  header.top { display: grid; grid-template-columns: auto 1fr auto; gap: 24px; align-items: center; padding: 18px 0 14px; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; }
+  header.top b { font-weight: 800; letter-spacing: 0.14em; }
+  header.top span { text-align: center; }
+
+  .fields { padding: 26px 0 10px; }
+  .field { display: grid; grid-template-columns: 220px 1fr 150px; gap: 22px; align-items: stretch; padding: 10px 0; }
+  .field .name { font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; display: flex; flex-direction: column; justify-content: center; }
+  .field .name small { display: block; text-transform: none; letter-spacing: 0; font-size: 12.5px; }
+  .field canvas { width: 100%; height: 92px; display: block; image-rendering: pixelated; cursor: crosshair; touch-action: pan-y; }
+  .field .pct { font-size: 40px; font-weight: 800; letter-spacing: -0.03em; text-align: right; display: flex; align-items: center; justify-content: flex-end; }
+  .field.model .pct::before { content: ""; width: 10px; height: 10px; background: currentColor; margin-right: 12px; }
+  .axis { display: grid; grid-template-columns: 220px 1fr 150px; gap: 22px; font-size: 12px; }
+  .axis div { position: relative; height: 18px; }
+  .axis span { position: absolute; transform: translateX(-50%); }
+  .readout { display: grid; grid-template-columns: 220px 1fr 150px; gap: 22px; margin-top: 10px; min-height: 26px; font-size: 13px; }
+  .readout p { grid-column: 2; }
+
+  .claim { padding: 54px 0 46px; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: end; }
+  .claim h1 { font-size: clamp(38px, 5vw, 72px); font-weight: 800; letter-spacing: -0.04em; line-height: 1.02; text-wrap: balance; }
+  .claim p { max-width: 54ch; }
+  .claim p + p { margin-top: 14px; font-size: 13px; }
+  .claim .go { display: inline-block; margin-top: 22px; padding: 12px 18px; border: 1px solid currentColor; text-decoration: none; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; font-size: 13px; transition: background .15s, color .15s; }
+  .claim .go:hover { background: var(--wh); color: var(--bk); }
+  body.inverted .claim .go:hover { background: var(--bk); color: var(--wh); }
+
+  .verdict { background: var(--wh); color: var(--bk); padding: 22px 16px; }
+  body.inverted .verdict { background: var(--bk); color: var(--wh); }
+  .verdict .frame { display: grid; grid-template-columns: repeat(4, auto); justify-content: space-between; gap: 18px 30px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .verdict b { display: block; font-size: 30px; letter-spacing: -0.02em; text-transform: none; }
+
+  section { padding: 64px 0; }
+  .split { display: grid; grid-template-columns: 1fr 2.2fr; gap: 48px; }
+  .split h2 { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; line-height: 1.2; }
+  .split h2 + p { margin-top: 12px; font-size: 13.5px; }
+  .lattice { position: relative; }
+  .lattice canvas { width: 100%; height: 300px; display: block; }
+  .lattice-key { display: flex; flex-wrap: wrap; gap: 26px; margin-top: 12px; font-size: 13px; }
+  .lattice-key i { display: inline-block; width: 26px; height: 0; border-top: 2px solid currentColor; vertical-align: middle; margin-right: 8px; }
+  .lattice-key i.dot { border-top-style: dotted; }
+  .lattice-key i.thick { border-top-width: 4px; }
+
+  .rules { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid currentColor; }
+  .rules div { padding: 20px 24px 0 0; }
+  .rules div + div { padding-left: 24px; border-left: 1px solid currentColor; }
+  .rules h3 { font-size: 15px; letter-spacing: 0.08em; text-transform: uppercase; }
+  .rules p { margin-top: 8px; font-size: 14.5px; }
+  .foot { margin-top: 20px; font-size: 13px; max-width: 100ch; }
+
+  .screen { display: grid; grid-template-columns: 1.3fr 1fr; gap: 48px; align-items: center; }
+  .screen img { display: block; width: 100%; height: auto; filter: grayscale(1) contrast(1.15); border: 1px solid currentColor; }
+  .screen h2 { font-size: clamp(24px, 2.6vw, 34px); font-weight: 800; letter-spacing: -0.02em; line-height: 1.25; }
+  .screen p { margin-top: 14px; font-size: 14.5px; }
+
+  .lesson { background: var(--wh); color: var(--bk); padding: 80px 16px; }
+  body.inverted .lesson { background: var(--bk); color: var(--wh); }
+  .lesson p.big { font-size: clamp(30px, 4.2vw, 58px); font-weight: 800; letter-spacing: -0.04em; line-height: 1.04; max-width: 22ch; text-wrap: balance; }
+  .lesson p.small { margin-top: 20px; max-width: 60ch; }
+  .lesson a.go { display: inline-block; margin-top: 26px; padding: 12px 18px; border: 1px solid currentColor; text-decoration: none; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; font-size: 13px; }
+
+  footer { padding: 30px 0 46px; font-size: 12.5px; }
+  footer p + p { margin-top: 6px; }
+
+  @media (max-width: 900px) {
+    header.top { grid-template-columns: 1fr auto; } header.top span { display: none; }
+    .field, .axis, .readout { grid-template-columns: 1fr 90px; gap: 10px 14px; }
+    .field .name { grid-column: 1; } .field canvas { grid-column: 1 / -1; grid-row: 2; height: 70px; }
+    .field .pct { grid-column: 2; grid-row: 1; font-size: 28px; }
+    .axis div:first-child, .axis div:last-child { display: none; } .axis div:nth-child(2) { grid-column: 1 / -1; }
+    .readout p { grid-column: 1 / -1; }
+    .claim, .split, .screen { grid-template-columns: 1fr; gap: 24px; }
+    .verdict .frame { grid-template-columns: 1fr 1fr; }
+    .rules { grid-template-columns: 1fr; } .rules div + div { padding-left: 0; border-left: 0; border-top: 1px solid currentColor; } .rules div { padding-bottom: 18px; }
+  }
+  @media (max-width: 520px) { .frame { width: calc(100% - 32px); } body { font-size: 14.5px; } .verdict b { font-size: 24px; } .lattice canvas { height: 220px; } }
+</style>
+</head>
+<body>
+<div class="frame">
+  <header class="top">
+    <b>MarketLens</b>
+    <span>2,871 five-session calls · SPY IEF GLD · 2023-01-03 → 2026-11-02</span>
+    <a href="https://github.com/esst-prog2/MarketLens">GitHub ↗</a>
+  </header>
+  <div class="rule"></div>
+
+  <div class="fields" aria-labelledby="fh">
+    <h2 id="fh" class="sr">Every call of every contender</h2>
+    <div class="field"><p class="name">Always up<small>1,587 of 2,871 right</small></p><canvas data-hits="always-up" role="img" aria-label="Always up: 1,587 of 2,871 calls right"></canvas><p class="pct">55.3%</p></div>
+    <div class="field model"><p class="name">My trained model<small>1,503 of 2,871 right</small></p><canvas data-hits="logistic (calibrated-linear-v2)" role="img" aria-label="Trained model: 1,503 of 2,871 calls right"></canvas><p class="pct">52.4%</p></div>
+    <div class="field"><p class="name">Momentum, 20 sessions<small>1,464 of 2,871 right</small></p><canvas data-hits="momentum-20" role="img" aria-label="Momentum: 1,464 of 2,871 calls right"></canvas><p class="pct">51.0%</p></div>
+    <div class="axis" aria-hidden="true"><div></div><div id="years"></div><div></div></div>
+    <div class="readout" aria-live="polite"><p id="readout">One column per trading session, three cells per column (GLD, IEF, SPY). White: the call was right. Point at a column to read it.</p></div>
+  </div>
+</div>
+
+<div class="frame">
+  <div class="claim">
+    <h1>2,871 forecasts. No measurable edge.</h1>
+    <div>
+      <p>MarketLens scores every forecast against the simplest guess, “the market goes up”. Its own trained model, retrained every session, showed no measurable difference from it. Look at the fields: you cannot tell them apart either.</p>
+      <p>Five trading sessions ahead · counts correct calls, not profit.</p>
+      <a class="go" href="https://github.com/esst-prog2/MarketLens">Run it yourself ↗</a>
+    </div>
+  </div>
+</div>
+
+<div class="verdict" id="verdict">
+  <div class="frame">
+    <p>Edge, model − always up<b>−2.9 pts</b></p>
+    <p>Approximate 95% range<b>−6.9 … +1.1</b></p>
+    <p>Next-session price error<b>$2.27 vs $2.27</b></p>
+    <p>Verdict<b>No measurable difference</b></p>
+  </div>
+</div>
+
+<section aria-labelledby="lt">
+  <div class="frame split">
+    <div><h2 id="lt">Running accuracy, session by session</h2><p>Share of each contender's calls so far that were right, from the 60th session (180 calls) to the last. The lines settle; they do not separate.</p></div>
+    <div class="lattice">
+      <canvas id="lattice" role="img" aria-label="Running accuracy from 2023 to 2026: always up settles at 55.3 percent, the trained model at 52.4 percent, momentum at 51.0 percent."></canvas>
+      <div class="lattice-key"><span><i></i>always up</span><span><i class="thick"></i>my trained model</span><span><i class="dot"></i>momentum</span></div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="rh">
+  <div class="frame">
+    <div class="split" style="margin-bottom:26px"><div><h2 id="rh">Why the number holds</h2><p>What the measurement itself guarantees.</p></div><div></div></div>
+    <div class="rules">
+      <div><h3>Only the past</h3><p>Every contender sees the trading days up to its call, never one after.</p></div>
+      <div><h3>Every call counts</h3><p>Every call whose outcome is known is scored, right or wrong. None are filtered out.</p></div>
+      <div><h3>Same test for all</h3><p>Every contender is scored on exactly the same days and assets.</p></div>
+    </div>
+    <p class="foot">In the app, every forecast is stored before its outcome exists and is never rewritten. The model scored here makes exactly the app's forecasts.<sup><a href="#fn1" id="fr1">1</a></sup></p>
+  </div>
+</section>
+
+<section aria-labelledby="sh">
+  <div class="frame screen">
+    <img src="../../docs/model-history-contenders.png" width="1144" height="771" alt="MarketLens Model history: a table of always up, momentum, last-close and the trained model, an edge line reading Not enough history yet, and a 20-session accuracy chart.">
+    <div>
+      <h2 id="sh">After 26 sessions the app refuses a verdict</h2>
+      <p>Model history after 26 replay sessions: 66 calls, January to February 2023. The model ties always up at 59.1%, and the screen reads “Not enough history yet (22 of 30 shared sessions)”.</p>
+      <p>Sixty-six bars prove nothing. The fields above hold all 2,871.</p>
+    </div>
+  </div>
+</section>
+
+<section class="lesson" aria-labelledby="lh">
+  <div class="frame">
+    <h2 id="lh" class="sr">What it means for a beginner</h2>
+    <p class="big">A forecast is worth nothing until it has a record against the simplest guess.</p>
+    <p class="small">Before you trust one, from an app, a newsletter or a confident friend, ask for its record. If its field does not beat the field of “always up” on the same days, it has not shown you anything yet.</p>
+    <a class="go" href="https://github.com/esst-prog2/MarketLens">See the code and the tests ↗</a>
+  </div>
+</section>
+
+<footer>
+  <div class="frame">
+    <p>MarketLens · Advanced Programming course project · runs offline on 1,213 real sessions · Python 3.13 · free Yahoo Finance daily closes · educational, not investment advice · paper money only.</p>
+    <p id="fn1"><a href="#fr1">1</a> Checked call by call on a short replay (tests/test_contenders.py); on 2023–2024 both give 52.31% on 1,491 calls. The full 2023–2026 run has not been compared with the app.</p>
+  </div>
+</footer>
+
+<script src="../../docs/promo-data.js"></script>
+<script>
+const D = window.MARKETLENS;
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const NAMES = { "always-up": "always up", "logistic (calibrated-linear-v2)": "model", "momentum-20": "momentum" };
+let sessions = 0, dates = [];
+
+function fields() {
+  if (!D || !D.calls) return;
+  dates = D.calls.dates; sessions = dates.length;
+  document.querySelectorAll("canvas[data-hits]").forEach(c => {
+    const hits = D.calls.hits[c.dataset.hits]; if (!hits) return;
+    // Draw the field at one pixel per cell, then scale up without smoothing: pure black and white.
+    const src = document.createElement("canvas"); src.width = sessions; src.height = 3;
+    const g = src.getContext("2d"), img = g.createImageData(sessions, 3);
+    for (let i = 0; i < sessions; i++) for (let j = 0; j < 3; j++) {
+      const on = hits.charCodeAt(i * 3 + j) === 49, o = (j * sessions + i) * 4, v = on ? 255 : 0;
+      img.data[o] = img.data[o + 1] = img.data[o + 2] = v; img.data[o + 3] = 255;
+    }
+    g.putImageData(img, 0, 0);
+    const dpr = devicePixelRatio || 1;
+    c.width = Math.round(c.clientWidth * dpr); c.height = Math.round(c.clientHeight * dpr);
+    const out = c.getContext("2d"); out.imageSmoothingEnabled = false;
+    out.fillStyle = "#000"; out.fillRect(0, 0, c.width, c.height);
+    out.drawImage(src, 0, 0, c.width, c.height);
+    c._src = src;
+  });
+  const years = document.getElementById("years"); years.innerHTML = "";
+  ["2023", "2024", "2025", "2026"].forEach(y => {
+    const i = dates.findIndex(d => d.startsWith(y)); if (i < 0) return;
+    const s = document.createElement("span"); s.textContent = y; s.style.left = Math.max(2, i / sessions * 100) + "%"; years.append(s);
+  });
+}
+
+function sample(e) {
+  const c = e.currentTarget, r = c.getBoundingClientRect();
+  const i = Math.max(0, Math.min(sessions - 1, Math.floor((e.clientX - r.left) / r.width * sessions)));
+  const parts = Object.keys(NAMES).map(k => {
+    const h = D.calls.hits[k].substr(i * 3, 3).split("").map(b => b === "1" ? "■" : "□").join("");
+    return `${NAMES[k]} ${h}`;
+  });
+  document.getElementById("readout").textContent = `${dates[i]} · GLD IEF SPY · ${parts.join(" · ")}`;
+  document.querySelectorAll("canvas[data-hits]").forEach(f => {
+    const out = f.getContext("2d"); out.imageSmoothingEnabled = false;
+    out.fillStyle = "#000"; out.fillRect(0, 0, f.width, f.height); out.drawImage(f._src, 0, 0, f.width, f.height);
+    const x = Math.floor(i / sessions * f.width), w = Math.max(2, Math.ceil(f.width / sessions));
+    out.globalCompositeOperation = "difference"; out.fillStyle = "#fff"; out.fillRect(x - w * 3, 0, w * 7, f.height); out.globalCompositeOperation = "source-over";
+  });
+}
+
+function lattice() {
+  if (!D || !D.calls) return;
+  const c = document.getElementById("lattice"), dpr = devicePixelRatio || 1;
+  const W = c.clientWidth, H = c.clientHeight; c.width = W * dpr; c.height = H * dpr;
+  const g = c.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const ink = getComputedStyle(document.body).color;
+  g.clearRect(0, 0, W, H); g.strokeStyle = ink; g.fillStyle = ink; g.font = "12px 'JetBrains Mono', monospace";
+  const FROM = 59, lo = 0.42, hi = 0.68, padL = 44, n = sessions - FROM;
+  const x = i => padL + i / (n - 1) * (W - padL - 60), y = v => H - 18 - (v - lo) / (hi - lo) * (H - 30);
+  [0.45, 0.50, 0.55, 0.60, 0.65].forEach(v => {
+    g.globalAlpha = v === 0.5 ? 1 : 0.35; g.lineWidth = 1; g.setLineDash(v === 0.5 ? [2, 4] : [1, 6]);
+    g.beginPath(); g.moveTo(padL, y(v)); g.lineTo(W - 60, y(v)); g.stroke();
+    g.globalAlpha = 1; g.setLineDash([]); g.fillText(`${Math.round(v * 100)}%`, 0, y(v) + 4);
+  });
+  const styles = { "always-up": [1.6, []], "logistic (calibrated-linear-v2)": [3.4, []], "momentum-20": [1.6, [2, 4]] };
+  for (const k in styles) {
+    const h = D.calls.hits[k]; let right = 0; const line = [];
+    for (let i = 0; i < sessions; i++) { for (let j = 0; j < 3; j++) right += h.charCodeAt(i * 3 + j) === 49; line.push(right / ((i + 1) * 3)); }
+    g.lineWidth = styles[k][0]; g.setLineDash(styles[k][1]); g.beginPath();
+    line.slice(FROM).forEach((v, i) => i ? g.lineTo(x(i), y(v)) : g.moveTo(x(i), y(v))); g.stroke(); g.setLineDash([]);
+    const last = line[line.length - 1]; g.fillText(`${(last * 100).toFixed(1)}`, W - 52, y(last) + (k === "momentum-20" ? 12 : k === "always-up" ? -4 : 4));
+  }
+}
+
+fields(); lattice();
+document.querySelectorAll("canvas[data-hits]").forEach(c => c.addEventListener("pointermove", sample));
+let t; addEventListener("resize", () => { clearTimeout(t); t = setTimeout(() => { fields(); lattice(); }, 120); });
+
+// Signature moment: when the verdict reaches the middle of the screen, the whole frame inverts once.
+if (!reduce && "IntersectionObserver" in window) {
+  let done = false;
+  new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting || done) return; done = true;
+    document.body.classList.add("inverted"); lattice();
+    setTimeout(() => { document.body.classList.remove("inverted"); lattice(); }, 260);
+  }), { rootMargin: "-45% 0px -45% 0px" }).observe(document.getElementById("verdict"));
+}
+</script>
+</body>
+</html>

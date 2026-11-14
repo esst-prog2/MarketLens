@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MarketLens · learn by observing</title>
+<meta name="description" content="A free learning space for beginner investors: short guides, a virtual portfolio on real market prices, and forecasts that keep score.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #0d111b; --panel: #151b28; --panel-2: #1b2232; --line: #283042; --text: #edf1fa; --muted: #a3afc6; --green: #75ddba; --purple: #b5a0ff; --gold: #efc77a; color-scheme: dark; }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; background: var(--bg); }
+  body { margin: 0; color: var(--text); font: 400 17px/1.6 "Onest", "Segoe UI", system-ui, sans-serif;
+    background: radial-gradient(ellipse 70% 40% at 70% 0%, #2a2350aa, transparent 70%), radial-gradient(ellipse 50% 30% at 10% 30%, #12332c88, transparent 70%), var(--bg); }
+  ::selection { background: var(--purple); color: #0d111b; }
+  a { color: var(--purple); text-underline-offset: 3px; }
+  a:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; border-radius: 8px; }
+  h1, h2, h3 { margin: 0; letter-spacing: -0.03em; line-height: 1.07; text-wrap: balance; }
+  p { margin: 0; }
+  img { display: block; max-width: 100%; height: auto; }
+  ::-webkit-scrollbar { width: 12px; } ::-webkit-scrollbar-track { background: var(--bg); } ::-webkit-scrollbar-thumb { background: var(--line); border-radius: 8px; border: 3px solid var(--bg); }
+  .wrap { width: min(1180px, 100% - 40px); margin: 0 auto; }
+
+  header.top .wrap { display: flex; align-items: center; height: 72px; gap: 28px; }
+  .brand { display: flex; align-items: center; gap: 10px; color: var(--text); text-decoration: none; font-weight: 800; font-size: 20px; letter-spacing: -0.02em; }
+  .brand svg { width: 26px; height: 26px; }
+  header.top nav { margin-left: auto; display: flex; gap: 26px; font-size: 15px; font-weight: 500; }
+  header.top nav a { color: var(--muted); text-decoration: none; } header.top nav a:hover { color: var(--text); }
+  .btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 12px; font-weight: 700; font-size: 16px; text-decoration: none; transition: transform .25s cubic-bezier(.2,.8,.2,1), background .2s, border-color .2s; }
+  .btn-main { background: var(--purple); color: #120d24; }
+  .btn-main:hover { background: #c7b6ff; transform: translateY(-1px); }
+  .btn-line { color: var(--text); border: 1px solid var(--line); }
+  .btn-line:hover { border-color: var(--purple); }
+  header.top .btn { padding: 10px 16px; font-size: 15px; }
+
+  .hero { padding: 64px 0 0; text-align: center; }
+  .hero h1 { font-size: clamp(44px, 6.2vw, 86px); font-weight: 800; max-width: 15ch; margin: 0 auto; }
+  .hero h1 em { font-style: normal; color: var(--green); }
+  .hero .lede { margin: 24px auto 0; max-width: 56ch; color: var(--muted); font-size: 20px; }
+  .hero .actions { margin-top: 32px; display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; }
+  .hero .small { margin-top: 18px; font-size: 14px; color: var(--muted); }
+  .window { margin: 56px auto 0; max-width: 1080px; border: 1px solid var(--line); border-radius: 18px; background: var(--panel); padding: 10px; box-shadow: 0 60px 120px -60px #000, 0 0 0 1px #ffffff08 inset; }
+  .window .row { display: grid; grid-template-columns: 1.55fr 1fr; gap: 10px; }
+  .window img { border-radius: 10px; }
+
+  section { padding: 96px 0 0; }
+  .head { max-width: 640px; }
+  .head h2 { font-size: clamp(34px, 4vw, 54px); font-weight: 800; }
+  .head p { margin-top: 14px; color: var(--muted); font-size: 18px; }
+
+  .bento { margin-top: 40px; display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
+  .tile { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 28px; overflow: hidden; display: flex; flex-direction: column; gap: 12px; }
+  .tile h3 { font-size: 26px; font-weight: 700; }
+  .tile p { color: var(--muted); }
+  .tile .label { color: var(--green); font-weight: 700; font-size: 14px; display: inline-flex; gap: 8px; align-items: center; }
+  .tile .label svg { width: 16px; height: 16px; }
+  .tile .pic { margin-top: auto; border-radius: 12px; border: 1px solid var(--line); overflow: hidden; }
+  .t1 { grid-column: span 2; } .t2 { grid-column: span 4; } .t3 { grid-column: span 3; } .t4 { grid-column: span 3; }
+  .t1 .pic { max-height: 330px; } .t1 .pic img { width: 100%; }
+  .t3 .pic, .t4 .pic { max-height: 360px; }
+  .t4 .pic { max-width: 300px; }
+
+  .steps { margin-top: 40px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border-top: 1px solid var(--line); }
+  .steps div { padding: 26px 26px 0 0; }
+  .steps div + div { padding-left: 26px; border-left: 1px solid var(--line); }
+  .steps b { display: block; font-size: 52px; font-weight: 800; color: var(--purple); letter-spacing: -0.04em; line-height: 1; }
+  .steps h3 { margin-top: 14px; font-size: 22px; }
+  .steps p { margin-top: 8px; color: var(--muted); }
+
+  .honest { display: grid; grid-template-columns: 1fr 1.15fr; gap: 48px; align-items: center; }
+  .honest blockquote { margin: 0; font-size: clamp(28px, 3.2vw, 42px); font-weight: 700; letter-spacing: -0.025em; line-height: 1.25; }
+  .honest blockquote em { font-style: normal; color: var(--gold); }
+  .honest p { margin-top: 18px; color: var(--muted); font-size: 18px; }
+  .honest img { border-radius: 14px; border: 1px solid var(--line); }
+
+  .try { margin: 96px 0 0; background: var(--panel); border: 1px solid var(--line); border-radius: 22px; padding: 44px; display: grid; grid-template-columns: 1fr 1.15fr; gap: 40px; align-items: center; }
+  .try h2 { font-size: clamp(32px, 3.6vw, 48px); font-weight: 800; }
+  .try p { margin-top: 12px; color: var(--muted); font-size: 18px; }
+  .try .btn { margin-top: 24px; }
+  .try pre { margin: 0; background: #090c14; border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; font: 500 14.5px/1.8 ui-monospace, "Cascadia Code", Consolas, monospace; overflow-x: auto; color: var(--text); }
+  .try pre b { color: var(--green); font-weight: 500; }
+
+  footer { padding: 48px 0 56px; color: var(--muted); font-size: 14.5px; }
+  footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 28px; border-top: 1px solid var(--line); padding-top: 24px; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .js .hero h1, .js .hero .lede, .js .hero .actions { animation: up .9s cubic-bezier(.16,1,.3,1) both; }
+    .js .hero .lede { animation-delay: .08s; } .js .hero .actions { animation-delay: .16s; }
+    .js .window { animation: lift 1.2s .25s cubic-bezier(.16,1,.3,1) both; }
+    @keyframes up { from { opacity: 0; transform: translateY(14px); } }
+    @keyframes lift { from { opacity: 0; transform: perspective(1400px) rotateX(10deg) translateY(30px); } }
+  }
+  @media (max-width: 980px) {
+    header.top nav { display: none; } header.top .btn { margin-left: auto; }
+    .window .row { grid-template-columns: 1fr; }
+    .bento { grid-template-columns: 1fr; } .t1, .t2, .t3, .t4 { grid-column: auto; }
+    .steps { grid-template-columns: 1fr; } .steps div + div { padding-left: 0; border-left: 0; border-top: 1px solid var(--line); } .steps div { padding-bottom: 22px; }
+    .honest, .try { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 520px) { body { font-size: 16px; } .wrap { width: calc(100% - 32px); } .hero { padding-top: 34px; } .hero .lede { font-size: 17px; } .try { padding: 26px 20px; } .tile { padding: 22px; } }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#" aria-label="MarketLens home"><svg viewBox="0 0 26 26" aria-hidden="true"><path d="M13 2l11 11-11 11L2 13z" fill="none" stroke="#b5a0ff" stroke-width="2.6" stroke-linejoin="round"/><path d="M13 8l5 5-5 5-5-5z" fill="#b5a0ff"/></svg>MarketLens</a>
+    <nav aria-label="Sections"><a href="#features">Features</a><a href="#how">How it works</a><a href="#honest">The honest part</a></nav>
+    <a class="btn btn-line" href="#try">Try it free</a>
+  </div>
+</header>
+
+<main>
+  <section class="hero" aria-labelledby="h1" style="padding-top:64px">
+    <div class="wrap">
+      <h1 id="h1">Practise investing. <em>Without the risk.</em></h1>
+      <p class="lede">MarketLens is a free learning space for beginners: short guides, a virtual portfolio on real market prices, and forecasts that are checked against what actually happened.</p>
+      <div class="actions"><a class="btn btn-main" href="#try">Try it in five minutes</a><a class="btn btn-line" href="#features">See what's inside</a></div>
+      <p class="small">Free · no account · virtual money only · works offline</p>
+      <div class="window">
+        <div class="row">
+          <img src="../../docs/img/portfolio.png" width="700" height="692" alt="MarketLens virtual portfolio: a Balanced mix that started with $10,000, its value over time and its holdings.">
+          <img src="../../docs/img/market-card.png" width="371" height="856" alt="A MarketLens market card for US equities with price, trend, a five-session Up call and a next-session price estimate." style="height:100%;object-fit:cover;object-position:top">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="features" aria-labelledby="fh">
+    <div class="wrap">
+      <div class="head"><h2 id="fh">Learn it. Try it. Check it.</h2><p>Everything happens inside one app on your own computer.</p></div>
+      <div class="bento">
+        <article class="tile t1">
+          <span class="label"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg>Start where you are</span>
+          <h3>Three questions, your own path</h3>
+          <p>Your goal, your experience and your comfort with risk shape the first page you see.</p>
+          <div class="pic"><img src="../../docs/img/onboarding.png" width="551" height="684" alt="Onboarding step 1 of 3: What brings you here."></div>
+        </article>
+        <article class="tile t2">
+          <span class="label"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3h4a2 2 0 0 1 1 .3A2 2 0 0 1 9 3h4v10H9a1 1 0 0 0-1 1 1 1 0 0 0-1-1H3z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>Learn in three minutes</span>
+          <h3>Nine short guides, no jargon</h3>
+          <p>Risk, diversification, bonds, gold, buy-and-hold and more. Search, save for later, mark as done. Every guide links its public source.</p>
+          <div class="pic"><img src="../../docs/img/library.png" width="1148" height="266" alt="Three guide cards from the MarketLens library."></div>
+          <div class="pic" style="margin-top:4px"><img src="../../docs/img/for-you.png" width="1144" height="243" alt="The For you page: Give your ideas a practice run, with guides completed."></div>
+        </article>
+        <article class="tile t3">
+          <span class="label"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 12l4-4 3 2 5-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Practise with virtual money</span>
+          <h3>Real prices, no real risk</h3>
+          <p>Choose a Conservative, Balanced or Growth mix and any amount from $100 to $1,000,000. Follow today's free quotes, or step through real trading days one at a time, offline.</p>
+          <div class="pic"><img src="../../docs/img/portfolio.png" width="700" height="692" alt="Virtual portfolio value and holdings."></div>
+        </article>
+        <article class="tile t4">
+          <span class="label"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Forecasts that keep score</span>
+          <h3>Know a forecast's record first</h3>
+          <p>Every market gets a five-day Up or Down call and a next-day price estimate, shown with how often earlier calls like it were right. Wrong calls stay on record.</p>
+          <div class="pic"><img src="../../docs/img/market-card.png" width="371" height="856" alt="Market card with a five-session call and its track record."></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="how" aria-labelledby="hh">
+    <div class="wrap">
+      <div class="head"><h2 id="hh">Five minutes from start to your first portfolio</h2></div>
+      <div class="steps">
+        <div><b>1</b><h3>Choose your goal</h3><p>Learn, explore or practise. The starting page follows your answers.</p></div>
+        <div><b>2</b><h3>Apply a mix</h3><p>Pick a profile and a virtual amount. MarketLens buys the holdings at real prices.</p></div>
+        <div><b>3</b><h3>Watch and compare</h3><p>Move through real market days, see the value change and check every forecast against the outcome.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="honest" aria-labelledby="oh">
+    <div class="wrap honest">
+      <div>
+        <h2 id="oh" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">The honest part</h2>
+        <blockquote>Our own forecasting model was no better than simply guessing <em>“the market goes up.”</em> MarketLens tells you so.</blockquote>
+        <p>The app scores its model against the simplest guess on the same days, over almost four years of real prices, and shows the result side by side. A forecast is worth nothing until it has a record against the simplest guess.</p>
+      </div>
+      <img src="../../docs/img/contenders.png" width="1144" height="764" alt="MarketLens Model history: contenders side by side.">
+    </div>
+  </section>
+
+  <div class="wrap">
+    <section class="try" id="try" aria-labelledby="th" style="padding:44px">
+      <div>
+        <h2 id="th">Try it in five minutes</h2>
+        <p>You need Python 3.13. Run these lines in a terminal, then open <strong>http://127.0.0.1:8080</strong>.</p>
+        <a class="btn btn-main" href="https://github.com/esst-prog2/MarketLens">View the code on GitHub</a>
+      </div>
+<pre><code><b># get it</b>
+git clone https://github.com/esst-prog2/MarketLens.git
+cd MarketLens
+<b># install once</b>
+python -m venv .venv
+.venv\Scripts\python -m pip install -r requirements.txt
+<b># run</b>
+.venv\Scripts\python app.py
+<b># macOS or Linux: .venv/bin/python instead of .venv\Scripts\python</b></code></pre>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>MarketLens · learn by observing · Advanced Programming course project, Corvinus University of Budapest</p>
+    <p>Free Yahoo Finance daily prices · educational, not investment advice · virtual money only</p>
+  </div>
+</footer>
+<script>document.documentElement.classList.add("js");</script>
+</body>
+</html>

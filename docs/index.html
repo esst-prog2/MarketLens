@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MarketLens · keep the model honest</title>
+<meta name="description" content="MarketLens stores every forecast before the outcome is known and scores it against always guessing that the market goes up. A free learning tool for beginner investors.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 26'%3E%3Crect width='26' height='26' rx='6' fill='%230d111b'/%3E%3Cpath d='M13 3l10 10-10 10L3 13z' fill='none' stroke='%23b5a0ff' stroke-width='2.4' stroke-linejoin='round'/%3E%3Cpath d='M13 8.5l4.5 4.5-4.5 4.5-4.5-4.5z' fill='%23b5a0ff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #0d111b; --panel: #151b28; --code: #090c14; --line: #283042; --text: #edf1fa; --muted: #a3afc6; --green: #75ddba; --purple: #b5a0ff; --gold: #efc77a; color-scheme: dark; }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; background: var(--bg); }
+  body { margin: 0; color: var(--text); font: 400 17px/1.6 "Onest", "Segoe UI", system-ui, sans-serif;
+    background: radial-gradient(ellipse 70% 40% at 70% 0%, #2a2350aa, transparent 70%), radial-gradient(ellipse 50% 30% at 10% 30%, #12332c88, transparent 70%), var(--bg); }
+  ::selection { background: var(--purple); color: #0d111b; }
+  a { color: var(--purple); text-underline-offset: 3px; }
+  a:focus-visible, button:focus-visible, pre:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; border-radius: 8px; }
+  h1, h2, h3 { margin: 0; letter-spacing: -0.03em; line-height: 1.07; text-wrap: balance; }
+  p { margin: 0; text-wrap: pretty; }
+  img { display: block; max-width: 100%; height: auto; }
+  ::-webkit-scrollbar { width: 12px; height: 10px; } ::-webkit-scrollbar-track { background: var(--bg); } ::-webkit-scrollbar-thumb { background: var(--line); border-radius: 8px; border: 3px solid var(--bg); }
+  .wrap { width: min(1180px, 100% - 40px); margin: 0 auto; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+
+  header.top .wrap { display: flex; align-items: center; min-height: 72px; gap: 20px; }
+  .brand { display: flex; align-items: center; gap: 10px; min-height: 44px; color: var(--text); text-decoration: none; font-weight: 800; font-size: 20px; letter-spacing: -0.02em; }
+  .brand svg { width: 26px; height: 26px; }
+  header.top nav { margin-left: auto; display: flex; gap: 4px; font-size: 15px; font-weight: 500; }
+  header.top nav a { color: var(--muted); text-decoration: none; padding: 11px 12px; border-radius: 10px; white-space: nowrap; }
+  header.top nav a:hover { color: var(--text); background: #ffffff0a; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 13px 22px; border-radius: 12px; font: 700 16px/1.2 "Onest", sans-serif; text-decoration: none; border: 0; cursor: pointer; transition: transform .25s cubic-bezier(.2,.8,.2,1), background .2s, border-color .2s; }
+  .btn-main { background: var(--purple); color: #120d24; }
+  .btn-main:hover { background: #c7b6ff; transform: translateY(-1px); }
+  .btn-line { color: var(--text); border: 1px solid var(--line); background: transparent; }
+  .btn-line:hover { border-color: var(--purple); background: #ffffff08; }
+  header.top .btn { min-height: 44px; padding: 10px 16px; font-size: 15px; }
+
+  .hero { padding: 64px 0 0; text-align: center; }
+  .hero h1 { font-size: clamp(42px, 6vw, 82px); font-weight: 800; max-width: 16ch; margin: 0 auto; }
+  .hero h1 em { font-style: normal; color: var(--green); }
+  .hero .lede { margin: 24px auto 0; max-width: 54ch; color: var(--muted); font-size: 20px; }
+  .verdict { margin: 30px auto 0; max-width: 640px; border: 1px solid var(--line); background: var(--panel); border-radius: 16px; padding: 20px 24px; }
+  .verdict p { font-size: 19px; }
+  .verdict strong { color: var(--gold); font-weight: 700; }
+  .verdict small { display: block; margin-top: 8px; color: var(--muted); font-size: 14.5px; }
+  .hero .actions { margin-top: 30px; display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; }
+  .window { margin: 52px auto 0; max-width: 1080px; border: 1px solid var(--line); border-radius: 18px; background: var(--panel); padding: 10px; box-shadow: 0 60px 120px -60px #000; }
+  .window img { border-radius: 10px; width: 100%; }
+  .window figcaption { padding: 14px 10px 6px; color: var(--muted); font-size: 15px; }
+
+  section { padding: 104px 0 0; }
+  .head { max-width: 680px; }
+  .head h2 { font-size: clamp(34px, 4vw, 54px); font-weight: 800; }
+  .head p { margin-top: 14px; color: var(--muted); font-size: 18px; }
+
+  .rules { margin-top: 40px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .rule { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 28px; }
+  .rule svg { width: 44px; height: 44px; }
+  .rule h3 { margin-top: 18px; font-size: 24px; }
+  .rule p { margin-top: 10px; color: var(--muted); }
+  .rule p strong { color: var(--text); font-weight: 600; }
+  .proof { margin-top: 20px; color: var(--muted); font-size: 15.5px; }
+  .proof strong { color: var(--text); }
+
+  .lesson { display: grid; grid-template-columns: 1.1fr 1fr; gap: 56px; align-items: center; }
+  .lesson blockquote { margin: 0; font-size: clamp(30px, 3.4vw, 46px); font-weight: 700; letter-spacing: -0.025em; line-height: 1.18; }
+  .lesson blockquote em { font-style: normal; color: var(--gold); }
+  .lesson p { color: var(--muted); font-size: 18px; }
+  .lesson p + p { margin-top: 14px; }
+
+  .bento { margin-top: 40px; display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; align-items: start; }
+  .tile { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 28px; overflow: hidden; display: flex; flex-direction: column; gap: 12px; }
+  .tile h3 { font-size: 26px; font-weight: 700; }
+  .tile p { color: var(--muted); }
+  .tile .label { color: var(--green); font-weight: 700; font-size: 14px; display: inline-flex; gap: 8px; align-items: center; }
+  .tile .label svg { width: 16px; height: 16px; }
+  .tile .pic { margin-top: 8px; border-radius: 12px; border: 1px solid var(--line); overflow: hidden; }
+  .tile .pic img { width: 100%; }
+  .t1 { grid-column: span 5; } .t2 { grid-column: span 7; } .t3 { grid-column: span 7; } .t4 { grid-column: span 5; }
+  .t1 .pic { aspect-ratio: 551 / 470; } .t1 .pic img { object-fit: cover; object-position: top; height: 100%; }
+  .t4 .pic { aspect-ratio: 654 / 300; } .t4 .pic img { object-fit: cover; object-position: top; height: 100%; }
+
+  .try { margin-top: 104px; background: var(--panel); border: 1px solid var(--line); border-radius: 22px; padding: 44px; display: grid; grid-template-columns: 1fr 1.2fr; gap: 44px; align-items: start; }
+  .try h2 { font-size: clamp(32px, 3.6vw, 48px); font-weight: 800; }
+  .try .needs { margin-top: 14px; color: var(--muted); font-size: 18px; }
+  .try ul { margin: 16px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; color: var(--muted); }
+  .try li { display: flex; gap: 10px; }
+  .try li svg { flex: none; width: 20px; height: 20px; margin-top: 3px; color: var(--green); }
+  .try .after { margin-top: 18px; }
+  .try .links { margin-top: 22px; display: flex; flex-wrap: wrap; gap: 12px; }
+  .tabs { display: flex; gap: 6px; margin-bottom: 10px; }
+  .tabs button { min-height: 44px; padding: 10px 16px; border-radius: 10px; border: 1px solid var(--line); background: transparent; color: var(--muted); font: 600 15px/1 "Onest", sans-serif; cursor: pointer; }
+  .tabs button[aria-selected="true"] { background: var(--text); color: var(--bg); border-color: var(--text); }
+  .code { position: relative; }
+  .code pre { margin: 0; background: var(--code); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; font: 500 14.5px/1.75 ui-monospace, "Cascadia Code", Consolas, monospace; color: var(--text); white-space: pre-wrap; overflow-wrap: anywhere; }
+  .code pre b { color: var(--green); font-weight: 500; }
+  .copy { position: absolute; top: 10px; right: 10px; min-height: 36px; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--text); font: 600 13px/1 "Onest", sans-serif; cursor: pointer; }
+  .copy:hover { border-color: var(--purple); }
+  details { margin-top: 16px; border: 1px solid var(--line); border-radius: 12px; padding: 0 18px; }
+  summary { cursor: pointer; padding: 14px 0; font-weight: 600; min-height: 44px; }
+  details dl { margin: 0 0 16px; }
+  details dt { font-weight: 600; margin-top: 10px; }
+  details dd { margin: 4px 0 0; color: var(--muted); }
+  details code { color: var(--green); font-family: ui-monospace, Consolas, monospace; font-size: 0.92em; }
+
+  footer { padding: 56px 0 56px; color: var(--muted); font-size: 14.5px; }
+  footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 28px; border-top: 1px solid var(--line); padding-top: 24px; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .js .hero h1, .js .hero .lede, .js .verdict, .js .hero .actions { animation: up .9s cubic-bezier(.16,1,.3,1) both; }
+    .js .hero .lede { animation-delay: .06s; } .js .verdict { animation-delay: .14s; } .js .hero .actions { animation-delay: .2s; }
+    .js .window { animation: lift 1.2s .3s cubic-bezier(.16,1,.3,1) both; }
+    @keyframes up { from { opacity: 0; transform: translateY(14px); } }
+    @keyframes lift { from { opacity: 0; transform: perspective(1400px) rotateX(10deg) translateY(30px); } }
+  }
+  @media (max-width: 980px) {
+    header.top .wrap { flex-wrap: wrap; padding: 6px 0; }
+    header.top nav { order: 3; width: 100%; margin: 0 -12px; overflow-x: auto; }
+    header.top .btn { margin-left: auto; }
+    .rules, .lesson, .try { grid-template-columns: 1fr; }
+    .bento { grid-template-columns: 1fr; } .t1, .t2, .t3, .t4 { grid-column: auto; }
+  }
+  @media (max-width: 520px) {
+    body { font-size: 16px; } .wrap { width: calc(100% - 32px); }
+    header.top .btn { display: none; } header.top nav { margin-top: -6px; }
+    .hero { padding-top: 28px; } .hero .lede { font-size: 17px; } .verdict { padding: 16px 18px; } .verdict p { font-size: 17px; }
+    section { padding-top: 76px; }
+    .try { margin-top: 76px; padding: 24px 18px; gap: 28px; }
+    .code pre { padding: 50px 16px 16px; font-size: 13.5px; }
+    .tile, .rule { padding: 22px; }
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#" aria-label="MarketLens home"><svg viewBox="0 0 26 26" aria-hidden="true"><path d="M13 2l11 11-11 11L2 13z" fill="none" stroke="#b5a0ff" stroke-width="2.6" stroke-linejoin="round"/><path d="M13 8l5 5-5 5-5-5z" fill="#b5a0ff"/></svg>MarketLens</a>
+    <nav aria-label="Sections"><a href="#measure">How it measures</a><a href="#lesson">What it means</a><a href="#features">Features</a><a href="#try">Run it</a></nav>
+    <a class="btn btn-line" href="#try">Run it on your computer</a>
+  </div>
+</header>
+
+<main>
+  <section class="hero" aria-labelledby="h1">
+    <div class="wrap">
+      <h1 id="h1">Does a forecast beat <em>the simplest guess?</em></h1>
+      <p class="lede">MarketLens writes every forecast down before the outcome is known, then scores it on the same days against always guessing “the market goes up”.</p>
+      <div class="verdict">
+        <p>The model I trained, after almost four years of real prices: <strong>no measurable difference</strong>.</p>
+        <small>2,871 five-session calls · US stocks, Treasury bonds and gold · January 2023 to November 2026</small>
+      </div>
+      <div class="actions"><a class="btn btn-main" href="#measure">See how it measures</a><a class="btn btn-line" href="#try">Run it on your computer</a></div>
+      <figure class="window">
+        <img src="img/contenders-full.png" width="1144" height="764" alt="MarketLens Model history at the end of the replay: always up, momentum, last-close and the trained model scored side by side on the same calls, with the edge line and its verdict, no measurable difference.">
+        <figcaption>Model history at the end of the replay, straight from the app: every contender scored on the same calls.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="measure" aria-labelledby="mh">
+    <div class="wrap">
+      <div class="head"><h2 id="mh">How MarketLens measures</h2><p>Three rules make the answer trustworthy, whatever it turns out to be.</p></div>
+      <div class="rules">
+        <article class="rule">
+          <svg viewBox="0 0 44 44" aria-hidden="true"><rect x="5" y="11" width="34" height="23" rx="3" fill="none" stroke="#b5a0ff" stroke-width="2.4"/><path d="M6 13l16 12 16-12" fill="none" stroke="#b5a0ff" stroke-width="2.4" stroke-linejoin="round"/><circle cx="22" cy="25" r="4.5" fill="#75ddba"/></svg>
+          <h3>Written down first</h3>
+          <p>Every forecast is stored before its outcome exists and is <strong>never rewritten</strong>, wrong ones included. Retraining only changes the next forecast.</p>
+        </article>
+        <article class="rule">
+          <svg viewBox="0 0 44 44" aria-hidden="true"><path d="M8 13h28M8 22h28M8 31h28" stroke="#b5a0ff" stroke-width="2.4" stroke-linecap="round"/><circle cx="8" cy="13" r="3.4" fill="#efc77a"/><circle cx="8" cy="22" r="3.4" fill="#75ddba"/><circle cx="8" cy="31" r="3.4" fill="#a3afc6"/></svg>
+          <h3>Same test for all</h3>
+          <p>My model competes with <strong>always up, momentum and last close</strong>. Each sees only the days up to its call and is scored on exactly the same days and markets.</p>
+        </article>
+        <article class="rule">
+          <svg viewBox="0 0 44 44" aria-hidden="true"><path d="M6 30h32" stroke="#a3afc6" stroke-width="2.4" stroke-linecap="round"/><rect x="10" y="22" width="24" height="8" rx="4" fill="#b5a0ff" opacity=".45"/><path d="M22 14v20" stroke="#edf1fa" stroke-width="2.4" stroke-linecap="round"/><circle cx="17" cy="26" r="4" fill="#75ddba"/></svg>
+          <h3>No verdict on a short record</h3>
+          <p>A winner is named only when the whole likely range of the difference sits on one side of zero, and never before <strong>30 shared trading days</strong>.</p>
+        </article>
+      </div>
+      <p class="proof">The measurement itself is tested: <strong>47 automated tests</strong>, and <strong>18 deliberate bugs</strong> planted in the code were all caught.</p>
+    </div>
+  </section>
+
+  <section id="lesson" aria-labelledby="lh">
+    <div class="wrap lesson">
+      <div>
+        <h2 id="lh" class="sr">What it means for a beginner</h2>
+        <blockquote>A forecast is worth nothing until it has a record against <em>the simplest guess</em>.</blockquote>
+      </div>
+      <div>
+        <p>From 2023 to 2026 markets rose more often than they fell, so “always up” was right a little more than half the time. A forecast that is right slightly more than half the time can still be no better than that.</p>
+        <p>So before you trust a forecast, from an app, a newsletter or a confident friend, ask for its record against “always up” on the same days. MarketLens shows that record for every forecast it makes, including its own.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="features" aria-labelledby="fh">
+    <div class="wrap">
+      <div class="head"><h2 id="fh">Practise what you learn</h2><p>Around the measurement, MarketLens is a free practice space for beginners. Everything runs on your own computer, with virtual money only.</p></div>
+      <div class="bento">
+        <article class="tile t1">
+          <span class="label"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg>Start where you are</span>
+          <h3>Three questions, your own path</h3>
+          <p>Your goal, your experience and your comfort with risk shape the first page you see.</p>
+          <div class="pic"><img src="img/onboarding.png" width="551" height="684" alt="Onboarding step 1 of 3: What brings you here, with options to learn, explore or practise investing."></div>
+        </article>
+        <article class="tile t2">
+          <span class="label"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3h4a2 2 0 0 1 1 .3A2 2 0 0 1 9 3h4v10H9a1 1 0 0 0-1 1 1 1 0 0 0-1-1H3z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>Learn in three minutes</span>
+          <h3>Nine short guides, no jargon</h3>
+          <p>Risk, diversification, bonds, gold, buy-and-hold and more. Search them, save them for later and mark them done. Each one links its public source.</p>
+          <div class="pic"><img src="img/guide-card.png" width="370" height="264" alt="A MarketLens guide card: What kind of risk can you live with? A three-minute read for people starting out."></div>
+        </article>
+        <article class="tile t3">
+          <span class="label"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 12l4-4 3 2 5-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Practise with virtual money</span>
+          <h3>Real prices, no real risk</h3>
+          <p>Choose a Conservative, Balanced or Growth mix and any amount from $100 to $1,000,000. Follow today's free quotes, or step through real trading days one at a time in the offline historical replay.</p>
+          <div class="pic"><img src="img/portfolio-top.png" width="700" height="408" alt="A Balanced virtual portfolio that started with $10,000 and is worth $10,394.82 after 26 replay days, with its value line."></div>
+        </article>
+        <article class="tile t4">
+          <span class="label"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Forecasts that keep score</span>
+          <h3>See a forecast's record first</h3>
+          <p>Each market gets a five-session Up or Down call and a next-session price estimate, shown with how often earlier calls like it were right.</p>
+          <div class="pic"><img src="img/forecast-record.png" width="327" height="219" alt="Five-session direction: Up, 60.7% of 61 earlier calls like this were right."></div>
+        </article>
+      </div>
+
+      <section class="try" id="try" aria-labelledby="th">
+        <div>
+          <h2 id="th">Run it on your computer</h2>
+          <p class="needs">MarketLens is a local app, not a website. It takes about five minutes on Windows, macOS or Linux, but not on a phone.</p>
+          <ul>
+            <li><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Python 3.13 (python.org) and git</span></li>
+            <li><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Free, no account, virtual money only</span></li>
+            <li><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>The historical replay works without internet</span></li>
+          </ul>
+          <div class="links"><a class="btn btn-main" href="https://github.com/esst-prog2/MarketLens">Code and README on GitHub</a></div>
+        </div>
+        <div>
+          <div class="tabs" role="tablist" aria-label="Operating system">
+            <button type="button" role="tab" id="tab-win" aria-controls="pane-win" aria-selected="true">Windows</button>
+            <button type="button" role="tab" id="tab-mac" aria-controls="pane-mac" aria-selected="false" tabindex="-1">macOS and Linux</button>
+          </div>
+          <div class="code" role="tabpanel" id="pane-win" aria-labelledby="tab-win">
+            <button type="button" class="copy" data-copy="code-win">Copy</button>
+<pre tabindex="0"><code id="code-win"><b># get it</b>
+git clone https://github.com/esst-prog2/MarketLens.git
+cd MarketLens
+<b># install once</b>
+python -m venv .venv
+.venv\Scripts\python -m pip install -r requirements.txt
+<b># run</b>
+.venv\Scripts\python app.py</code></pre>
+          </div>
+          <div class="code" role="tabpanel" id="pane-mac" aria-labelledby="tab-mac" hidden>
+            <button type="button" class="copy" data-copy="code-mac">Copy</button>
+<pre tabindex="0"><code id="code-mac"><b># get it</b>
+git clone https://github.com/esst-prog2/MarketLens.git
+cd MarketLens
+<b># install once</b>
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+<b># run</b>
+.venv/bin/python app.py</code></pre>
+          </div>
+          <p class="after">Then open <strong>http://127.0.0.1:8080</strong> in your browser. Stop it with Ctrl+C.</p>
+          <details>
+            <summary>Something went wrong?</summary>
+            <dl>
+              <dt>“python” is not recognised</dt><dd>Install Python 3.13 from python.org, tick “Add python.exe to PATH”, then open a new terminal.</dd>
+              <dt>Port 8080 is already in use</dt><dd>Add <code>--port 8081</code> to the run command and open http://127.0.0.1:8081 instead.</dd>
+              <dt>No live prices</dt><dd>Choose “Historical replay — offline” in the Data mode menu; it needs no internet.</dd>
+            </dl>
+          </details>
+        </div>
+      </section>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>MarketLens · keep the model honest · Advanced Programming course project, Corvinus University of Budapest</p>
+    <p>Free Yahoo Finance daily prices · educational, not investment advice · virtual money only</p>
+  </div>
+</footer>
+<script>
+document.documentElement.classList.add("js");
+const tabs = [...document.querySelectorAll('[role="tab"]')];
+function select(tab) {
+  tabs.forEach(t => {
+    const on = t === tab;
+    t.setAttribute("aria-selected", on); t.tabIndex = on ? 0 : -1;
+    document.getElementById(t.getAttribute("aria-controls")).hidden = !on;
+  });
+}
+tabs.forEach((t, i) => {
+  t.addEventListener("click", () => select(t));
+  t.addEventListener("keydown", e => {
+    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+    const next = tabs[(i + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length];
+    select(next); next.focus();
+  });
+});
+if (/Mac|Linux/.test(navigator.platform) && !/Win/.test(navigator.platform)) select(tabs[1]);
+document.querySelectorAll(".copy").forEach(b => b.addEventListener("click", async () => {
+  const text = document.getElementById(b.dataset.copy).innerText.split("\n").filter(l => !l.startsWith("#")).join("\n");
+  try { await navigator.clipboard.writeText(text); b.textContent = "Copied"; }
+  catch { b.textContent = "Select and copy"; }
+  setTimeout(() => b.textContent = "Copy", 1800);
+}));
+</script>
+</body>
+</html>
