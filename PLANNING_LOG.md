@@ -107,3 +107,4 @@
 2026-11-14 | Decided by the assistant: Charts show running accuracy from the 60th session (180 calls), because the 20-session rolling accuracy was unreadable as three overlapping lines.
 2026-11-14 | Decided by the user: None of the three promo variants (A, B, C) is right; the page should not be about how many forecasts were measured. New direction: the main message is what the app does (a product page), the measured result gets one short section further down, and several clearly different visual styles are built to choose from.
 2026-11-14 | Decided by the assistant: Second round of promo variants D (lavender, the user's reference), E (the app's dark style) and F (cobalt and lime), all built from real app screenshots in docs/img/ captured offline from the replay, with the honest result as a short section without numbers.
+2026-11-14 | Decided by the user: The promo page uses variant E (the app's own dark style); it is published from docs/index.html.
