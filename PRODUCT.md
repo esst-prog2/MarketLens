@@ -36,13 +36,14 @@ Most finance tools sell an edge. MarketLens measures whether one exists and says
 - Five-session Up/Down calls and next-session closing-price estimates for SPY, IEF and GLD; QQQ and IWM only in the measuring script (`scripts/contenders.py --universe`).
 - Paper portfolios only: no real money, no accounts, no brokerage.
 - Accuracy counts correct calls, not profit.
-- The 2,871-call figures come from `scripts/contenders.py`; the app's own replay matches it call by call on a short replay and on the original 2023–2024 period. The full 2023–2026 run has not been compared with the app.
+- The 2,871-call figures come from `scripts/contenders.py`; the app's own replay matches it call by call on a short replay (tests) and, checked on 2026-11-14, shows exactly the same board and verdict at the end of the full 2023–2026 replay (`docs/img/contenders-full.png`).
 
 ## Brand Commitments
 
 - Name: MarketLens. Existing in-app line: "Keep the model honest."
 - Voice: plain, exact, never hype; use the tool's own verdict wording ("no measurable difference"), never "the model lost".
-- Visual reference supplied by the user for the promo page (binding as a direction to explore, style only): a light, lavender and white, card-based dashboard look with large numbers, small charts and a friendly hero illustration. Its template's name, logo and artwork must not be reused.
+- Visual reference supplied by the user for the promo page (style only): a light, lavender and white, card-based dashboard look. It was explored in variants A and D; on 2026-11-14 the user chose variant E instead, the app's own dark style, so the promo page and the app look like one product. The reference template's name, logo and artwork must not be reused.
+- Promo page message (user decision after the 2026-11-14 critique): the measurement comes first (does a forecast beat the simplest guess?), the practice features follow.
 
 ## Evidence on Hand
 
