@@ -15,7 +15,7 @@ is −2.9 points (approximate 95% range −6.9 to +1.1), so the honest verdict o
 - Offline replay of 1,213 real sessions and free current quotes for SPY, IEF and GLD
 - Always-up, momentum, last-close and a calibrated logistic model as contenders
 - Automatic retraining after every session, with frozen versions compared on the same 20 sessions
-- 47 automated tests, 2 browser walkthroughs and 18 deliberate-bug checks that the tests all catch
+- 51 automated tests, 2 browser walkthroughs and 18 deliberate-bug checks that the tests all catch
 
 ## Install and run
 

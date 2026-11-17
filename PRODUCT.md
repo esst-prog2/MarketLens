@@ -29,7 +29,7 @@ Most finance tools sell an edge. MarketLens measures whether one exists and says
 
 - Runs locally (`python app.py`, http://127.0.0.1:8080) with a current-data mode (free Yahoo quotes) and an offline Historical replay of 1,213 real sessions.
 - Model history shows the contenders side by side, the edge with an approximate 95% range and verdict, and a 20-session rolling accuracy chart.
-- Course context: Advanced Programming, Corvinus University of Budapest; final demo on 1 December 2026 as a five-minute screenshot presentation.
+- Course context: Advanced Programming (ESST-PROG2), run at ELTE (instructor's correction, 2026-11-15; the earlier "Corvinus University of Budapest" was an unmarked guess taken from the folder path); final demo on 1 December 2026 as a five-minute screenshot presentation.
 
 ## Capabilities and Constraints
 
