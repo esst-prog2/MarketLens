@@ -8,98 +8,93 @@
 :root{--ground:#0d111b;--ink:#f2f3f8;--muted:#a9b0c4;--violet:#b5a0ff;--green:#5fd6a6;--font:Inter,"Segoe UI",sans-serif}
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:1920px;height:1080px;overflow:hidden;background:var(--ground)}
-#root{position:relative;width:100%;height:100%;font-family:var(--font);color:var(--ink);background:var(--ground)}
-.scene{position:absolute;inset:0}
-.shot{position:absolute;border-radius:22px;overflow:hidden;box-shadow:0 30px 90px rgba(0,0,0,.6);border:2px solid #2a3145;background:#111626}
-.shot img{display:block;width:100%;height:100%;object-fit:cover;object-position:top}
-.cap{position:absolute;left:120px;right:120px;bottom:96px;padding:34px 46px;border-radius:22px;background:rgba(13,17,27,.93);border:2px solid #2a3145}
-.kick{font-size:34px;font-weight:600;color:var(--violet);letter-spacing:.02em;margin-bottom:12px}
-.big{font-size:62px;font-weight:700;line-height:1.12;letter-spacing:-.02em}
-.big em{font-style:normal;color:var(--green)}
-.steps{display:flex;gap:28px;margin-top:20px}
-.step{flex:1;padding:22px 26px;border-radius:16px;background:#171d2e;border:2px solid #343c55;font-size:40px;font-weight:600}
-.step b{color:var(--violet);margin-right:12px}
-.mark{position:absolute;border:6px solid var(--violet);border-radius:18px;box-shadow:0 0 40px rgba(181,160,255,.6)}
-#url{font-size:76px;font-weight:800;color:var(--violet)}
+#root{position:relative;width:100%;height:100%;font-family:var(--font);color:var(--ink);background:var(--ground);overflow:hidden}
+.scene{position:absolute;inset:0;overflow:hidden}
+.full{position:absolute;inset:0;width:1920px;height:1080px}
+.cap{position:absolute;left:100px;bottom:70px;max-width:1300px;padding:28px 40px;border-radius:22px;background:rgba(13,17,27,.94);border:2px solid #343c55;box-shadow:0 20px 60px rgba(0,0,0,.55)}
+.num{display:inline-block;width:64px;height:64px;line-height:64px;text-align:center;border-radius:50%;background:var(--violet);color:#14101f;font-size:38px;font-weight:800;margin-right:22px;vertical-align:middle}
+.big{display:inline;font-size:58px;font-weight:700;letter-spacing:-.02em;vertical-align:middle}
+.sub{font-size:34px;color:var(--muted);margin-top:12px}
+.sub em{font-style:normal;color:var(--green)}
+.steps{display:flex;gap:24px;margin-top:16px}
+.step{padding:18px 24px;border-radius:14px;background:#171d2e;border:2px solid #343c55;font-size:38px;font-weight:600}
+.step b{color:var(--violet);margin-right:10px}
 </style>
 </head>
 <body>
 <div id="root" data-composition-id="main" data-start="0" data-duration="30" data-width="1920" data-height="1080">
 
-  <!-- 1. The question (0-5 s) -->
-  <div id="s1" class="scene clip" data-start="0" data-duration="5" data-track-index="0">
-    <div id="s1in" class="scene" style="display:flex;flex-direction:column;justify-content:center;padding:0 160px">
-      <div class="kick" id="s1k">MarketLens · a free practice app for beginners</div>
-      <div class="big" id="s1t" style="font-size:104px">Does a forecast beat<br><em>the simplest guess?</em></div>
-      <div id="s1s" style="font-size:44px;color:var(--muted);margin-top:36px">Real market prices. Virtual money only. No account.</div>
+  <!-- 0-3 s: what it is -->
+  <div id="s0" class="scene clip" data-start="0" data-duration="3" data-track-index="0">
+    <div id="s0in" class="scene" style="display:flex;flex-direction:column;justify-content:center;padding:0 160px">
+      <div id="s0k" style="font-size:40px;font-weight:600;color:var(--violet)">MarketLens</div>
+      <div id="s0t" style="font-size:110px;font-weight:800;letter-spacing:-.03em;line-height:1.05">Learn to invest<br><span style="color:var(--green)">with virtual money.</span></div>
     </div>
   </div>
 
-  <!-- 2. The honest answer (5-11 s) -->
-  <div id="s2" class="scene clip" data-start="5" data-duration="6" data-track-index="0">
-    <div id="s2shot" class="shot" style="left:260px;top:40px;width:1400px;height:935px"><img src="assets/contenders-full.png" alt=""></div>
-    <div id="s2cap" class="cap">
-      <div class="kick">It writes every forecast down first, then checks it</div>
-      <div class="big">My model vs. “always guess up”, 2023–2026:<br><em>no measurable difference.</em></div>
+  <!-- 3-8 s: get it from the page -->
+  <div id="s1" class="scene clip" data-start="3" data-duration="5" data-track-index="0">
+    <img id="s1img" class="full" src="assets/page-try.png" alt="" style="object-fit:contain;background:#0d111b">
+    <div id="s1cap" class="cap">
+      <div style="font-size:34px;color:var(--violet);font-weight:600">Get it free from the web page · Windows</div>
+      <div class="steps"><div class="step" id="p1"><b>1</b>Copy</div><div class="step" id="p2"><b>2</b>Paste into PowerShell</div><div class="step" id="p3"><b>3</b>Open 127.0.0.1:8080</div></div>
     </div>
   </div>
 
-  <!-- 3. Finding your way on the page (11-17 s) -->
-  <div id="s3" class="scene clip" data-start="11" data-duration="6" data-track-index="0">
-    <div id="s3shot" class="shot" style="left:160px;top:40px;width:1600px;height:900px"><img src="assets/page-hero.png" alt=""></div>
-    <div id="s3mark" class="mark" style="left:884px;top:52px;width:690px;height:72px"></div>
-    <div id="s3cap" class="cap">
-      <div class="kick">On the web page, use the menu at the top</div>
-      <div class="big">How it measures · What it means · Features · <em>Run it</em></div>
-    </div>
+  <!-- 8-12 s: goal -->
+  <div id="s2" class="scene clip" data-start="8" data-duration="4" data-track-index="0">
+    <img id="s2img" class="full" src="assets/a1-goal.png" alt="">
+    <div id="s2cap" class="cap"><span class="num">1</span><span class="big">Say what you want to do</span><div class="sub">For example: practise investing, in stocks and gold</div></div>
   </div>
 
-  <!-- 4. How to open it (17-25 s) -->
-  <div id="s4" class="scene clip" data-start="17" data-duration="8" data-track-index="0">
-    <div id="s4shot" class="shot" style="left:200px;top:40px;width:1520px;height:662px"><img src="assets/page-try.png" alt="" style="object-fit:contain"></div>
-    <div id="s4cap" class="cap" style="bottom:60px">
-      <div class="kick">To open it on a Windows computer</div>
-      <div class="steps">
-        <div class="step" id="st1"><b>1</b>Press Copy</div>
-        <div class="step" id="st2"><b>2</b>Paste into PowerShell</div>
-        <div class="step" id="st3"><b>3</b>Open 127.0.0.1:8080</div>
-      </div>
-    </div>
+  <!-- 12-15.5 s: risk -->
+  <div id="s3" class="scene clip" data-start="12" data-duration="3.5" data-track-index="0">
+    <img id="s3img" class="full" src="assets/a3-risk.png" alt="">
+    <div id="s3cap" class="cap"><span class="num">2</span><span class="big">How much up and down is OK?</span><div class="sub">It builds your starting point from your answers</div></div>
   </div>
 
-  <!-- 5. The app, and where to find it (25-30 s) -->
-  <div id="s5" class="scene clip" data-start="25" data-duration="5" data-track-index="0">
-    <div id="s5shot" class="shot" style="left:260px;top:40px;width:1400px;height:788px"><img src="assets/app-home.png" alt=""></div>
-    <div id="s5cap" class="cap" style="text-align:center">
-      <div class="kick">Your first screen. Then learn, explore and practise.</div>
-      <div id="url">esst-prog2.github.io/MarketLens</div>
-    </div>
+  <!-- 15.5-19 s: learn -->
+  <div id="s4" class="scene clip" data-start="15.5" data-duration="3.5" data-track-index="0">
+    <img id="s4img" class="full" src="assets/a5-learn.png" alt="">
+    <div id="s4cap" class="cap" style="bottom:auto;top:70px"><span class="num">3</span><span class="big">Read short guides</span><div class="sub">Risk, portfolios, stocks and ETFs, without the jargon</div></div>
+  </div>
+
+  <!-- 19-23 s: invest -->
+  <div id="s5" class="scene clip" data-start="19" data-duration="4" data-track-index="0">
+    <img id="s5img" class="full" src="assets/a7-invested.png" alt="">
+    <div id="s5cap" class="cap" style="bottom:auto;top:70px"><span class="num">4</span><span class="big">Invest $10,000 of virtual money</span><div class="sub">Pick a plan: Conservative, Balanced or Growth</div></div>
+  </div>
+
+  <!-- 23-26.5 s: step through days -->
+  <div id="s6" class="scene clip" data-start="23" data-duration="3.5" data-track-index="0">
+    <img id="s6img" class="full" src="assets/a8-after26.png" alt="">
+    <div id="s6cap" class="cap"><span class="num">5</span><span class="big">Step through real trading days</span><div class="sub">Real 2023 prices, one day at a time</div></div>
+  </div>
+
+  <!-- 26.5-30 s: result + address -->
+  <div id="s7" class="scene clip" data-start="26.5" data-duration="3.5" data-track-index="0">
+    <img id="s7img" class="full" src="assets/a9-portfolio.png" alt="">
+    <div id="s7cap" class="cap"><span class="big">See what happened to your money. <span style="color:var(--green)">No real risk.</span></span><div class="sub" style="color:var(--violet);font-size:44px;font-weight:700;margin-top:14px">esst-prog2.github.io/MarketLens</div></div>
   </div>
 </div>
 <script>
 const tl = gsap.timeline({ paused: true });
-const inn = (sel, t, y=40) => tl.fromTo(sel, {opacity:0, y}, {opacity:1, y:0, duration:0.6, ease:"power3.out"}, t);
+const up = (sel, t) => tl.fromTo(sel, {opacity:0, y:40}, {opacity:1, y:0, duration:0.45, ease:"power3.out"}, t);
+const shot = (sel, t, d, ox, oy, s) => {
+  tl.fromTo(sel, {opacity:0}, {opacity:1, duration:0.35}, t);
+  tl.fromTo(sel, {scale:1, transformOrigin:ox+"px "+oy+"px"}, {scale:s, duration:d, ease:"power1.inOut"}, t);
+};
+// 0
+up("#s0k", 0.1); up("#s0t", 0.3); tl.to("#s0in", {opacity:0, duration:0.3}, 2.7);
 // 1
-inn("#s1k", 0.2); inn("#s1t", 0.5, 60); inn("#s1s", 1.6);
-tl.to("#s1in", {opacity:0, duration:0.4}, 4.5);
-// 2
-tl.fromTo("#s2shot", {opacity:0, scale:0.96}, {opacity:1, scale:1, duration:0.7, ease:"power3.out"}, 5);
-tl.to("#s2shot", {scale:1.04, duration:5, ease:"none"}, 5.7);
-inn("#s2cap", 6.2, 60);
-tl.to(["#s2shot","#s2cap"], {opacity:0, duration:0.4}, 10.5);
-// 3
-tl.fromTo("#s3shot", {opacity:0}, {opacity:1, duration:0.6}, 11);
-tl.fromTo("#s3mark", {opacity:0, scale:1.15}, {opacity:1, scale:1, duration:0.5, ease:"back.out(2)"}, 11.9);
-inn("#s3cap", 12.4, 60);
-tl.to(["#s3shot","#s3mark","#s3cap"], {opacity:0, duration:0.4}, 16.5);
-// 4
-tl.fromTo("#s4shot", {opacity:0}, {opacity:1, duration:0.6}, 17);
-inn("#s4cap", 17.6, 60);
-inn("#st1", 18.6); inn("#st2", 20.0); inn("#st3", 21.4);
-tl.to(["#s4shot","#s4cap"], {opacity:0, duration:0.4}, 24.5);
-// 5
-tl.fromTo("#s5shot", {opacity:0, scale:0.96}, {opacity:1, scale:1, duration:0.7, ease:"power3.out"}, 25);
-inn("#s5cap", 25.8, 60);
+shot("#s1img", 3, 5, 1300, 400, 1.08); up("#s1cap", 3.3); up("#p1", 3.7); up("#p2", 4.6); up("#p3", 5.5);
+// 2-7
+shot("#s2img", 8, 4, 1320, 560, 1.45); up("#s2cap", 8.4);
+shot("#s3img", 12, 3.5, 1320, 600, 1.45); up("#s3cap", 12.3);
+shot("#s4img", 15.5, 3.5, 960, 1000, 1.35); up("#s4cap", 15.8);
+shot("#s5img", 19, 4, 1000, 800, 1.3); up("#s5cap", 19.3);
+shot("#s6img", 23, 3.5, 1500, 620, 1.35); up("#s6cap", 23.3);
+shot("#s7img", 26.5, 3.5, 600, 450, 1.5); up("#s7cap", 26.9);
 window.__timelines["main"] = tl;
 tl.seek(0);
 </script>
