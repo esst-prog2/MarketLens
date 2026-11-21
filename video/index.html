@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1920, height=1080" />
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+<style>
+:root{--ground:#0d111b;--ink:#f2f3f8;--muted:#a9b0c4;--violet:#b5a0ff;--green:#5fd6a6;--font:Inter,"Segoe UI",sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1920px;height:1080px;overflow:hidden;background:var(--ground)}
+#root{position:relative;width:100%;height:100%;font-family:var(--font);color:var(--ink);background:var(--ground)}
+.scene{position:absolute;inset:0}
+.shot{position:absolute;border-radius:22px;overflow:hidden;box-shadow:0 30px 90px rgba(0,0,0,.6);border:2px solid #2a3145;background:#111626}
+.shot img{display:block;width:100%;height:100%;object-fit:cover;object-position:top}
+.cap{position:absolute;left:120px;right:120px;bottom:96px;padding:34px 46px;border-radius:22px;background:rgba(13,17,27,.93);border:2px solid #2a3145}
+.kick{font-size:34px;font-weight:600;color:var(--violet);letter-spacing:.02em;margin-bottom:12px}
+.big{font-size:62px;font-weight:700;line-height:1.12;letter-spacing:-.02em}
+.big em{font-style:normal;color:var(--green)}
+.steps{display:flex;gap:28px;margin-top:20px}
+.step{flex:1;padding:22px 26px;border-radius:16px;background:#171d2e;border:2px solid #343c55;font-size:40px;font-weight:600}
+.step b{color:var(--violet);margin-right:12px}
+.mark{position:absolute;border:6px solid var(--violet);border-radius:18px;box-shadow:0 0 40px rgba(181,160,255,.6)}
+#url{font-size:76px;font-weight:800;color:var(--violet)}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-duration="30" data-width="1920" data-height="1080">
+
+  <!-- 1. The question (0-5 s) -->
+  <div id="s1" class="scene clip" data-start="0" data-duration="5" data-track-index="0">
+    <div id="s1in" class="scene" style="display:flex;flex-direction:column;justify-content:center;padding:0 160px">
+      <div class="kick" id="s1k">MarketLens · a free practice app for beginners</div>
+      <div class="big" id="s1t" style="font-size:104px">Does a forecast beat<br><em>the simplest guess?</em></div>
+      <div id="s1s" style="font-size:44px;color:var(--muted);margin-top:36px">Real market prices. Virtual money only. No account.</div>
+    </div>
+  </div>
+
+  <!-- 2. The honest answer (5-11 s) -->
+  <div id="s2" class="scene clip" data-start="5" data-duration="6" data-track-index="0">
+    <div id="s2shot" class="shot" style="left:260px;top:40px;width:1400px;height:935px"><img src="assets/contenders-full.png" alt=""></div>
+    <div id="s2cap" class="cap">
+      <div class="kick">It writes every forecast down first, then checks it</div>
+      <div class="big">My model vs. “always guess up”, 2023–2026:<br><em>no measurable difference.</em></div>
+    </div>
+  </div>
+
+  <!-- 3. Finding your way on the page (11-17 s) -->
+  <div id="s3" class="scene clip" data-start="11" data-duration="6" data-track-index="0">
+    <div id="s3shot" class="shot" style="left:160px;top:40px;width:1600px;height:900px"><img src="assets/page-hero.png" alt=""></div>
+    <div id="s3mark" class="mark" style="left:884px;top:52px;width:690px;height:72px"></div>
+    <div id="s3cap" class="cap">
+      <div class="kick">On the web page, use the menu at the top</div>
+      <div class="big">How it measures · What it means · Features · <em>Run it</em></div>
+    </div>
+  </div>
+
+  <!-- 4. How to open it (17-25 s) -->
+  <div id="s4" class="scene clip" data-start="17" data-duration="8" data-track-index="0">
+    <div id="s4shot" class="shot" style="left:200px;top:40px;width:1520px;height:662px"><img src="assets/page-try.png" alt="" style="object-fit:contain"></div>
+    <div id="s4cap" class="cap" style="bottom:60px">
+      <div class="kick">To open it on a Windows computer</div>
+      <div class="steps">
+        <div class="step" id="st1"><b>1</b>Press Copy</div>
+        <div class="step" id="st2"><b>2</b>Paste into PowerShell</div>
+        <div class="step" id="st3"><b>3</b>Open 127.0.0.1:8080</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. The app, and where to find it (25-30 s) -->
+  <div id="s5" class="scene clip" data-start="25" data-duration="5" data-track-index="0">
+    <div id="s5shot" class="shot" style="left:260px;top:40px;width:1400px;height:788px"><img src="assets/app-home.png" alt=""></div>
+    <div id="s5cap" class="cap" style="text-align:center">
+      <div class="kick">Your first screen. Then learn, explore and practise.</div>
+      <div id="url">esst-prog2.github.io/MarketLens</div>
+    </div>
+  </div>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+const inn = (sel, t, y=40) => tl.fromTo(sel, {opacity:0, y}, {opacity:1, y:0, duration:0.6, ease:"power3.out"}, t);
+// 1
+inn("#s1k", 0.2); inn("#s1t", 0.5, 60); inn("#s1s", 1.6);
+tl.to("#s1in", {opacity:0, duration:0.4}, 4.5);
+// 2
+tl.fromTo("#s2shot", {opacity:0, scale:0.96}, {opacity:1, scale:1, duration:0.7, ease:"power3.out"}, 5);
+tl.to("#s2shot", {scale:1.04, duration:5, ease:"none"}, 5.7);
+inn("#s2cap", 6.2, 60);
+tl.to(["#s2shot","#s2cap"], {opacity:0, duration:0.4}, 10.5);
+// 3
+tl.fromTo("#s3shot", {opacity:0}, {opacity:1, duration:0.6}, 11);
+tl.fromTo("#s3mark", {opacity:0, scale:1.15}, {opacity:1, scale:1, duration:0.5, ease:"back.out(2)"}, 11.9);
+inn("#s3cap", 12.4, 60);
+tl.to(["#s3shot","#s3mark","#s3cap"], {opacity:0, duration:0.4}, 16.5);
+// 4
+tl.fromTo("#s4shot", {opacity:0}, {opacity:1, duration:0.6}, 17);
+inn("#s4cap", 17.6, 60);
+inn("#st1", 18.6); inn("#st2", 20.0); inn("#st3", 21.4);
+tl.to(["#s4shot","#s4cap"], {opacity:0, duration:0.4}, 24.5);
+// 5
+tl.fromTo("#s5shot", {opacity:0, scale:0.96}, {opacity:1, scale:1, duration:0.7, ease:"power3.out"}, 25);
+inn("#s5cap", 25.8, 60);
+window.__timelines["main"] = tl;
+tl.seek(0);
+</script>
+</body>
+</html>
