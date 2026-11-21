@@ -116,3 +116,4 @@
 2026-11-17 | Decided by the user: Correction to the previous two entries: the user knew the HW9 on-time deadline and the late window; the late submission is not to be recorded as the assistant's mistake.
 2026-11-17 | Decided by the user: Do HW10 (a 30-second video about MarketLens for someone who has never heard of it, made with HyperFrames, on the promo page). On time by Saturday 21 November 2026, 20:00; counts half by Monday 23 November, 20:00.
 2026-11-17 | Decided by the assistant: Work on branch hw10-video, based on hw9-fix so the ELTE footer correction is included; install FFmpeg with winget because HyperFrames needs it and it was missing (Node v24.19.0 was already present).
+2026-11-17 | Decided by the user: Merge hw9-fix into main locally with a merge commit (no PR) so the live promo page shows ELTE and the audited claims.
