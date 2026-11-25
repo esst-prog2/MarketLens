@@ -29,6 +29,11 @@ class PromoPageTests(unittest.TestCase):
         listed = len(re.findall(r'^    \("', mutations.split("MUTATIONS = [", 1)[1].split("\n]", 1)[0], re.M))
         stated_bugs = int(re.search(r"<strong>(\d+) deliberate bugs</strong>", text).group(1))
         self.assertEqual(stated_bugs, listed)
+        # The demo slides state the same three numbers.
+        slides = (ROOT/"docs/slides/index.html").read_text(encoding="utf-8")
+        self.assertEqual(int(re.search(r'class="n-tests">(\d+)<', slides).group(1)), found)
+        self.assertEqual(int(re.search(r'class="n-bugs">(\d+)<', slides).group(1)), listed)
+        self.assertIn('class="n-calls">2,871<', slides)
 
 
 if __name__ == "__main__":

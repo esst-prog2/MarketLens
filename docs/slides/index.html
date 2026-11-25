@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MarketLens · Demo slides</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ground:#0d111b;--panel:#151a28;--line:#2a3145;--ink:#f2f3f8;--muted:#a9b0c4;--violet:#b5a0ff;--green:#5fd6a6;--amber:#f3c46b}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:#05070c;color:var(--ink);font-family:Onest,"Segoe UI",sans-serif;overflow:hidden}
+#stage{position:absolute;left:50%;top:50%;width:1600px;height:900px;transform-origin:center;background:var(--ground)}
+.slide{position:absolute;inset:0;padding:70px 90px;display:none;background:radial-gradient(1200px 600px at 85% -10%,rgba(181,160,255,.12),transparent 60%),var(--ground)}
+.slide.on{display:block}
+.tag{display:inline-block;font-size:20px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--violet);margin-bottom:22px}
+h1{font-size:78px;line-height:1.02;font-weight:800;letter-spacing:-.035em}
+h1 em{font-style:normal;color:var(--green)}
+h2{font-size:64px;line-height:1.05;font-weight:800;letter-spacing:-.03em}
+h2 em{font-style:normal;color:var(--green)}
+.lead{font-size:30px;color:var(--muted);margin-top:26px;line-height:1.35}
+.lead b{color:var(--ink)}
+.shot{border-radius:18px;border:2px solid var(--line);background:var(--panel);overflow:hidden;box-shadow:0 40px 90px -40px #000}
+.shot img{display:block;width:100%}
+.label{font-size:24px;color:var(--muted);margin-top:14px}
+.label b{color:var(--ink)}
+.n{color:var(--violet);font-weight:800}
+.mark{position:absolute;border:4px solid var(--green);border-radius:12px;box-shadow:0 0 30px rgba(95,214,166,.45)}
+.foot{position:absolute;left:90px;right:90px;bottom:36px;display:flex;justify-content:space-between;font-size:18px;color:#6f7790}
+.soon{display:inline-block;padding:6px 14px;border:2px dashed var(--amber);border-radius:999px;color:var(--amber);font-size:20px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+/* 1 */
+#s1 .grid{display:grid;grid-template-columns:1fr 600px;gap:60px;align-items:center;height:100%}
+/* 2 */
+#s2 .row{display:grid;grid-template-columns:repeat(4,1fr);gap:26px;margin-top:44px}
+#s2 .tile .shot{height:470px}
+#s2 .tile .shot img{height:100%;object-fit:cover;object-position:top left}
+#s2 .tile p{font-size:26px;font-weight:700;margin-top:18px;line-height:1.2}
+#s2 .tile p .sub{display:block;font-size:20px;font-weight:500;color:var(--muted);margin-top:6px}
+.num{display:inline-flex;width:40px;height:40px;border-radius:50%;background:var(--violet);color:#14101f;font-size:22px;font-weight:800;align-items:center;justify-content:center;margin-right:10px;vertical-align:2px}
+#s2 .last .shot{border-color:var(--green)}
+/* 3 */
+#s3 .cols{display:grid;grid-template-columns:640px 1fr;gap:80px;margin-top:60px;align-items:start}
+.big{font-size:150px;font-weight:800;letter-spacing:-.04em;line-height:1;color:var(--green)}
+.big small{font-size:60px;color:var(--muted)}
+.aside{margin-top:40px;padding:22px 26px;border-left:4px solid var(--violet);background:rgba(181,160,255,.07);font-size:24px;color:var(--muted);line-height:1.4}
+.aside b{color:var(--ink)}
+/* 4 */
+.log{margin-top:60px;padding:38px 44px;border-radius:16px;background:#0a0d15;border:2px solid var(--line);font-family:Consolas,"Cascadia Mono",monospace;font-size:34px;line-height:1.5;color:#cfd4e4}
+.log .d{color:var(--violet)} .log .w{color:var(--green)} .log mark{background:rgba(95,214,166,.18);color:var(--ink);padding:0 4px;border-radius:4px}
+/* 5 */
+.flow{display:grid;grid-template-columns:1fr 60px 1fr 60px 1fr;align-items:stretch;margin-top:50px}
+.step{padding:30px;border-radius:18px;border:2px dashed #4a5270;background:var(--panel)}
+.step h3{font-size:30px;font-weight:700;margin-bottom:12px}
+.step p{font-size:23px;color:var(--muted);line-height:1.35}
+.arrow{display:flex;align-items:center;justify-content:center;font-size:44px;color:var(--violet)}
+.choice{display:flex;gap:14px;margin-top:18px}
+.choice span{flex:1;text-align:center;padding:14px 0;border-radius:12px;font-size:26px;font-weight:700;background:#1d2338;border:2px solid #343c55}
+.choice span.pick{background:var(--violet);color:#14101f;border-color:var(--violet)}
+/* end */
+#s6 .grid{display:grid;grid-template-columns:1fr 360px;gap:70px;align-items:center;height:100%}
+#qr{background:#fff;padding:22px;border-radius:18px;width:360px;height:360px}
+#qr img,#qr canvas{width:100%!important;height:auto!important}
+.url{font-size:62px;font-weight:800;letter-spacing:-.02em;color:var(--violet);margin-top:30px}
+#count{display:none;position:fixed;right:18px;bottom:12px;font-size:14px;color:#4b5268;font-family:Onest,sans-serif}
+</style>
+</head>
+<body>
+<div id="stage">
+
+<!-- 1 · For whom, and why -->
+<section class="slide" id="s1">
+  <div class="grid">
+    <div>
+      <div class="tag">For beginner investors</div>
+      <h1>Every tip<br>sounds sure.<br><em>None shows its record.</em></h1>
+      <p class="lead">MarketLens shows <b>how often a call like this was right</b>, before you trust it. Then you practise with real prices and <b>virtual money</b>.</p>
+    </div>
+    <div>
+      <div class="shot" style="position:relative"><img src="img/record.png" alt="A MarketLens forecast card: Up, 60.7% of 61 earlier calls like this were right.">
+        <div class="mark" style="left:4%;top:28%;width:92%;height:20%"></div></div>
+      <p class="label">A real card from the app: the record comes <b>with</b> the call.</p>
+    </div>
+  </div>
+  <div class="foot"><span>MarketLens</span><span>1 / 5</span></div>
+</section>
+
+<!-- 2 · The demo -->
+<section class="slide" id="s2">
+  <div class="tag">The demo · from a real run</div>
+  <h2>Your first week, <em>with $0 at risk</em></h2>
+  <div class="row">
+    <div class="tile"><div class="shot"><img src="img/goal.jpg" alt="Onboarding: I want to practise investing, Stocks and Gold selected."></div><p><span class="num">1</span>Say what you want<span class="sub">Three short questions</span></p></div>
+    <div class="tile"><div class="shot"><img src="img/invest.jpg" alt="Virtual portfolio: $10,000.00, Balanced."></div><p><span class="num">2</span>Invest $10,000<span class="sub">Virtual money, Balanced plan</span></p></div>
+    <div class="tile"><div class="shot"><img src="img/days.jpg" alt="Market cards for US equities, Treasury bonds and gold on 9 February 2023."></div><p><span class="num">3</span>Live through real days<span class="sub">Real 2023 prices, one day at a time</span></p></div>
+    <div class="tile last"><div class="shot"><img src="img/result.jpg" alt="Virtual portfolio after 26 trading days: $10,394.82, up 3.9%."></div><p><span class="num">4</span>See what happened<span class="sub">$10,394.82 after 26 trading days</span></p></div>
+  </div>
+  <div class="foot"><span>Historical replay, Balanced plan, 3 January to 9 February 2023 · screens from the app</span><span>2 / 5</span></div>
+</section>
+
+<!-- 3 · Why it works -->
+<section class="slide" id="s3">
+  <div class="tag">Why you can trust it</div>
+  <h2>It can't <em>flatter itself.</em></h2>
+  <div class="cols">
+    <div>
+      <div class="shot"><img src="img/sealed.png" alt="Forecast card with the time it was issued: 2023-02-09 21:00:01."></div>
+      <p class="label"><b>Written down before the outcome.</b> Never rewritten.</p>
+    </div>
+    <div>
+      <div class="big"><span class="n-bugs">18</span><small> / 18</small></div>
+      <p class="lead" style="margin-top:12px">bugs I planted on purpose.<br><b>My <span class="n-tests">51</span> tests caught every one.</b></p>
+      <div class="aside">Even my own model gets no favours: against “always guess up”, over <b class="n-calls">2,871</b> calls, <b>no measurable difference</b>. The app says so.</div>
+    </div>
+  </div>
+  <div class="foot"><span>scripts/mutation_check.py · tests/ · scripts/contenders_output.txt</span><span>3 / 5</span></div>
+</section>
+
+<!-- 4 · What I learned -->
+<section class="slide" id="s4">
+  <div class="tag">What I learned</div>
+  <h2 style="font-size:84px">I stopped trying to<br><em>make my model win.</em></h2>
+  <div class="log"><span class="d">2026-10-11</span> | Decided by the user: MarketLens is <mark>a tool that measures whether any model beats the baselines</mark> […], <span class="w">not a model that has to beat them</span>.</div>
+  <p class="lead" style="font-size:36px;margin-top:44px">Keep tweaking until something wins, and something will, <b>by luck</b>. So the measurement became the product.</p>
+  <div class="foot"><span>PLANNING_LOG.md, line 60</span><span>4 / 5</span></div>
+</section>
+
+<!-- 5 · What's next -->
+<section class="slide" id="s5">
+  <div class="tag">What's next &nbsp; <span class="soon">Not built yet</span></div>
+  <h2>Next: <em>can you beat it?</em></h2>
+  <div class="flow">
+    <div class="step"><h3>A real past week</h3><p>Prices hidden after the day you see.</p></div>
+    <div class="arrow">→</div>
+    <div class="step"><h3>You make the call</h3><div class="choice"><span class="pick">Up</span><span>Down</span></div></div>
+    <div class="arrow">→</div>
+    <div class="step"><h3>Scored like any model</h3><p>Same rules, same days, against “always guess up”.</p></div>
+  </div>
+  <p class="lead">You become one more contender, and find out how good your gut really is.</p>
+  <div class="foot"><span>A sketch: planned in PLANNING_LOG.md, line 101</span><span>5 / 5</span></div>
+</section>
+
+<!-- Closing (not one of the five) -->
+<section class="slide" id="s6">
+  <div class="grid">
+    <div>
+      <div class="tag">MarketLens</div>
+      <h1>See the record<br><em>before you trust the tip.</em></h1>
+      <div class="url">esst-prog2.github.io/MarketLens</div>
+      <p class="lead">Free · runs on your computer · virtual money only</p>
+    </div>
+    <div id="qr" aria-label="QR code for esst-prog2.github.io/MarketLens"></div>
+  </div>
+</section>
+
+</div>
+<div id="count"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+const slides=[...document.querySelectorAll(".slide")], stage=document.getElementById("stage");
+let i=Math.max(0,Math.min(slides.length-1,(parseInt(location.hash.slice(1))||1)-1));
+function show(n){i=Math.max(0,Math.min(slides.length-1,n));slides.forEach((s,k)=>s.classList.toggle("on",k===i));
+  history.replaceState(null,"","#"+(i+1));document.getElementById("count").textContent=(i+1)+" / "+slides.length;}
+function fit(){const s=Math.min(innerWidth/1600,innerHeight/900);stage.style.transform=`translate(-50%,-50%) scale(${s})`;}
+addEventListener("keydown",e=>{if(["ArrowRight","PageDown"," ","Enter"].includes(e.key)){e.preventDefault();show(i+1)}
+  if(["ArrowLeft","PageUp","Backspace"].includes(e.key)){e.preventDefault();show(i-1)}
+  if(e.key==="Home")show(0); if(e.key==="End")show(slides.length-1); if(e.key==="f")document.documentElement.requestFullscreen?.();});
+addEventListener("click",e=>show(e.clientX<innerWidth/3?i-1:i+1));
+addEventListener("resize",fit); fit(); show(i);
+try{new QRCode(document.getElementById("qr"),{text:"https://esst-prog2.github.io/MarketLens/",width:600,height:600,correctLevel:QRCode.CorrectLevel.M});}
+catch(e){document.getElementById("qr").style.display="none";}
+</script>
+</body>
+</html>
