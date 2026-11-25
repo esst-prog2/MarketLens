@@ -30,6 +30,9 @@ h2 em{font-style:normal;color:var(--green)}
 .foot{position:absolute;left:90px;right:90px;bottom:36px;display:flex;justify-content:space-between;font-size:18px;color:#6f7790}
 .soon{display:inline-block;padding:6px 14px;border:2px dashed var(--amber);border-radius:999px;color:var(--amber);font-size:20px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
 /* 1 */
+.pains{list-style:none;margin-top:34px;display:grid;gap:16px}
+.pains li{font-size:31px;font-weight:600;display:flex;align-items:center;gap:18px}
+.pains li span{flex:none;width:48px;height:48px;border-radius:12px;background:rgba(181,160,255,.14);color:var(--violet);display:flex;align-items:center;justify-content:center;font-weight:800}
 #s1 .grid{display:grid;grid-template-columns:1fr 600px;gap:60px;align-items:center;height:100%}
 /* 2 */
 #s2 .row{display:grid;grid-template-columns:repeat(4,1fr);gap:26px;margin-top:44px}
@@ -73,13 +76,17 @@ h2 em{font-style:normal;color:var(--green)}
   <div class="grid">
     <div>
       <div class="tag">For beginner investors</div>
-      <h1>Every tip<br>sounds sure.<br><em>None shows its record.</em></h1>
-      <p class="lead">MarketLens shows <b>how often a call like this was right</b>, before you trust it. Then you practise with real prices and <b>virtual money</b>.</p>
+      <h1>Learning to invest<br><em>shouldn't cost<br>you money.</em></h1>
+      <ul class="pains">
+        <li><span>?</span>Where do I even start?</li>
+        <li><span>$</span>Real money is an expensive teacher.</li>
+        <li><span>!</span>Every tip sounds sure. Was it ever right?</li>
+      </ul>
     </div>
     <div>
       <div class="shot" style="position:relative"><img src="img/record.png" alt="A MarketLens forecast card: Up, 60.7% of 61 earlier calls like this were right.">
         <div class="mark" style="left:4%;top:28%;width:92%;height:20%"></div></div>
-      <p class="label">A real card from the app: the record comes <b>with</b> the call.</p>
+      <p class="label">In MarketLens every call comes <b>with its record</b>.</p>
     </div>
   </div>
   <div class="foot"><span>MarketLens</span><span>1 / 5</span></div>
@@ -88,14 +95,14 @@ h2 em{font-style:normal;color:var(--green)}
 <!-- 2 · The demo -->
 <section class="slide" id="s2">
   <div class="tag">The demo · from a real run</div>
-  <h2>Your first week, <em>with $0 at risk</em></h2>
+  <h2>Learn, practise, <em>with $0 at risk</em></h2>
   <div class="row">
-    <div class="tile"><div class="shot"><img src="img/goal.jpg" alt="Onboarding: I want to practise investing, Stocks and Gold selected."></div><p><span class="num">1</span>Say what you want<span class="sub">Three short questions</span></p></div>
-    <div class="tile"><div class="shot"><img src="img/invest.jpg" alt="Virtual portfolio: $10,000.00, Balanced."></div><p><span class="num">2</span>Invest $10,000<span class="sub">Virtual money, Balanced plan</span></p></div>
-    <div class="tile"><div class="shot"><img src="img/days.jpg" alt="Market cards for US equities, Treasury bonds and gold on 9 February 2023."></div><p><span class="num">3</span>Live through real days<span class="sub">Real 2023 prices, one day at a time</span></p></div>
-    <div class="tile last"><div class="shot"><img src="img/result.jpg" alt="Virtual portfolio after 26 trading days: $10,394.82, up 3.9%."></div><p><span class="num">4</span>See what happened<span class="sub">$10,394.82 after 26 trading days</span></p></div>
+    <div class="tile"><div class="shot"><img src="img/guide.jpg" style="object-fit:contain;object-position:center" alt="A learning guide card, saved with a star: What kind of risk can you live with?"></div><p><span class="num">1</span>Learn<span class="sub">Short guides: risk, buy &amp; hold, rebalancing. Save them for later.</span></p></div>
+    <div class="tile"><div class="shot"><img src="img/portfolios.jpg" alt="A balanced starting point: equities 50%, bonds 35%, gold 15%, with its trade-off."></div><p><span class="num">2</span>Choose a portfolio<span class="sub">Three mixes, each with its trade-off</span></p></div>
+    <div class="tile"><div class="shot"><img src="img/days.jpg" alt="Market cards for US equities, Treasury bonds and gold, each with a forecast and its record."></div><p><span class="num">3</span>Practise on real prices<span class="sub">Past days, or today's prices from Yahoo Finance</span></p></div>
+    <div class="tile last"><div class="shot"><img src="img/result.jpg" alt="Virtual portfolio after 26 trading days: $10,394.82, up 3.9%."></div><p><span class="num">4</span>See what happened<span class="sub">$10,000 virtual became $10,394.82 in 26 real days</span></p></div>
   </div>
-  <div class="foot"><span>Historical replay, Balanced plan, 3 January to 9 February 2023 · screens from the app</span><span>2 / 5</span></div>
+  <div class="foot"><span>Screens from a real run: Balanced plan, historical replay, 3 January to 9 February 2023</span><span>2 / 5</span></div>
 </section>
 
 <!-- 3 · Why it works -->
@@ -110,7 +117,7 @@ h2 em{font-style:normal;color:var(--green)}
     <div>
       <div class="big"><span class="n-bugs">18</span><small> / 18</small></div>
       <p class="lead" style="margin-top:12px">bugs I planted on purpose.<br><b>My <span class="n-tests">51</span> tests caught every one.</b></p>
-      <div class="aside">Even my own model gets no favours: against “always guess up”, over <b class="n-calls">2,871</b> calls, <b>no measurable difference</b>. The app says so.</div>
+      <div class="aside">The bar is the simplest guess: <b>“the market always goes up”</b>. My own model gets no favours: over <b class="n-calls">2,871</b> calls, <b>no measurable difference</b>. The app says so.</div>
     </div>
   </div>
   <div class="foot"><span>scripts/mutation_check.py · tests/ · scripts/contenders_output.txt</span><span>3 / 5</span></div>
@@ -145,9 +152,10 @@ h2 em{font-style:normal;color:var(--green)}
   <div class="grid">
     <div>
       <div class="tag">MarketLens</div>
-      <h1>See the record<br><em>before you trust the tip.</em></h1>
+      <h1>Real prices.<br><em>No real money.</em></h1>
+      <p class="lead" style="font-size:36px;color:var(--ink)">And check the record before you trust a tip.</p>
       <div class="url">esst-prog2.github.io/MarketLens</div>
-      <p class="lead">Free · runs on your computer · virtual money only</p>
+      <p class="lead">Free · runs on your computer · no account</p>
     </div>
     <div id="qr" aria-label="QR code for esst-prog2.github.io/MarketLens"></div>
   </div>
