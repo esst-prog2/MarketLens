@@ -22,9 +22,9 @@ PLANNING_LOG.md lines 60, 94 and 101.
 > And every tip you hear, from a friend, a video, an app, sounds sure: "this will go up."
 > But was it ever right?
 >
-> MarketLens is for exactly that beginner. Look at this card from the app. It doesn't just say "Up".
-> It says: of 61 earlier calls like this one, 60.7% were right. That's measured, not promised.
-> Real prices. No real money. And the record comes with every call.
+> "It will go up, trust me." The one question nobody asks is: how often was that right?
+> MarketLens is for exactly that beginner.
+> Real prices. No real money. And check the record before you trust a tip.
 
 ## Slide 2: The demo (1:05 to 2:20)
 
@@ -33,12 +33,12 @@ PLANNING_LOG.md lines 60, 94 and 101.
 > One, learn: short guides on risk, on strategies like buy and hold or rebalancing.
 > Save the ones you want for later.
 > Two, choose a portfolio: three mixes of stocks, bonds and gold, each with its trade-off.
-> Three, practise on real prices: you invest ten thousand virtual dollars and live through real market days,
+> Three, practise: you invest ten thousand virtual dollars and live through real market days,
 > either past days, one click at a time, or today's prices, updated from Yahoo Finance while the app runs.
-> Every day you see your portfolio move, and every forecast with its record.
-> Four, see what happened: after 26 real trading days my Balanced portfolio was worth
-> ten thousand three hundred ninety-four dollars. Nothing was generated and nothing was at risk:
-> it is what that mix really did.
+> After 26 real trading days my Balanced portfolio was worth ten thousand three hundred ninety-four dollars.
+> Nothing was generated and nothing was at risk: it is what that mix really did.
+> Four, check the call: every day the app also makes a forecast, and next to it you see its record.
+> "Up", and of 61 earlier calls like this, 60.7% were right.
 >
 > It's free, it runs on your own computer, no account.
 
@@ -46,8 +46,8 @@ PLANNING_LOG.md lines 60, 94 and 101.
 
 > A tool that teaches you to check tips has to pass the check itself. So MarketLens can't flatter itself.
 >
-> Every forecast is written down, with a timestamp, before the outcome exists, and it is never rewritten.
-> Then it is compared with the simplest guess there is: "the market always goes up".
+> On the ninth of February the call is written down. A week later, the real price decides: right or wrong.
+> And then it is scored and never rewritten, against the simplest guess there is: "the market always goes up".
 > Markets rise more often than they fall: from 2023 to 2026 that lazy guess was right 55% of the time.
 > A tip is only worth something if it beats it.
 >
